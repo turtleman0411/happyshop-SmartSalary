@@ -1,0 +1,40 @@
+<!--
+==================================================
+檔案：layout/month-bar.html
+用途：月份切換元件（Prev / Next Month）
+
+==================================================
+-->
+
+<div th:fragment="monthBar(baseUrl, month)"
+     xmlns:th="http://www.thymeleaf.org"
+     class="container my-3"
+     th:if="${month != null}">
+
+    <div class="cat-card d-flex justify-content-center align-items-center gap-3 py-3">
+
+        <!-- ◀ 上一個月 -->
+        <a class="btn btn-outline-secondary"
+           th:href="@{${baseUrl}(month=${month.minusMonths(1)})}">
+            ◀
+        </a>
+
+        <!-- 目前月份（僅顯示，不可編輯） -->
+        <div class="fw-bold fs-5">
+            <span th:text="${month}">2026-01</span>
+        </div>
+
+        <!-- ▶ 下一個月 -->
+        <a class="btn btn-outline-secondary"
+           th:href="@{${baseUrl}(month=${month.plusMonths(1)})}">
+            ▶
+        </a>
+
+    </div>
+</div>
+
+<!--
+==================================================
+
+==================================================
+-->

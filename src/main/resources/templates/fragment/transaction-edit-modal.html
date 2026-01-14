@@ -1,0 +1,115 @@
+<!-- fragment/transaction-edit-modal.html -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="editTransactionModal(
+        month,
+        transactionId,
+        categoryName,
+        amount,
+        date,
+        note
+     )">
+
+  <div class="modal fade"
+       id="editTransactionModal"
+       tabindex="-1"
+       aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow">
+
+        <!-- ================= Header ================= -->
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold">
+            ✏️ 修改消費
+          </h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- ================= Body ================= -->
+        <div class="modal-body px-4">
+
+          <form method="post"
+                enctype="multipart/form-data"
+                th:action="@{/transaction/update(month=${month})}">
+
+            <!-- ===== 必要隱藏欄位 ===== -->
+            <input type="hidden"
+                   name="transactionId"
+                   th:value="${transactionId}" />
+
+            <!-- ===== 分類（唯讀顯示） ===== -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">📂 分類</label>
+              <input type="text"
+                     class="form-control bg-light"
+                     th:value="${categoryName}"
+                     readonly />
+            </div>
+
+            <!-- ===== 金額 ===== -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">💰 金額</label>
+              <input type="number"
+                     name="amount"
+                     class="form-control"
+                     min="1"
+                     required
+                     th:value="${amount}" />
+            </div>
+
+            <!-- ===== 日期 ===== -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">📅 日期</label>
+              <input type="date"
+                     name="date"
+                     class="form-control"
+                     required
+                     th:value="${date}" />
+            </div>
+
+            <!-- ===== 備註 ===== -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">📝 備註</label>
+              <textarea name="note"
+                        class="form-control"
+                        rows="2"
+                        maxlength="255"
+                        th:text="${note}">
+              </textarea>
+            </div>
+
+            <!-- ===== 圖片（可選） ===== -->
+            <div class="mb-4">
+              <label class="form-label fw-bold">🖼️ 更換圖片（可選）</label>
+              <input type="file"
+                     name="image"
+                     class="form-control"
+                     accept="image/*" />
+              <small class="text-muted">
+                未選擇代表不更換圖片
+              </small>
+            </div>
+
+            <!-- ===== Submit ===== -->
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button"
+                      class="btn btn-outline-secondary"
+                      data-bs-dismiss="modal">
+                取消
+              </button>
+
+              <button type="submit"
+                      class="btn btn-primary">
+                儲存修改
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

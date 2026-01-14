@@ -1,0 +1,307 @@
+/* ======================================================
+ * 消費預覽進度條（最終穩定版）
+ * ====================================================== */
+
+.progress {
+  height: 18px;
+  border-radius: 999px;
+  background-color: #e5e7eb; /* 0% 底色 */
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+/* 進度條本體：只允許 width / color 變化 */
+.progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  will-change: width;
+}
+
+/* ======================================================
+ * 顏色狀態（語意保留）
+ * ====================================================== */
+
+.progress-bar.safe {
+  background-color: #22c55e; /* 安全 */
+}
+
+.progress-bar.warning {
+  background-color: #facc15; /* 警告 */
+}
+
+.progress-bar.danger {
+  background-color: #ef4444; /* 危險 */
+}
+
+/* ======================================================
+ * 超支提示（安全動畫：不影響 layout）
+ * ====================================================== */
+
+/* 100%～120%：僅 opacity 閃爍 */
+.progress-bar.over-limit,
+.progress-bar.over-120 {
+  animation: danger-opacity 1s infinite;
+}
+
+/* 安全動畫（不 reflow） */
+@keyframes danger-opacity {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* ======================================================
+ * 禁用會造成字卡順序錯覺的動畫（關鍵）
+ * ====================================================== */
+
+/* ❌ box-shadow / shake / transform 類動畫 */
+.progress.over,
+.over-limit-bar {
+  animation: none !important;
+}
+
+/* ======================================================
+ * 分類字卡穩定（Modal 開關不重排）
+ * ====================================================== */
+
+.category-click-card {
+  min-height: 170px;              /* 固定高度，避免重排 */
+}
+
+.category-click-card .small {
+  line-height: 1.2;               /* 避免文字撐高 */
+}
+/* ===== Home / Hero ===== */
+.home-hero {
+  background: radial-gradient(
+    circle at top,
+    #ffffff 0%,
+    #f2f4fa 60%
+  );
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-title {
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.home-subtitle {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* ===== Primary CTA ===== */
+.btn-hero {
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* ===== Feature Strip ===== */
+.feature-strip {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+}
+
+.feature-item {
+  padding: 16px 8px;
+}
+
+.feature-title {
+  font-weight: 700;
+}
+
+.feature-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* ===== Divider (中間細線) ===== */
+.feature-divider {
+  border-left: 1px solid #e5e7eb;
+}
+
+/* ===== Footer ===== */
+.home-footer {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+/* ======================================================
+ * Home Page Layout（專用，不影響其他頁）
+ * ====================================================== */
+
+.home-page {
+  min-height: 100vh;
+  background: radial-gradient(
+    circle at top,
+    #ffffff 0%,
+    #f2f4fa 60%
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+/* 中央 Hero 區 */
+.home-hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero 內容卡片（視覺錨點） */
+.home-hero-card {
+  max-width: 720px;
+  width: 100%;
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+
+/* 標題 */
+.home-title {
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+/* 副標 */
+.home-subtitle {
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+/* CTA 區 */
+.home-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.btn-hero {
+  padding: 14px 36px;
+  font-size: 1.05rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* 功能說明卡列 */
+.feature-strip {
+  margin: 48px auto 0;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.08);
+}
+
+.feature-item {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.feature-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.feature-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* 分隔線 */
+.feature-divider {
+  border-left: 1px solid #e5e7eb;
+}
+
+/* Footer */
+.home-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding: 24px 0;
+}
+/* ===============================
+ 🍎 Apple Style – Mobile Only
+=============================== */
+@media (max-width: 768px) {
+
+  .page-card {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .tx-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+  }
+
+  .tx-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #111;
+  }
+
+  .tx-amount {
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.2px;
+  }
+
+  .tx-meta {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+
+  .tx-note {
+    font-size: 0.9rem;
+    color: #333;
+    margin-top: 4px;
+  }
+
+  .tx-actions button {
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+}
+/* =========================
+   Result Page - Disabled Category Card
+   ========================= */
+
+/* 未分配分類：視覺提示不可操作 */
+.disabled-card {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 禁止點擊（保險用） */
+.disabled-card {
+  pointer-events: none;
+}
+
+/* 讓內容還是可讀，不要太灰 */
+.disabled-card .fw-bold,
+.disabled-card .small,
+.disabled-card strong {
+  opacity: 1;
+}
+
+/* 警告提示顏色微調（選用） */
+.unallocated-warning {
+  color: #b26a00;
+}
+
+

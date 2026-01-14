@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+
+<head th:replace="~{layout/head :: head('註冊｜HappyShop')}"></head>
+
+<body style="background:#f2f4fa;">
+
+<div class="container d-flex align-items-center justify-content-center"
+     style="min-height: 100vh;">
+
+    <div class="card shadow-lg border-0 rounded-4 p-5"
+         style="max-width: 460px; width:100%;">
+
+        <!-- ===== Title ===== -->
+        <h3 class="fw-bold text-center mb-4">
+            📝 註冊 HappyShop
+        </h3>
+
+        <!-- ===== Error Message（自動關閉） ===== -->
+        <div th:if="${error != null}"
+             class="alert alert-danger text-center mb-4 rounded-3 auto-close-alert"
+             role="alert">
+            <span th:text="${error}">錯誤訊息</span>
+        </div>
+
+        <!-- ===== Register Form ===== -->
+        <form th:action="@{/register}"
+              th:object="${register}"
+              method="post">
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">帳號</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{name}"
+                       placeholder="請輸入帳號"
+                       required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-2">
+                <label class="form-label fw-bold">密碼</label>
+                <input type="password"
+                        class="form-control"
+                        th:field="*{password}"
+                        placeholder="請輸入密碼（至少 8 碼）"
+                        minlength="8"
+                        pattern=".{8,}"
+                        title="密碼至少需要 8 個字元"
+                        autocomplete="new-password"
+                        required>
+
+                <div class="form-text mt-1" style="font-size:0.85rem;">
+                    密碼至少 <span class="fw-semibold">8</span> 碼
+                </div>
+            </div>
+
+            <!-- Salary -->
+            <!-- <div class="mb-4">
+                <label class="form-label fw-bold">💰 每月薪資</label>
+                <input type="number"
+                       class="form-control"
+                       th:field="*{salary}"
+                       placeholder="請輸入每月薪資"
+                       min="0"
+                       required>
+            </div> -->
+
+            <!-- Submit -->
+            <div class="d-grid mb-3">
+                <button type="submit"
+                        class="btn btn-primary btn-lg">
+                    建立帳號
+                </button>
+            </div>
+
+        </form>
+
+        <!-- ===== Links ===== -->
+        <div class="text-center">
+            <a th:href="@{/happyshop/login}" class="text-decoration-none">
+                已有帳號？前往登入
+            </a>
+            <div class="mt-2">
+                <a th:href="@{/happyshop/home}"
+                   class="small text-muted text-decoration-none">
+                    ← 返回首頁
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== Auto Close Script（舒服版） ===== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const alert = document.querySelector(".auto-close-alert");
+    if (!alert) return;
+
+    // 停留 2.5 秒
+    setTimeout(() => {
+        alert.style.transition = "opacity 0.4s ease";
+        alert.style.opacity = "0";
+
+        // 淡出完成後移除
+        setTimeout(() => {
+            alert.remove();
+        }, 400);
+    }, 2500);
+});
+</script>
+
+
+</body>
+</html>

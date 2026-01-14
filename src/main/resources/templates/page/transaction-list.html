@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/head :: head('交易紀錄｜HappyShop')}"></head>
+
+<body style="background:#f5f5f7; color:#1d1d1f;">
+
+<!-- ================= Navbar ================= -->
+
+<div th:replace="~{layout/navbar :: navbar(
+    @{/happyshop/transactions(month=${view.month})}
+)}"></div>
+
+<!-- ================= Month Bar ================= -->
+
+<div th:replace="~{layout/month-bar :: monthBar(
+    '/happyshop/transactions',
+    ${view.month}
+)}"></div>
+
+<div class="container my-4 page-card">
+
+
+<!-- ===== 標題 ===== -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div class="text-center flex-fill">
+        <h2 class="fw-bold">📒 本月交易紀錄</h2>
+        <p class="text-muted mt-2"
+           th:text="|${view.month} 的交易清單|"></p>
+    </div>
+
+    <a class="btn btn-outline-secondary ms-3"
+       th:href="@{/happyshop/result(month=${view.month})}">
+        ← 返回結果頁
+    </a>
+</div>
+
+<!-- ================= 桌機 Table ================= -->
+<div class="d-none d-md-block table-responsive">
+    <table class="table align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>日期</th>
+            <th>分類</th>
+            <th class="text-end">金額</th>
+            <th>備註</th>
+            <th class="text-center" style="width:90px;">圖片</th>
+            <th class="text-center" style="width:120px;">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${#lists.isEmpty(view.transactionList)}">
+            <td colspan="6" class="text-center text-muted py-4">
+                本月尚無交易紀錄
+            </td>
+        </tr>
+
+        <tr th:each="tx : ${view.transactionList}">
+            <td th:text="${tx.date}"></td>
+            <td th:text="${tx.categoryDisplayName}"></td>
+            <td class="text-end fw-semibold"
+                th:text="${tx.amount}"></td>
+            <td th:text="${tx.note ?: '—'}"></td>
+
+            <!-- 圖片 -->
+            <td class="text-center">
+                <img th:if="${tx.imageUrl != null}"
+                     th:src="${tx.imageUrl}"
+                     class="img-thumbnail"
+                     style="max-width:70px;">
+            </td>
+
+            <!-- 刪除 -->
+            <td class="text-center">
+                <form th:action="@{/transaction/delete}"
+                      method="post"
+                      style="display:inline;">
+                    <input type="hidden" name="transactionId"
+                           th:value="${tx.transactionId}">
+                    <input type="hidden" name="month"
+                           th:value="${view.month}">
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('確定要刪除這筆交易嗎？');">
+                        🗑
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ================= 手機 Card ================= -->
+<div class="d-block d-md-none">
+
+    <div th:if="${#lists.isEmpty(view.transactionList)}"
+         class="text-center text-muted py-4">
+        本月尚無交易紀錄
+    </div>
+
+    <div th:each="tx : ${view.transactionList}"
+         class="card shadow-sm border-0 rounded-4 p-3 mb-3">
+
+        <div class="d-flex justify-content-between">
+            <div class="fw-bold"
+                 th:text="${tx.categoryDisplayName}"></div>
+            <div class="fw-semibold"
+                 th:text="'$ ' + ${tx.amount}"></div>
+        </div>
+
+        <div class="small text-muted mt-1"
+             th:text="${tx.date}"></div>
+
+        <div class="mt-1"
+             th:text="${tx.note ?: '—'}"></div>
+
+        <img th:if="${tx.imageUrl != null}"
+             th:src="${tx.imageUrl}"
+             class="img-fluid rounded-3 border mt-2">
+
+        <div class="d-flex justify-content-end mt-3">
+            <form th:action="@{/transaction/delete}"
+                  method="post">
+                <input type="hidden" name="transactionId"
+                       th:value="${tx.transactionId}">
+                <input type="hidden" name="month"
+                       th:value="${view.month}">
+                <button type="submit"
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('確定要刪除這筆交易嗎？');">
+                    🗑
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
