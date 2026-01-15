@@ -22,6 +22,14 @@
 
     <dependencies>
 
+	<!-- PostgreSQL Driver -->
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
+
         <!-- Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
