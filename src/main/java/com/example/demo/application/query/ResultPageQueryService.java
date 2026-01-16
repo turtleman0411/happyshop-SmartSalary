@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-
+import com.example.demo.presentation.dto.view.CategoryUsageState;
 import com.example.demo.domain.model.BudgetMonth;
 import com.example.demo.domain.model.CategoryType;
 import com.example.demo.domain.value.UserId;
@@ -160,65 +160,93 @@ long normalCount =
          * Category Summary（最終 View）
          * ========================= */
 
-        List<ResultPageView.CategorySummaryView> categorySummaryList =
-                List.of(CategoryType.values())
-                        .stream()
-                        .map(category -> {
+List<ResultPageView.CategorySummaryView> categorySummaryList =
+        List.of(CategoryType.values())
+                .stream()
+                .map(category -> {
 
-                            CategoryAllocationRow allocation =
-                                    allocationMap.get(category);
+                    CategoryAllocationRow allocation =
+                            allocationMap.get(category);
 
-                            boolean allocated = allocation != null;
+                    boolean allocated = allocation != null;
 
-                            int baseBudget =
-                                    baseBudgetMap.get(category);
+                    int baseBudget =
+                            baseBudgetMap.get(category);
 
-                            int currentSpent =
-                                    spentMap.getOrDefault(category, 0);
+                    int currentSpent =
+                            spentMap.getOrDefault(category, 0);
 
-                            boolean selfOverSpent =
-                                    selfOverMap.get(category) > 0;
+                    boolean selfOverSpent =
+                            selfOverMap.get(category) > 0;
 
-                            // ⭐ 關鍵：只有沒超額的才被扣
-                            int effectiveBudget =
-                                    selfOverSpent
-                                            ? baseBudget
-                                            : Math.max(0, baseBudget - sharedPenalty);
+                    // ⭐ 只有沒超額的分類才會被扣平攤
+                    int effectiveBudget =
+                            selfOverSpent
+                                    ? baseBudget
+                                    : Math.max(0, baseBudget - sharedPenalty);
 
-                            int availableAmount =
-                                    Math.max(0, effectiveBudget - currentSpent);
+                 int rawAvailable =
+        Math.max(0, effectiveBudget - currentSpent);
 
-                            int categoryOverSpent =
-                                    Math.max(0, currentSpent - baseBudget);
+// ⭐ 最終可用金額：不能超過全月剩餘
+int availableAmount =
+        Math.min(rawAvailable, monthlyRemainingAmount);
 
-                            int usagePercentCategory =
-                                    effectiveBudget > 0
-                                            ? (currentSpent * 100 / effectiveBudget)
-                                            : 0;
+                    int categoryOverSpent =
+                            Math.max(0, currentSpent - baseBudget);
 
-                            int displayUsagePercent =
-                                    Math.min(100, usagePercentCategory);
+                    int usagePercentCategory =
+                            effectiveBudget > 0
+                                    ? (currentSpent * 100 / effectiveBudget)
+                                    : 0;
 
-                            boolean penalizedByOthers =
-                                    !selfOverSpent && sharedPenalty > 0;
+                    int displayUsagePercent =
+                            Math.min(100, usagePercentCategory);
 
-                            return new ResultPageView.CategorySummaryView(
-                                    category.name(),
-                                    category.displayName(),
-                                    allocated,
-                                    baseBudget,
-                                    effectiveBudget,
-                                    sharedPenalty,
-                                    currentSpent,
-                                    availableAmount,
-                                    categoryOverSpent,
-                                    usagePercentCategory,
-                                    displayUsagePercent,
-                                    penalizedByOthers,
-                                    selfOverSpent
-                            );
-                        })
-                        .toList();
+                    boolean penalizedByOthers =
+                            !selfOverSpent && sharedPenalty > 0;
+
+                    /* =========================
+                     * ⭐ 狀態裁決（關鍵）
+                     * ========================= */
+
+                    CategoryUsageState state;
+
+                    if (hasOverSpent && overRemainingAmount == 0) {
+                        // 全月已爆 120%
+                        state = CategoryUsageState.GLOBAL_OVERFLOW;
+
+                    } else if (selfOverSpent) {
+                        // 自己花超
+                        state = CategoryUsageState.SELF_OVERSPENT;
+
+                    } else if (!selfOverSpent && availableAmount == 0 && penalizedByOthers) {
+                        // 沒花超，但被別人吃光
+                        state = CategoryUsageState.NO_AVAILABLE_DUE_TO_POOL;
+
+                    } else {
+                        state = CategoryUsageState.NORMAL;
+                    }
+
+                    return new ResultPageView.CategorySummaryView(
+                            category.name(),
+                            category.displayName(),
+                            allocated,
+                            baseBudget,
+                            effectiveBudget,
+                            sharedPenalty,
+                            currentSpent,
+                            availableAmount,
+                            categoryOverSpent,
+                            usagePercentCategory,
+                            displayUsagePercent,
+                            penalizedByOthers,
+                            selfOverSpent,
+                            state   // ✅ 關鍵補上
+                    );
+                })
+                .toList();
+
 
         /* =========================
          * Assemble View

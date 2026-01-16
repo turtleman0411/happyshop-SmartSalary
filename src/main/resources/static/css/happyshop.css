@@ -18,21 +18,7 @@
   will-change: width;
 }
 
-/* ======================================================
- * 顏色狀態（語意保留）
- * ====================================================== */
 
-.progress-bar.safe {
-  background-color: #22c55e; /* 安全 */
-}
-
-.progress-bar.warning {
-  background-color: #facc15; /* 警告 */
-}
-
-.progress-bar.danger {
-  background-color: #ef4444; /* 危險 */
-}
 
 /* ======================================================
  * 超支提示（安全動畫：不影響 layout）

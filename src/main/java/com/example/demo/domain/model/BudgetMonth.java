@@ -85,8 +85,13 @@ public class BudgetMonth {
 
     /* ========== Domain Behaviors ========== */
 
-    public void updateIncome(IncomeAmount incomeAmount) {
-    this.income = incomeAmount;}
+    public void updateIncome(IncomeAmount newIncome) {
+    if (this.income.equals(newIncome)) {
+        return;
+    }
+    this.income = newIncome;
+}
+
 
     /** 設定分類比例（唯一入口） */
     public void configureAllocations(
@@ -201,3 +206,15 @@ public void attachTransactionImage(
     return income;
 }
 }
+
+
+
+
+
+
+
+
+
+
+
+

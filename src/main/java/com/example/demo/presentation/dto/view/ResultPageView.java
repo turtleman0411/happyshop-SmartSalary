@@ -3,113 +3,82 @@ package com.example.demo.presentation.dto.view;
 import java.time.YearMonth;
 import java.util.List;
 
-/**
- * 📊 Result Page Read Model
- *
- * 世界觀：
- * - Month：帳務事實（薪水 / 已花 / 剩餘）→ 不受治理邏輯影響
- * - Category：預算治理顯示 → 會因超額而被動態調整
- */
 public class ResultPageView {
 
     // =========================
     // 基本識別
     // =========================
     public YearMonth month;
-    public int salary; // 本月薪水快照（100%）
+    public int salary;
 
     // =========================
-    // ⭐ Month（全月帳務事實｜聖域）
+    // Month（全月帳務事實）
     // =========================
-    public int monthlyBudgetAmount;    // = salary
-    public int monthlySpentAmount;     // 全月所有消費（含歷史）
-    public int monthlyRemainingAmount; // salary - monthlySpent
-    public int usagePercent;           // floor(monthlySpent * 100 / salary)
+    public int monthlyBudgetAmount;
+    public int monthlySpentAmount;
+    public int monthlyRemainingAmount;
+    public int usagePercent;
 
-    /**
-     * 重置分配時可用的帳務基數（僅供分配操作使用）
-     * ⚠️ 不等於分類可用總額
-     */
+    // 重置分配時使用（非畫面總和）
     public int reallocatableAmount;
-
     public String monthlyRuleNote;
 
-    // ========================
-    // ⚠️ 超額池（全月唯一限制）
-    // ========================
-    public int overLimitAmount;         // salary * 20%
-    public int overSpentAmount;         // max(0, monthlySpent - salary)
-    public int overRemainingAmount;     // max(0, overLimit - overSpent)
-    public int overPoolUsagePercent;    // floor(overSpent * 100 / overLimit)
+    // =========================
+    // Over Pool（全月限制）
+    // =========================
+    public int overLimitAmount;
+    public int overSpentAmount;
+    public int overRemainingAmount;
+    public int overPoolUsagePercent;
     public boolean hasOverSpent;
-
     public String overPoolRuleNote;
 
     // =========================
-    // 分類結果（治理顯示層）
+    // Category（治理顯示）
     // =========================
     public List<CategorySummaryView> categorySummaryList;
 
-    /**
-     * 是否至少有一個分類參與本次分配
-     */
     public boolean hasAllocation() {
         return categorySummaryList != null &&
                categorySummaryList.stream().anyMatch(CategorySummaryView::isAllocated);
     }
 
-    /* =================================================
-     * 📦 CategorySummaryView
-     *
-     * 設計語意：
-     * - baseBudget：結構性預算（固定，不變）
-     * - effectiveBudget：治理後可用上限（只影響字卡）
-     * - 超額只影響「未超額的分類」
-     * ================================================= */
+    // =================================================
+    // CategorySummaryView（小物件，唯一顯示真相）
+    // =================================================
     public static class CategorySummaryView {
 
-        // ========================
         // 識別
-        // ========================
         private final String categoryName;
         private final String categoryDisplayName;
 
-        // 是否有參與本次分配
+        // 狀態（唯一真相）
+        private final CategoryUsageState state;
+
+        // 是否有分配
         private final boolean allocated;
 
-        // ========================
-        // 🧱 原始結構預算（固定）
-        // ========================
+        // 結構預算（固定）
         private final int baseCategoryBudgetAmount;
 
-        // ========================
-        // 🔒 治理後制度預算（字卡顯示用）
-        // ========================
+        // 治理後預算（顯示用）
         private final int effectiveCategoryBudgetAmount;
 
-        // 因他分類超額而被平均扣減的金額
+        // 被扣減金額
         private final int penaltyAmount;
 
-        // ========================
-        // 📉 消費狀態
-        // ========================
+        // 消費
         private final int categoryCurrentSpent;
 
-        // ========================
-        // 📊 即時結果（字卡）
-        // ========================
+        // 即時結果
         private final int availableAmount;
         private final int categoryOverSpentAmount;
 
-        // ========================
-        // 📈 百分比
-        // ========================
+        // 百分比
         private final int categoryUsagePercent;
         private final int displayUsagePercent;
 
-        // ========================
-        // 🚨 狀態標記
-        // ========================
+        // 狀態標記
         private final boolean penalizedByOthers;
         private final boolean selfOverSpent;
 
@@ -126,7 +95,8 @@ public class ResultPageView {
                 int categoryUsagePercent,
                 int displayUsagePercent,
                 boolean penalizedByOthers,
-                boolean selfOverSpent
+                boolean selfOverSpent,
+                CategoryUsageState state
         ) {
             this.categoryName = categoryName;
             this.categoryDisplayName = categoryDisplayName;
@@ -141,62 +111,60 @@ public class ResultPageView {
             this.displayUsagePercent = displayUsagePercent;
             this.penalizedByOthers = penalizedByOthers;
             this.selfOverSpent = selfOverSpent;
+            this.state = state;
         }
 
-        // ========================
+        // =========================
         // Getters（Thymeleaf）
-        // ========================
+        // =========================
+        public String getCategoryName() { return categoryName; }
+        public String getCategoryDisplayName() { return categoryDisplayName; }
+        public boolean isAllocated() { return allocated; }
+        public CategoryUsageState getState() { return state; }
 
-        public String getCategoryName() {
-            return categoryName;
-        }
+        public int getBaseCategoryBudgetAmount() { return baseCategoryBudgetAmount; }
+        public int getEffectiveCategoryBudgetAmount() { return effectiveCategoryBudgetAmount; }
+        public int getPenaltyAmount() { return penaltyAmount; }
+        public int getCategoryCurrentSpent() { return categoryCurrentSpent; }
+        public int getAvailableAmount() { return availableAmount; }
+        public int getCategoryOverSpentAmount() { return categoryOverSpentAmount; }
+        public int getCategoryUsagePercent() { return categoryUsagePercent; }
+        public int getDisplayUsagePercent() { return displayUsagePercent; }
+        public boolean isPenalizedByOthers() { return penalizedByOthers; }
+        public boolean isSelfOverSpent() { return selfOverSpent; }
 
-        public String getCategoryDisplayName() {
-            return categoryDisplayName;
-        }
-
-        public boolean isAllocated() {
-            return allocated;
-        }
-
-        public int getBaseCategoryBudgetAmount() {
-            return baseCategoryBudgetAmount;
-        }
-
-        public int getEffectiveCategoryBudgetAmount() {
+        // =========================
+        // UI Helper（只看 state）
+        // =========================
+        public int getDisplayBudgetAmount() {
             return effectiveCategoryBudgetAmount;
         }
 
-        public int getPenaltyAmount() {
-            return penaltyAmount;
+        public String getStateNoteText() {
+            return switch (state) {
+                case GLOBAL_OVERFLOW -> "🚨 全月已超過上限，暫停新增消費";
+                case SELF_OVERSPENT -> "🚨 本分類已超額";
+                case NO_AVAILABLE_DUE_TO_POOL -> "⚠️ 因其他分類超額，本分類預算已調整，已無可用";
+                case NORMAL -> (penalizedByOthers ? "⚠️ 因其他分類超額，本分類預算已調整" : "");
+            };
         }
 
-        public int getCategoryCurrentSpent() {
-            return categoryCurrentSpent;
+        public boolean hasStateNote() {
+            String t = getStateNoteText();
+            return t != null && !t.isBlank();
         }
 
-        public int getAvailableAmount() {
-            return availableAmount;
+        public String getProgressBarBgClass() {
+            if (state == CategoryUsageState.GLOBAL_OVERFLOW) return "bg-danger";
+            if (state == CategoryUsageState.SELF_OVERSPENT) return "bg-danger";
+            if (state == CategoryUsageState.NO_AVAILABLE_DUE_TO_POOL) return "bg-secondary";
+            if (displayUsagePercent >= 100) return "bg-danger";
+            if (displayUsagePercent >= 80) return "bg-warning";
+            return "bg-success";
         }
 
-        public int getCategoryOverSpentAmount() {
-            return categoryOverSpentAmount;
-        }
-
-        public int getCategoryUsagePercent() {
-            return categoryUsagePercent;
-        }
-
-        public int getDisplayUsagePercent() {
-            return displayUsagePercent;
-        }
-
-        public boolean isPenalizedByOthers() {
-            return penalizedByOthers;
-        }
-
-        public boolean isSelfOverSpent() {
-            return selfOverSpent;
+        public boolean isClickableForAddTransaction() {
+            return allocated && state != CategoryUsageState.GLOBAL_OVERFLOW;
         }
     }
 }

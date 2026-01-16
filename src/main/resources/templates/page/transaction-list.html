@@ -24,17 +24,49 @@
 
 <!-- ===== 標題 ===== -->
 <div class="mb-4 d-flex justify-content-between align-items-center">
-    <div class="text-center flex-fill">
-        <h2 class="fw-bold">📒 本月交易紀錄</h2>
-        <p class="text-muted mt-2"
-           th:text="|${view.month} 的交易清單|"></p>
+
+    <!-- 標題 -->
+    <div class="flex-fill">
+        <h2 class="fw-bold mb-1">📒 本月交易紀錄</h2>
+        <div class="small text-body-secondary"
+             th:text="|${view.month} 的交易清單|">
+        </div>
     </div>
 
-    <a class="btn btn-outline-secondary ms-3"
-       th:href="@{/happyshop/result(month=${view.month})}">
-        ← 返回結果頁
-    </a>
+    <!-- 操作區 -->
+    <div class="d-flex align-items-center gap-2">
+
+        <!-- 🔽 分類下拉（自動送出） -->
+        <form method="get"
+              th:action="@{/happyshop/transactions}"
+              class="m-0">
+
+            <input type="hidden" name="month"
+                   th:value="${view.month}" />
+
+            <select name="category"
+                    class="form-select form-select-sm rounded-4"
+                    style="min-width: 140px;"
+                    onchange="this.form.submit()">
+
+                <option value="">全部分類</option>
+
+                <option th:each="opt : ${view.categoryOptions}"
+                        th:value="${opt.categoryName}"
+                        th:text="${opt.categoryDisplayName}"
+                        th:selected="${opt.categoryName == view.selectedCategory}">
+                </option>
+            </select>
+        </form>
+
+        <!-- 返回 -->
+        <a class="btn btn-outline-secondary btn-sm rounded-4"
+           th:href="@{/happyshop/result(month=${view.month})}">
+            ← 返回
+        </a>
+    </div>
 </div>
+
 
 <!-- ================= 桌機 Table ================= -->
 <div class="d-none d-md-block table-responsive">

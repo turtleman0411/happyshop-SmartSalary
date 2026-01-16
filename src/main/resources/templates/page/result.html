@@ -38,7 +38,33 @@
 
 <!-- ================= 結果頁 ================= -->
 <div th:if="${view.hasAllocation()}">
+<!-- ==================================================
+     🔽 操作列（行為專區，不再擠壓卡片）
+================================================== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
 
+  <!-- 主行為 -->
+  <div>
+    <div class="fw-semibold">📒 交易紀錄</div>
+    <div class="small text-muted">
+      查看本月所有消費明細與編輯紀錄
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary btn-sm px-4"
+       th:href="@{/happyshop/transactions(month=${view.month})}">
+      查看交易
+    </a>
+
+    <button type="button"
+            class="btn btn-outline-secondary btn-sm px-3"
+            data-bs-toggle="modal"
+            data-bs-target="#resetAllocationModal">
+      🔄 重新分配
+    </button>
+  </div>
+</div>
 <!-- ==================================================
      ⭐ 狀態主卡片（不含任何行為按鈕）
 ================================================== -->
@@ -110,34 +136,9 @@
 
 </div>
 
-<!-- ==================================================
-     🔽 操作列（行為專區，不再擠壓卡片）
-================================================== -->
-<div class="d-flex justify-content-between align-items-center mb-4">
 
-  <!-- 主行為 -->
-  <div>
-    <div class="fw-semibold">📒 交易紀錄</div>
-    <div class="small text-muted">
-      查看本月所有消費明細與編輯紀錄
-    </div>
-  </div>
 
-  <div class="d-flex gap-2">
-    <a class="btn btn-outline-primary btn-sm px-4"
-       th:href="@{/happyshop/transactions(month=${view.month})}">
-      查看交易
-    </a>
-
-    <button type="button"
-            class="btn btn-outline-secondary btn-sm px-3"
-            data-bs-toggle="modal"
-            data-bs-target="#resetAllocationModal">
-      🔄 重新分配
-    </button>
-  </div>
-</div>
-
+<!-- ================= Category Cards ================= -->
 <!-- ================= Category Cards ================= -->
 <div class="row">
   <div class="col-md-6 mb-3"
@@ -150,56 +151,62 @@
          th:data-category-display="${cat.categoryDisplayName}"
          th:data-budget="${cat.effectiveCategoryBudgetAmount}"
          th:data-spent="${cat.categoryCurrentSpent}"
-         th:data-bs-toggle="${cat.allocated} ? 'modal' : null"
-         th:data-bs-target="${cat.allocated} ? '#addModal' : null">
+         th:data-bs-toggle="${cat.clickableForAddTransaction} ? 'modal' : null"
+         th:data-bs-target="${cat.clickableForAddTransaction} ? '#addModal' : null">
 
-      <!-- 原分類卡內容（完全未刪） -->
-
-            <!-- ===== Header ===== -->
-      <div class="d-flex justify-content-between mb-1">
+      <!-- ===== Header ===== -->
+      <div class="d-flex justify-content-between align-items-start mb-1">
         <span class="fw-bold fs-5"
               th:text="${cat.categoryDisplayName}"></span>
 
-        <!-- ✅ 有分配 -->
         <span class="small text-muted"
               th:if="${cat.allocated}">
           <span th:text="${cat.categoryCurrentSpent}"></span>
           /
           <span th:text="${cat.baseCategoryBudgetAmount}"></span>
-          <div class="small text-warning mt-1"
-                th:if="${cat.penalizedByOthers}">
-                  ⚠️ 因其他分類超額，本分類預算已調整
-          </div>
-
         </span>
 
-        <!-- ⚠️ 未分配 -->
         <span class="small text-muted"
               th:if="${!cat.allocated}">
           尚未分配
         </span>
       </div>
 
-      <!-- ===== 有分配：原本完整顯示 ===== -->
-      <div th:if="${cat.allocated}">
+      <!-- ===== 狀態提示（只吃 state） ===== -->
+      <div class="small mt-1"
+           th:if="${cat.hasStateNote()}"
+           th:classappend="
+             ${cat.state.name() == 'SELF_OVERSPENT'} ? 'text-danger' :
+             (${cat.state.name() == 'GLOBAL_OVERFLOW'} ? 'text-danger' : 'text-warning')"
+           th:text="${cat.stateNoteText}">
+      </div>
+
+      <!-- ===== 有分配 ===== -->
+      <div th:if="${cat.allocated}" class="mt-2">
 
         <div class="small mb-1">
-          剩餘：
+          <span class="text-muted">剩餘：</span>
           <strong th:text="${cat.availableAmount}"></strong>
-          <span class="ms-2 text-danger"
-                th:if="${cat.categoryOverSpentAmount > 0}">
-            超額：
-            <strong th:text="${cat.categoryOverSpentAmount}"></strong>
-          </span>
         </div>
+
+        <div class="small text-danger mb-1"
+     th:if="${cat.state.name() != 'NORMAL'}">
+
+  <span th:if="${cat.categoryOverSpentAmount > 0}">
+    已超額：
+    <strong th:text="${cat.categoryOverSpentAmount}"></strong>
+    （<span th:text="${cat.categoryUsagePercent}"></span>%）
+  </span>
+
+  <span th:if="${cat.categoryOverSpentAmount == 0}">
+    本分類可用額已被其他分類超額耗盡
+  </span>
+
+</div>
 
         <div class="progress" style="height:12px;">
           <div class="progress-bar"
-               th:classappend="${cat.displayUsagePercent >= 100}
-                 ? 'bg-danger'
-                 : (${cat.displayUsagePercent >= 80}
-                     ? 'bg-warning'
-                     : 'bg-success')"
+               th:classappend="${cat.progressBarBgClass}"
                th:style="'width:' + ${cat.displayUsagePercent} + '%'">
           </div>
         </div>
@@ -211,29 +218,23 @@
       </div>
 
       <!-- ===== 未分配但已消費 ===== -->
-      <div th:if="${!cat.allocated}"
-           class="mt-2">
-
+      <div th:if="${!cat.allocated}" class="mt-2">
         <div class="small text-muted mb-1">
           ⚠️ 本分類尚未分配預算
         </div>
-
         <div class="fw-bold">
           已發生消費：
           <span th:text="${cat.categoryCurrentSpent}"></span>
         </div>
-
         <div class="small text-muted mt-1">
           請重新分配預算以追蹤此分類狀態
         </div>
       </div>
 
-
     </div>
   </div>
 </div>
 
-</div>
 
 <!-- ==================================================
      Modals / Scripts（完全原封不動）

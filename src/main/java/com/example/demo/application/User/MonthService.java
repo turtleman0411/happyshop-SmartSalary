@@ -54,4 +54,22 @@ import com.example.demo.infrastructure.repository.BudgetMonthRepository;
         return budgetMonth.getId();
         }
 
+
+        BudgetMonthId updateIncome(
+        UserId userId,
+        YearMonth month,
+        IncomeAmount income
+) {
+    BudgetMonth budgetMonth =
+        repository.findByUserIdAndMonth(userId, month)
+            .orElseThrow(() -> new IllegalStateException("BudgetMonth 不存在"));
+
+    budgetMonth.updateIncome(income);
+
+    repository.save(budgetMonth);
+
+    return budgetMonth.getId();
+}
+
+
 }

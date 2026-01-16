@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.model.CategoryType;
 import com.example.demo.domain.value.BudgetMonthId;
+import com.example.demo.domain.value.IncomeAmount;
 import com.example.demo.domain.value.UserId;
 
 
@@ -59,11 +60,16 @@ public class UserFlow {
     ) {
         // 目前最小可用版本：
         // 👉 先只負責「流程存在」，資料來源之後再抽 DB / Domain
-        // TODO：之後改為 BudgetMonth / User 設定薪水
+
         System.out.println("💰 update income");
         System.out.println("userId = " + userId);
         System.out.println("month  = " + month);
         System.out.println("income = " + income);
+        monthService.updateIncome(
+        userId,
+        month,
+        IncomeAmount.of(income)
+    );
     }
 
     
