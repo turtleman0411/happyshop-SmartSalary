@@ -1,4 +1,4 @@
-package com.example.demo.domain.model;
+package com.example.demo.application.security;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "remember_me_token")
-public class RememberMeToken {
+ class RememberMeToken {
 
     @Id
     @Column(name = "token_hash", length = 64, nullable = false)
@@ -21,7 +21,7 @@ public class RememberMeToken {
     @Column(name = "expire_at", nullable = false)
     private LocalDateTime expireAt;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     protected RememberMeToken() {}

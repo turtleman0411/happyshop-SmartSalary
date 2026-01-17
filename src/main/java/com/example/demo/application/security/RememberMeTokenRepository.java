@@ -1,11 +1,9 @@
-package com.example.demo.infrastructure.repository;
+package com.example.demo.application.security;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.demo.domain.model.RememberMeToken;
 
 public interface RememberMeTokenRepository extends JpaRepository<RememberMeToken, String> {
 

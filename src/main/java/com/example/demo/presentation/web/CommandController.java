@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.application.BudgetMonth.BudgetMonthResetFlow;
 import com.example.demo.application.Transaction.TransactionFlow;
 import com.example.demo.application.User.UserFlow;
+import com.example.demo.application.security.RememberMeService;
 import com.example.demo.domain.value.TransactionId;
 import com.example.demo.domain.value.UserId;
 import com.example.demo.presentation.dto.request.AddTransactionRequest;
@@ -26,6 +27,9 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class CommandController {
+
+    private static final String REMEMBER_ME_COOKIE = "REMEMBER_ME";
+    private static final int REMEMBER_ME_30_DAYS = 60 * 60 * 24 * 30;
     private final UserFlow userFlow;
     private final TransactionFlow transactionFlow;
     private final BudgetMonthResetFlow budgetMonthResetFlow;
@@ -44,19 +48,36 @@ public class CommandController {
         redirect.addFlashAttribute("message","註冊成功");
         return "redirect:/happyshop/login";
     }
-
-    @PostMapping("/login")
-    public String login(
+@PostMapping("/login")
+public String login(
         @ModelAttribute LoginForm form,
-        HttpSession session
-    ) {
-    UserId userId =
-            userFlow.login(form.getName(), form.getPassword());
+        HttpSession session,
+        HttpServletResponse response
+) {
+    UserId userId = userFlow.login(
+            form.getUsername(),
+            form.getPassword()
+    );
 
+    // ✅ 1️⃣ session 只撐「這次導流」
     session.setAttribute("loginUserId", userId);
 
-    return "redirect:/happyshop/result";
+    // ✅ 2️⃣ 只有勾選「記住我」才發 remember-me
+    if (form.isRememberMe()) {
+        String token = userFlow.issueRememberMeToken(userId, 30);
+
+        Cookie cookie = new Cookie(RememberMeService.COOKIE_NAME, token);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        response.addCookie(cookie);
     }
+
+    return "redirect:/happyshop/result";
+}
+
+
+
 
     @PostMapping("/select")
     public String submitSelect(
@@ -97,14 +118,9 @@ public class CommandController {
     @PostMapping("happyshop/month/reset")
     public String resetMonth(
         @SessionAttribute(value = "loginUserId", required = false) UserId userId,
-        HttpSession session,
         @RequestParam String month
     ) {
 
-        if (userId == null) {
-            userId = UserId.newId();
-            session.setAttribute("loginUserId", userId);
-        }
         budgetMonthResetFlow.reset(userId, month);
         return "redirect:/happyshop/select?month=" + month;
     }
@@ -137,21 +153,25 @@ public class CommandController {
         return "redirect:/happyshop/result?month=" + month;
     }
 
-    @PostMapping("/user/logout")
-    public String logout(HttpSession session, HttpServletResponse response) {
+@PostMapping("/user/logout")
+public String logout(HttpSession session, HttpServletResponse response) {
 
-        // 1) 清 session
-        session.invalidate();
+    // 清 session
+    session.invalidate();
 
-        // 2) 清 remember-me cookie（名稱要跟你 interceptor 用的一樣）
-        Cookie cookie = new Cookie("REMEMBER_ME", "");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+    // 清 remember-me cookie
+    Cookie cookie = new Cookie(RememberMeService.COOKIE_NAME, "");
+    cookie.setPath("/");
+    cookie.setMaxAge(0);
+    cookie.setHttpOnly(true);
+    response.addCookie(cookie);
 
-        return "redirect:/happyshop/home";
-    }
+    // ✅ 關鍵：告訴下一次 request「我剛登出」
+    response.addHeader("X-LOGOUT", "1");
+
+    return "redirect:/happyshop/home";
+}
+
 
 
 }

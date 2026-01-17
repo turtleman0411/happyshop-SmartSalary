@@ -13,7 +13,7 @@
     <div class="hs-navbar-actions">
 
       <!-- 未登入 -->
-      <div th:if="${session.loginUserId == null}"
+      <div th:if="${loginUserId == null}"
            class="d-flex align-items-center gap-2">
         <a th:href="@{/happyshop/login}"
            class="hs-nav-btn hs-nav-btn-ghost">登入</a>
@@ -22,10 +22,10 @@
       </div>
 
       <!-- 已登入 -->
-      <div th:if="${session.loginUserId != null}"
+      <div th:if="${loginUserId != null}"
            class="d-flex align-items-center gap-2">
 
-        <span class="badge hs-nav-badge">
+        <span class="hs-nav-btn hs-nav-btn-ghost hs-nav-badge">
           已登入
         </span>
 

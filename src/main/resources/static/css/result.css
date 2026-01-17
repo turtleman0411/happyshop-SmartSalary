@@ -34,7 +34,7 @@ body.result{
 
 /* ✅ Home 同款背景渲染（但更柔） */
 body.result .hs-result-bg{
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   padding: 18px 0 60px;
 
   background:

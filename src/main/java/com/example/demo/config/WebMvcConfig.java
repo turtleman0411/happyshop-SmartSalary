@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.demo.presentation.web.RememberMeInterceptor;
+import com.example.demo.application.security.RememberMeInterceptor;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

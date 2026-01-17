@@ -19,6 +19,8 @@ import com.example.demo.domain.value.UserId;
 import com.example.demo.presentation.dto.request.LoginForm;
 import com.example.demo.presentation.dto.request.RegisterForm;
 import com.example.demo.presentation.dto.view.SelectPageView;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 
@@ -43,17 +45,18 @@ public class PageController {
     @GetMapping("/home")
     public String home(
             @RequestParam(required = false) YearMonth month,
-            @SessionAttribute(value = "loginUserId", required = false) UserId userId
+            HttpServletRequest request
     ) {
-        // ✅ 若 remember-me 已補上 session（或本來就有登入）
+        UserId userId = (UserId) request.getAttribute("loginUserId");
+
         if (userId != null) {
             YearMonth targetMonth = (month != null) ? month : YearMonth.now();
             return "redirect:/happyshop/result?month=" + targetMonth;
         }
 
-        // ❌ 沒登入才顯示首頁
         return "page/home";
     }
+
 
     @GetMapping("/login")
     public String login(Model model){
@@ -74,11 +77,7 @@ public class PageController {
             HttpSession session,
             Model model
     ) {
-        if (userId == null) {
-        // 臨時 demo / debug
-        userId = UserId.newId();
-        session.setAttribute("loginUserId", userId);
-    }
+
         YearMonth targetMonth =
             (month != null) ? month : YearMonth.now();
 
@@ -95,14 +94,20 @@ public class PageController {
 @GetMapping("/result")
 public String result(
         @RequestParam(required = false) YearMonth month,
-        @SessionAttribute(value = "loginUserId", required = false) UserId userId,
+        HttpServletRequest request,
         HttpSession session,
         Model model
 ) {
+    // 🔑 只從 request 取登入者（Interceptor 已處理 session / cookie）
+    UserId userId = (UserId) request.getAttribute("loginUserId");
+
+    // 🚧 登入邊界
     if (userId == null) {
-        userId = UserId.newId(); // demo / debug
-        session.setAttribute("loginUserId", userId);
+        return "redirect:/happyshop/home";
     }
+
+    // 🔥 關鍵：用完就清，讓下次不能再靠 session
+    session.removeAttribute("loginUserId");
 
     YearMonth targetMonth =
             (month != null) ? month : YearMonth.now();
@@ -112,9 +117,10 @@ public String result(
 
     model.addAttribute("view", result.view());
     model.addAttribute("themeClass", result.themeClass());
-
+    model.addAttribute("loginUserId", userId);
     return "page/result";
 }
+
 
 
 @GetMapping("/transactions")

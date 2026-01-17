@@ -10,9 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.model.RememberMeToken;
 import com.example.demo.domain.value.UserId;
-import com.example.demo.infrastructure.repository.RememberMeTokenRepository;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
