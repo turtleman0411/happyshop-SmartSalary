@@ -380,3 +380,9 @@ body.home .hs-btn{
   -moz-osx-font-smoothing: auto;
   text-rendering: optimizeLegibility;
 }
+@media (max-width: 767px){
+  body.home .hs-btn{
+    min-height: 56px;   /* iOS 大拇指區 */
+    font-size: 1.05rem;
+  }
+}
