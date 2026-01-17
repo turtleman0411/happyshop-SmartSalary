@@ -255,10 +255,7 @@ body.home .hs-btn-ghost{
   }
   body.home .hs-btn{ width: 100%; }
 }
-body.home .hs-hero-card .hs-btn{
-  width: 240px;          /* ✅ 關鍵 */
-  text-align: center;
-}
+
 /* ======================================================
    Metrics
 ====================================================== */
@@ -384,5 +381,12 @@ body.home .hs-btn{
   body.home .hs-btn{
     min-height: 56px;   /* iOS 大拇指區 */
     font-size: 1.05rem;
+  }
+} 
+@media (max-width: 767px){
+  body.home .hs-hero-wrap{
+    min-height: auto;
+    padding-top: 24px;
+    padding-bottom: 48px;
   }
 }
