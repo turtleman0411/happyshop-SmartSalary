@@ -191,18 +191,39 @@ body.home .hs-note{
 /* ======================================================
    CTA Buttons — mobile-friendly big tap targets
 ====================================================== */
+/* =========================
+   Button Base — 清楚、穩定
+========================= */
 body.home .hs-btn{
   min-height: 52px;
-  padding: 14px 18px;
+  padding: 14px 22px;
+
   font-size: 1.05rem;
+  font-weight: 300;        /* 🔥 關鍵：從 800 → 600 */
+  line-height: 1.25;
+  letter-spacing: 0.1px;  /* 中文不要 0.2 以上 */
+
   border-radius: 16px;
-  font-weight: 900;
-  letter-spacing: .2px;
   border: 1px solid transparent;
-  box-shadow: none !important;          /* ✅避免藍色光暈 */
-  transition: transform .12s ease, filter .12s ease, background .12s ease;
-  -webkit-tap-highlight-color: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition:
+    background .12s ease,
+    border-color .12s ease,
+    transform .08s ease;
 }
+
+
+
 
 body.home .hs-btn:active{
   transform: translateY(1px) scale(.99);
@@ -229,11 +250,15 @@ body.home .hs-btn-ghost{
   body.home .hs-hero-card .d-flex.justify-content-center{
     flex-direction: column !important;
     align-items: stretch !important;
+    max-width: 520px;   /* 控制整體寬度 */
     gap: 12px !important;
   }
   body.home .hs-btn{ width: 100%; }
 }
-
+body.home .hs-hero-card .hs-btn{
+  width: 240px;          /* ✅ 關鍵 */
+  text-align: center;
+}
 /* ======================================================
    Metrics
 ====================================================== */
@@ -339,4 +364,19 @@ body.home .hs-footer{
   color:#86868b;
   border-top: 1px solid rgba(0,0,0,.06);
   background: #f5f5f7;
+}
+/* ===============================
+   CTA 按鈕：移除所有底線狀態
+=============================== */
+body.home .hs-btn,
+body.home .hs-btn:hover,
+body.home .hs-btn:focus,
+body.home .hs-btn:active,
+body.home .hs-btn:visited{
+  text-decoration: none !important;
+}
+body.home .hs-btn{
+  -webkit-font-smoothing: subpixel-antialiased; /* 🔥 銳利 */
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
 }

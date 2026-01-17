@@ -95,17 +95,36 @@ body.auth .auth-input::placeholder{
   color: rgba(29,29,31,.45);
 }
 
-/* submit btn */
+/* =========================
+   Auth Primary Button
+   比照 Home CTA 清楚度
+========================= */
 body.auth .auth-submit{
   min-height: 52px;
   border-radius: 16px;
-  font-weight: 900;
-  letter-spacing: .2px;
+
+  /* ✅ 關鍵：中文字最佳區間 */
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  letter-spacing: 0.1px;
+
   background: var(--blue) !important;
+  color: #fff !important;
   border: 1px solid rgba(0,0,0,.06) !important;
-  box-shadow: 0 12px 22px rgba(0,0,0,.12) !important; /* ✅中性陰影，不發光 */
-  color:#fff !important;
+
+  /* ✅ 清楚、不發光 */
+  box-shadow: 0 10px 18px rgba(0,0,0,.12) !important;
+
+  /* ✅ 字體銳利化（重點） */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  text-decoration: none;   /* ✅ 保證沒有底線 */
 }
+
+
 
 body.auth .auth-submit:active{
   transform: translateY(1px) scale(.99);
