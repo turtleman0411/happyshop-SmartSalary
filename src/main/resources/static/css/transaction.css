@@ -1,42 +1,83 @@
 /* ======================================================
-   transaction.css
+   transaction.css — RESULT / HOME UNIFIED WORLD
    Scope: body.transaction only
 ====================================================== */
 
 body.transaction{
+  /* ===== Color tokens (與 result.css 一致) ===== */
   --bg: #f5f5f7;
   --panel: rgba(255,255,255,.94);
   --panel-border: rgba(0,0,0,.08);
-  --text: #111;
+  --text: #1d1d1f;
   --muted: #6e6e73;
 
-  background: var(--bg);
-  color: var(--text);
+  --shadow: 0 18px 46px rgba(0,0,0,.10);
+  --shadow-soft: 0 10px 26px rgba(0,0,0,.08);
 
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+
+  /* ✅ Typography（和 Result 同級） */
   font-family:
     -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", "PingFang TC",
-    "Noto Sans TC", "Microsoft JhengHei",
+    "SF Pro Text", "SF Pro Display",
+    "PingFang TC", "Noto Sans TC",
+    "Microsoft JhengHei",
     system-ui, sans-serif;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
 }
 
-/* =========================
-   Page container
-========================= */
-body.transaction .page-card{
+/* ======================================================
+   🌈 Background Layer（關鍵）
+====================================================== */
+
+body.transaction .hs-transaction-bg{
+  min-height: 100vh;
+  padding: 18px 0 60px;
+
+  background:
+    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.16), rgba(245,245,247,0) 60%),
+    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), rgba(245,245,247,0) 60%),
+    linear-gradient(180deg, #eaf2ff 0%, #f5f5f7 48%, #f5f5f7 100%);
+}
+
+/* 主內容寬度（不要影響 navbar / month-bar） */
+body.transaction .hs-main-container{
   max-width: 1080px;
   margin: 0 auto;
+  padding: 0 16px;
 }
 
-/* =========================
-   Desktop table polish
-========================= */
+/* ======================================================
+   Panels / Cards（與 Result 共用語言）
+====================================================== */
+
+body.transaction .hs-panel{
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 26px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.transaction .hs-pad{ padding: 16px; }
+@media (min-width: 768px){
+  body.transaction .hs-pad{ padding: 18px; }
+}
+
+/* ======================================================
+   Desktop Table（被背景包起來）
+====================================================== */
+
 body.transaction table{
   font-size: .95rem;
+  table-layout: fixed; /* 🔥 防圖片撐爆 */
 }
 
 body.transaction thead th{
@@ -54,125 +95,99 @@ body.transaction tbody tr:hover{
   background: rgba(0,0,0,.02);
 }
 
-/* =========================
-   Mobile card polish
-========================= */
-body.transaction .card{
-  background: var(--panel);
-  border-radius: 20px;
-  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+/* 桌機圖片安全限制 */
+@media (min-width: 768px){
+  body.transaction .transaction-thumb{
+    width: 64px;
+    height: 64px;
+    max-width: 64px;
+    max-height: 64px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    margin: 0 auto;
+  }
 }
 
-body.transaction .transaction-thumb{
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-/* 右側固定縮圖槽 */
-body.transaction .thumb-slot-right{
-  width: 56px;
-  height: 56px;
-  flex: 0 0 auto;
-  border-radius: 12px;
-  background: rgba(0,0,0,.04);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-/* =========================
-   Buttons
-========================= */
-body.transaction .btn{
-  border-radius: 14px;
-  font-weight: 600;
-}
-
-body.transaction .btn-outline-danger{
-  --bs-btn-color: #ff3b30;
-  --bs-btn-border-color: rgba(255,59,48,.3);
-  --bs-btn-hover-bg: rgba(255,59,48,.08);
-  --bs-btn-hover-border-color: rgba(255,59,48,.5);
-}
 /* ======================================================
-   Transaction — Mobile iOS Style
+   📱 Mobile Card（和 Result 卡片一致）
 ====================================================== */
 
-/* 手機卡片整體 */
-body.transaction .d-md-none .card{
-  background: rgba(255,255,255,.96);
+body.transaction .d-md-none .hs-panel{
   border-radius: 22px;
-  box-shadow:
-    0 1px 0 rgba(0,0,0,.04),
-    0 12px 30px rgba(0,0,0,.08);
-  padding: 16px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
 }
 
-/* 上半部（文字 + 金額） */
-body.transaction .d-md-none .fw-bold{
-  font-weight: 700;
+body.transaction .d-md-none .hs-panel + .hs-panel{
+  margin-top: 14px;
+}
+
+/* 文字階層 */
+body.transaction .fw-bold{
+  font-weight: 800;
   letter-spacing: -0.2px;
 }
 
-/* 金額：Wallet 風（最重要） */
-body.transaction .d-md-none .fw-bold.ms-2{
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1d1d1f;
-}
-
-/* 日期 */
-body.transaction .d-md-none .text-body-secondary{
+body.transaction .text-body-secondary{
+  color: var(--muted);
   font-size: .78rem;
-  color: #8e8e93;
 }
 
-/* 備註文字 */
-body.transaction .d-md-none .text-body{
+/* 備註最多兩行 */
+body.transaction .tx-note{
   font-size: .92rem;
   line-height: 1.55;
   color: #3a3a3c;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* 右側縮圖槽（像 Wallet） */
+/* ======================================================
+   Thumbnail Slot（Wallet / Result 同款）
+====================================================== */
+
 body.transaction .thumb-slot-right{
   width: 56px;
   height: 56px;
   border-radius: 14px;
   background: rgba(0,0,0,.04);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
   flex-shrink: 0;
+  overflow:hidden;
 }
 
-/* 圖片本體 */
-body.transaction .transaction-thumb{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 14px;
-}
-/* =========================
-   iOS-style delete action
-========================= */
+/* ======================================================
+   Delete Button（iOS inline）
+====================================================== */
+
 body.transaction .btn-outline-danger{
   border: none;
   background: transparent;
   color: #ff3b30;
+
   font-size: .9rem;
+  font-weight: 600;
   padding: 6px 12px;
+  border-radius: 999px;
 }
 
 body.transaction .btn-outline-danger:hover{
   background: rgba(255,59,48,.08);
 }
-/* 卡片之間距離（像 Settings） */
-body.transaction .d-md-none .card + .card{
-  margin-top: 12px;
-}
 
-/* 卡片內行距微調 */
-body.transaction .d-md-none .card .mt-2{
-  margin-top: 8px !important;
+/* ======================================================
+   Mobile Interaction Polish
+====================================================== */
+
+@media (hover: none){
+  body.transaction .hs-panel:active{
+    transform: scale(.985);
+    filter: brightness(.98);
+  }
 }
