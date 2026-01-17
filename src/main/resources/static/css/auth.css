@@ -1,0 +1,144 @@
+/* ======================================================
+   auth.css (LOGIN + REGISTER shared) — NO COLLISION
+   Scope: body.auth
+   - Match Home theme (light glass)
+   - Big tap targets
+   - NO focus ring / glow
+====================================================== */
+
+body.auth{
+  --bg: #f5f5f7;
+  --panel: rgba(255,255,255,.92);
+  --panel-border: rgba(0,0,0,.08);
+  --text: #1d1d1f;
+  --muted: #6e6e73;
+
+  --input-bg: rgba(245,245,247,.85);
+  --input-border: rgba(0,0,0,.12);
+
+  --blue: #0071e3;   /* same family as home */
+  --red:  #ff3b30;
+
+  background:
+    radial-gradient(900px 520px at 18% 10%, rgba(0,113,227,.16), rgba(245,245,247,0) 60%),
+    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), rgba(245,245,247,0) 60%),
+    linear-gradient(180deg, #eef4ff 0%, #f5f5f7 55%, #f5f5f7 100%) !important;
+
+  color: var(--text) !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ✅ 完全不要 focus ring / glow（只限 auth 頁） */
+body.auth a:focus,
+body.auth a:focus-visible,
+body.auth button:focus,
+body.auth button:focus-visible,
+body.auth input:focus,
+body.auth input:focus-visible,
+body.auth .btn:focus,
+body.auth .btn:focus-visible{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 置中容器 */
+body.auth .auth-wrap{
+  min-height: 100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 24px 14px;
+}
+
+/* 卡片（亮色玻璃） */
+body.auth .auth-card{
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: 0 18px 50px rgba(0,0,0,.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 22px;
+}
+
+@media (min-width: 768px){
+  body.auth .auth-card{ padding: 26px; }
+}
+
+/* 標題 */
+body.auth .auth-title{
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  margin: 0 0 14px 0;
+}
+
+/* label */
+body.auth .auth-label{
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* input */
+body.auth .auth-input{
+  background: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--text) !important;
+  border-radius: 14px;
+  min-height: 48px;
+  padding: 12px 14px;
+}
+
+body.auth .auth-input::placeholder{
+  color: rgba(29,29,31,.45);
+}
+
+/* submit btn */
+body.auth .auth-submit{
+  min-height: 52px;
+  border-radius: 16px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  background: var(--blue) !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  box-shadow: 0 12px 22px rgba(0,0,0,.12) !important; /* ✅中性陰影，不發光 */
+  color:#fff !important;
+}
+
+body.auth .auth-submit:active{
+  transform: translateY(1px) scale(.99);
+  filter: brightness(.98);
+}
+
+/* 密碼提示 */
+body.auth .auth-hint{
+  margin-top: 6px;
+  font-size: .88rem;
+  color: var(--muted);
+}
+
+/* links */
+body.auth .auth-links a{
+  color: rgba(0,0,0,.68);
+  text-decoration: none;
+}
+body.auth .auth-links a:hover{
+  color: rgba(0,0,0,.82);
+  text-decoration: underline;
+}
+body.auth .auth-back{
+  color: rgba(0,0,0,.45) !important;
+  font-size: .9rem;
+}
+
+/* Alert（亮色版） */
+body.auth .alert{
+  border-radius: 14px;
+  border: 1px solid rgba(255,59,48,.25);
+  background: rgba(255,59,48,.08);
+  color: rgba(0,0,0,.78);
+}
+body.auth .alert .text-muted{ color: rgba(0,0,0,.55) !important; }
+body.auth .alert .text-danger{ color: rgba(255,59,48,.95) !important; }

@@ -1,0 +1,111 @@
+/* ======================================================
+   navbar.css (GLOBAL / NO COLLISION)
+   - 只管 .hs-navbar 這顆導覽列
+   - 任何頁面都能用
+   - 完全不要 focus ring / glow
+====================================================== */
+
+.hs-navbar{
+  background: rgba(18,18,20,.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 10px 26px rgba(0,0,0,.28);
+}
+
+.hs-navbar-inner{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Brand */
+.hs-navbar-brand{
+  font-weight: 900;
+  letter-spacing: .2px;
+  color:#fff !important;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+/* Actions */
+.hs-navbar-actions{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+/* Buttons base */
+.hs-nav-btn{
+  border-radius: 999px;
+  padding: 10px 14px;
+  line-height: 1;
+  font-weight: 800;
+  border: 1px solid transparent;
+  box-shadow: none !important;
+  text-decoration: none;
+  min-height: 44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ghost */
+.hs-nav-btn-ghost{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.18);
+  color:#fff !important;
+}
+.hs-nav-btn-ghost:hover{ background: rgba(255,255,255,.12); }
+
+/* Primary */
+.hs-nav-btn-primary{
+  background:#0a84ff;
+  border-color:#0a84ff;
+  color:#fff !important;
+  box-shadow: 0 12px 24px rgba(0,0,0,.18) !important; /* 中性陰影 */
+}
+.hs-nav-btn-primary:hover{ filter: brightness(.98); }
+
+/* Danger */
+.hs-nav-btn-danger{
+  background: rgba(255,69,58,.14);
+  border-color: rgba(255,69,58,.22);
+  color:#fff !important;
+}
+.hs-nav-btn-danger:hover{ background: rgba(255,69,58,.20); }
+
+/* Badge */
+.hs-nav-badge{
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.16);
+  color:#fff !important;
+  font-weight: 900;
+  padding: 10px 12px;
+  border-radius: 999px;
+  min-height: 44px;
+  display:inline-flex;
+  align-items:center;
+}
+
+/* ✅ 完全不要 focus ring / glow（只限 navbar） */
+.hs-navbar a:focus,
+.hs-navbar a:focus-visible,
+.hs-navbar button:focus,
+.hs-navbar button:focus-visible,
+.hs-navbar .btn:focus,
+.hs-navbar .btn:focus-visible{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 420px){
+  .hs-nav-btn{ padding: 10px 12px; }
+}

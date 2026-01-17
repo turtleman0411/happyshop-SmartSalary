@@ -1,0 +1,3 @@
+/* base.css — GLOBAL MINIMAL (safe) */
+html, body { width: 100%; overflow-x: hidden; }
+.container { max-width: 100%; overflow-x: hidden; }

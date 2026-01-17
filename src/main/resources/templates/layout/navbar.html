@@ -1,58 +1,51 @@
-<!--
-==================================================
-檔案：layout/navbar.html（覆蓋用｜錯誤已排除）
-用途：全站導覽列（Brand / Logout）
-
-設計原則：
-- Navbar 不依賴 month
-- 不假設任何畫面狀態
-- 只使用明確由外部傳入的 URL
-==================================================
--->
-
+<!-- layout/navbar.html — 唯一版（覆蓋用） -->
 <nav th:fragment="navbar(resultUrl)"
      xmlns:th="http://www.thymeleaf.org"
-     class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+     class="navbar sticky-top hs-navbar">
 
-<div class="container">
+  <div class="container hs-navbar-inner">
 
-    <!-- ===== Brand ===== -->
-<a class="navbar-brand fw-bold"
-   th:href="@{/happyshop/home}">
-    🧾 HappyShop
-</a>
+    <a class="navbar-brand hs-navbar-brand"
+       th:href="@{/happyshop/home}">
+      🧾 HappyShop
+    </a>
 
-    <!-- ===== Toggle (Mobile) ===== -->
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMain">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="hs-navbar-actions">
 
-    <!-- ===== Nav Links ===== -->
-    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- 未登入 -->
+      <div th:if="${session.loginUser == null}"
+           class="d-flex align-items-center gap-2">
 
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <!-- 🔕 不依賴 month 的頁面才放在 Navbar -->
-        </ul>
+        <!-- ✅ 移除 btn，避免被 result.css / bootstrap btn 覆蓋 -->
+        <a th:href="@{/happyshop/login}"
+           class="hs-nav-btn hs-nav-btn-ghost">
+          登入
+        </a>
 
-        <!-- ===== Right Side ===== -->
-        <div class="d-flex align-items-center gap-3">
+        <a th:href="@{/happyshop/register}"
+           class="hs-nav-btn hs-nav-btn-primary">
+          註冊
+        </a>
 
-            <!-- 登入狀態顯示（純顯示） -->
-            <span th:if="${session.loginUser != null}"
-                  class="badge rounded-pill bg-secondary"
-                  th:text="${session.loginUser.mode()}">
-                USER
-            </span>
+      </div>
 
-            <!-- Logout -->
+      <!-- 已登入 -->
+      <div th:if="${session.loginUser != null}"
+           class="d-flex align-items-center gap-2">
 
+        <span class="badge hs-nav-badge"
+              th:text="${session.loginUser.mode()}">
+          USER
+        </span>
 
-        </div>
+        <!-- ✅ 移除 btn，避免被 result.css / bootstrap btn 覆蓋 -->
+        <a th:href="@{/happyshop/logout}"
+           class="hs-nav-btn hs-nav-btn-danger">
+          登出
+        </a>
+
+      </div>
+
     </div>
-</div>
-
-
+  </div>
 </nav>

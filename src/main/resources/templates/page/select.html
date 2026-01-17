@@ -3,7 +3,8 @@
 <html lang="zh"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{layout/head :: head('分類預算設定｜HappyShop')}"></head>
+<head th:replace="~{layout/head :: head('HappyShop — 讓薪水變聰明', 'home.css')}"></head>
+
 
 <body>
 
@@ -56,7 +57,7 @@
     <h5 class="fw-bold mt-4 mb-2"
         th:text="${entry.key}"></h5>
 
-    <div class="row">
+    <div class="row g-2">
       <div class="col-md-6 mb-2"
            th:each="cat : ${entry.value}">
         <!-- fragment/category-card：吃 CategoryCardView -->

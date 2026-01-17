@@ -265,7 +265,7 @@ int availableAmount =
         view.reallocatableAmount = Math.max(0, income - totalOver);
 
         view.monthlyRuleNote =
-                "分類預算為固定基準，僅當部分分類超額時，超額金額會平均分攤給尚未超額的分類";
+                "超額消費 會使其他預算降低！";
 
         view.overLimitAmount = overLimitAmount;
         view.overSpentAmount = overSpentAmount;

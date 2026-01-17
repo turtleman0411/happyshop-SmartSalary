@@ -1,123 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head th:replace="~{layout/head :: head('HappyShop — 讓薪水變聰明', 'home.css')}"></head>
 
-<head th:replace="~{layout/head :: head('HappyShop — 讓薪水變聰明')}"></head>
-
-<body style="background:#f5f5f7; color:#1d1d1f;">
+<body class="home">
 
 <!-- =========================
      Navbar
 ========================= -->
-<nav class="navbar"
-     style="background:#1d1d1f;">
-    <div class="container">
-        <a class="navbar-brand fw-semibold text-light"
-           th:href="@{/happyshop/home}">
-            HappyShop
-        </a>
-        <div class="ms-auto d-flex gap-4">
-            <a th:href="@{/happyshop/login}" class="text-light text-decoration-none">登入</a>
-            <a th:href="@{/happyshop/register}" class="text-light text-decoration-none">註冊</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{layout/navbar :: navbar(null)}"></div>
 
 <!-- =========================
-     Hero（第一屏）
+     Hero
 ========================= -->
-<main class="d-flex justify-content-center align-items-center"
-      style="min-height: calc(100vh - 56px);">
+<main class="hs-hero-wrap">
+  <div class="container px-3">
+    <div class="hs-hero-card text-center">
 
-    <div class="text-center px-3" style="max-width: 720px;">
+      <div class="hs-hero-icon mb-3">💡</div>
 
-        <div class="mb-4" style="font-size:64px;">💡</div>
+      <h1 class="hs-title">讓薪水變聰明</h1>
 
-        <h1 class="fw-semibold mb-3"
-            style="font-size:clamp(2.2rem, 4vw, 3rem);">
-            讓薪水變聰明
-        </h1>
+      <p class="hs-subtitle mb-4">
+        自動分配預算・追蹤支出<br>
+        讓你輕鬆掌控每一筆金錢
+      </p>
 
-        <p class="mb-4"
-           style="color:#6e6e73; font-size:1.1rem; line-height:1.8;">
-            自動分配預算・追蹤支出<br>
-            讓你輕鬆掌控每一筆金錢
-        </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a th:href="@{/happyshop/register}" class="btn hs-btn hs-btn-primary">
+          立即體驗（建立帳號）
+        </a>
+        <a th:href="@{/happyshop/login}" class="btn hs-btn hs-btn-ghost">
+          我已經有帳號 →
+        </a>
+      </div>
 
-        <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
-            <!-- <a th:href="@{/happyshop/demoUser}"
-               class="btn btn-lg px-4"
-               style="background:#0071e3;color:#fff;border-radius:999px;">
-                開始體驗
-            </a> -->
+      <div class="hs-note">
+        無需信用卡・30 秒開始・支援手機體驗
+      </div>
 
-            <a th:href="@{/happyshop/register}"
-               class="btn btn-lg px-4"
-               style="background:transparent;color:#0071e3;
-                      border:1px solid #0071e3;border-radius:999px;">
-                建立帳號
-            </a>
+      <div class="hs-metrics">
+        <div class="hs-metric">
+          <div class="hs-metric-num">1頁</div>
+          <div class="hs-metric-text">結果整合總覽</div>
         </div>
 
-        <div style="font-size:0.95rem;">
-            已有帳號？
-            <a th:href="@{/happyshop/login}"
-               style="color:#0071e3;text-decoration:none;">
-                直接登入 →
-            </a>
+        <div class="hs-divider"></div>
+
+        <div class="hs-metric">
+          <div class="hs-metric-num">20%</div>
+          <div class="hs-metric-text">超額池治理</div>
         </div>
+
+        <div class="hs-divider"></div>
+        <div class="hs-metric">
+          <div class="hs-metric-num">100%</div>
+          <div class="hs-metric-text">比例分配驗證</div>
+        </div>
+
+      </div>
 
     </div>
+  </div>
 </main>
 
 <!-- =========================
-     Features（你說的那塊，回來了）
+     Features
 ========================= -->
-<section style="background:#ffffff;">
-    <div class="container py-5">
+<section class="hs-section">
+  <div class="container py-5">
 
-        <h2 class="text-center fw-semibold mb-4">
-            HappyShop 能做什麼？
-        </h2>
-
-        <div class="row text-center g-4">
-
-            <div class="col-md-4">
-                <div style="font-size:32px;" class="mb-2">📊</div>
-                <h5 class="fw-medium">自動計算預算</h5>
-                <p style="color:#6e6e73;">
-                    根據薪水比例<br>
-                    自動分配各分類預算
-                </p>
-            </div>
-
-            <div class="col-md-4">
-                <div style="font-size:32px;" class="mb-2">🧾</div>
-                <h5 class="fw-medium">追蹤每筆消費</h5>
-                <p style="color:#6e6e73;">
-                    清楚掌握支出狀況<br>
-                    不再超支沒感覺
-                </p>
-            </div>
-
-            <div class="col-md-4">
-                <div style="font-size:32px;" class="mb-2">📈</div>
-                <h5 class="fw-medium">視覺化管理</h5>
-                <p style="color:#6e6e73;">
-                    進度條與統計圖<br>
-                    一眼看懂財務狀態
-                </p>
-            </div>
-
-        </div>
+    <div class="text-center mb-4">
+      <h2 class="hs-section-title">你會得到什麼？</h2>
+      <p class="hs-section-subtitle">不是記帳而已，是「用規則幫你做決策」</p>
     </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="hs-feature-card">
+          <div class="hs-feature-icon">📊</div>
+          <h5 class="hs-feature-title">自動分配預算</h5>
+          <p class="hs-feature-text">
+            輸入薪水，分類預算按比例自動算好。<br>
+            你只需要決定「比例」。
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="hs-feature-card">
+          <div class="hs-feature-icon">🧾</div>
+          <h5 class="hs-feature-title">消費即時可視化</h5>
+          <p class="hs-feature-text">
+            每筆消費都有進度條與剩餘金額。<br>
+            超支會被清楚呈現。
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="hs-feature-card">
+          <div class="hs-feature-icon">🛡️</div>
+          <h5 class="hs-feature-title">超額池治理</h5>
+          <p class="hs-feature-text">
+            當某分類超支，會影響其他分類可用額。<br>
+            你會看到「原因」而不是只有數字。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 二段導流 CTA -->
+    <div class="hs-cta mt-5">
+      <div>
+        <div class="hs-cta-title">準備好了就開始</div>
+        <div class="hs-cta-text">
+          建立帳號後，設定本月薪水與分類比例，立刻看到結果頁。
+        </div>
+      </div>
+      <a th:href="@{/happyshop/register}" class="btn hs-btn hs-btn-primary">
+        立即建立帳號
+      </a>
+    </div>
+
+  </div>
 </section>
 
 <!-- =========================
      Footer
 ========================= -->
-<footer class="text-center py-4"
-        style="font-size:0.85rem;color:#86868b;">
-    © 2025 HappyShop — Smart Salary Allocation
+<footer class="hs-footer">
+  © 2025 HappyShop — Smart Salary Allocation
 </footer>
 
 </body>

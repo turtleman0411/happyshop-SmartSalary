@@ -1,98 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh">
 
-<head th:replace="~{layout/head :: head('登入｜HappyShop')}"></head>
+<head th:replace="~{layout/head :: head('登入｜HappyShop', 'auth.css')}"></head>
 
-<body style="background:#f2f4fa;">
+<body class="auth">
 
-<div class="container d-flex align-items-center justify-content-center"
-     style="min-height: 100vh;">
+  <div class="auth-wrap">
 
-    <div class="card shadow-lg border-0 rounded-4 p-5"
-         style="max-width: 420px; width:100%;">
+    <div class="auth-card">
 
-        <h3 class="fw-bold text-center mb-4">
-            🔐 登入 HappyShop
-        </h3>
+      <h3 class="auth-title text-center">
+        🔐 登入 HappyShop
+      </h3>
 
-        <form th:action="@{/login}"
-              method="post"
-              autocomplete="on">
+      <form th:action="@{/login}"
+            method="post"
+            autocomplete="on">
 
-            <!-- ⭐ 關鍵：固定 username 欄位 -->
-            <div class="mb-3">
-                <label class="form-label fw-bold" for="username">
-                    帳號
-                </label>
-                <input id="username"
-                       type="text"
-                       class="form-control"
-                       name="name"
-                       autocomplete="username"
-                       placeholder="請輸入帳號"
-                       required>
-            </div>
-
-            <!-- ⭐ 關鍵：固定 password 欄位 -->
-            <div class="mb-4">
-                <label class="form-label fw-bold" for="password">
-                    密碼
-                </label>
-                <input id="password"
-                       type="password"
-                       class="form-control"
-                       name="password"
-                       autocomplete="current-password"
-                       placeholder="請輸入密碼（至少 8 碼）"
-                       required>
-            </div>
-
-            <!-- Submit -->
-            <div class="d-grid mb-3">
-                <button type="submit"
-                        class="btn btn-primary btn-lg">
-                    登入
-                </button>
-            </div>
-
-        </form>
-        <!-- ================= 錯誤提示 ================= -->
-<div th:if="${error}"
-     class="alert alert-danger rounded-3 py-2 px-3 mb-3 text-start"
-     style="font-size:0.9rem;">
-
-    <div class="fw-semibold mb-1">
-        ⚠️ <span th:text="${error}"></span>
-    </div>
-
-    <div th:if="${remainAttempts != null}"
-         class="small text-muted">
-        剩餘嘗試次數：
-        <span class="fw-bold" th:text="${remainAttempts}"></span> 次
-    </div>
-
-    <div th:if="${locked}"
-         class="small text-danger fw-bold mt-1">
-        帳號已被鎖定，需要請管理員解鎖
-    </div>
-</div>
-
-
-        <div class="text-center">
-            <a th:href="@{/happyshop/register}" class="text-decoration-none">
-                還沒有帳號？立即註冊
-            </a>
-
-            <div class="mt-2">
-                <a th:href="@{/happyshop/home}"
-                   class="small text-muted text-decoration-none">
-                    ← 返回首頁
-                </a>
-            </div>
+        <!-- ⭐ 關鍵：固定 username 欄位 -->
+        <div class="mb-3">
+          <label class="form-label auth-label" for="username">
+            帳號
+          </label>
+          <input id="username"
+                 type="text"
+                 class="form-control auth-input"
+                 name="name"
+                 autocomplete="username"
+                 placeholder="請輸入帳號"
+                 required>
         </div>
 
+        <!-- ⭐ 關鍵：固定 password 欄位 -->
+        <div class="mb-4">
+          <label class="form-label auth-label" for="password">
+            密碼
+          </label>
+          <input id="password"
+                 type="password"
+                 class="form-control auth-input"
+                 name="password"
+                 autocomplete="current-password"
+                 placeholder="請輸入密碼（至少 8 碼）"
+                 required>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn auth-submit">
+            登入
+          </button>
+        </div>
+
+      </form>
+
+      <!-- ================= 錯誤提示（保留原邏輯） ================= -->
+      <div th:if="${error}"
+           class="alert rounded-3 py-2 px-3 mb-3 text-start"
+           style="font-size:0.9rem;">
+
+        <div class="fw-semibold mb-1">
+          ⚠️ <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${remainAttempts != null}"
+             class="small text-muted">
+          剩餘嘗試次數：
+          <span class="fw-bold" th:text="${remainAttempts}"></span> 次
+        </div>
+
+        <div th:if="${locked}"
+             class="small text-danger fw-bold mt-1">
+          帳號已被鎖定，需要請管理員解鎖
+        </div>
+      </div>
+
+      <div class="text-center auth-links">
+        <a th:href="@{/happyshop/register}">
+          還沒有帳號？立即註冊
+        </a>
+
+        <div class="mt-2">
+          <a th:href="@{/happyshop/home}" class="auth-back">
+            ← 返回首頁
+          </a>
+        </div>
+      </div>
+
     </div>
-</div>
+  </div>
 
 </body>
 </html>
