@@ -332,3 +332,107 @@ body.result .hs-btn{
 
   line-height: 1.2; /* 關鍵：不要用 bootstrap 預設 */
 }
+/* ======================================================
+   📱 Mobile Apple Polish
+====================================================== */
+@media (max-width: 767px){
+
+  /* 主容器更鬆 */
+  body.result .hs-main-container{
+    padding: 0 14px;
+  }
+
+  body.result .hs-shell{
+    gap: 18px;
+  }
+
+  /* Panel 在手機要更像 iOS 卡片 */
+  body.result .hs-panel{
+    border-radius: 22px;
+    box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  }
+
+  body.result .hs-pad{
+    padding: 18px 16px;
+  }
+}
+@media (max-width: 767px){
+  body.result .hs-kpi{
+    padding: 14px 14px;
+  }
+
+  body.result .hs-kpi .k{
+    font-size: .78rem;
+    font-weight: 700;
+  }
+
+  body.result .hs-kpi .v{
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+}
+@media (max-width: 767px){
+
+  body.result .hs-cat-title{
+    font-size: 1.12rem;
+    font-weight: 800;
+  }
+
+  body.result .hs-cat-meta{
+    font-size: .85rem;
+    font-weight: 700;
+  }
+
+  /* KPI 改為直列，讓眼睛不用掃 */
+  body.result .hs-cat-kpis{
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  body.result .hs-cat-foot{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: .85rem;
+  }
+}
+@media (hover: none){
+  body.result .hs-cat-card.cat-card:hover{
+    transform: none;
+    box-shadow: none;
+  }
+
+  body.result .hs-cat-card.cat-card:active{
+    transform: scale(.98);
+    filter: brightness(.98);
+  }
+}
+@media (max-width: 767px){
+
+  body.result .hs-empty-card{
+    padding: 40px 18px;
+    border-radius: 26px;
+  }
+
+  body.result .hs-empty-icon{
+    font-size: 64px;
+    margin-bottom: 18px;
+  }
+
+  body.result .hs-empty-title{
+    font-size: 1.85rem;
+  }
+
+  body.result .hs-empty-desc{
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  body.result .hs-empty-actions{
+    flex-direction: column;
+  }
+
+  body.result .hs-empty-actions .btn{
+    width: 100%;
+  }
+}

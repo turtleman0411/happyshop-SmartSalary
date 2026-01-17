@@ -427,3 +427,108 @@ body.home .hs-btn{
     margin: 0;                   /* 清掉 wrap 殘留 */
   }
 }
+/* ======================================================
+   🍎 Home — Mobile Apple Polish
+====================================================== */
+@media (max-width: 767px){
+
+  body.home .hs-hero-card{
+    padding: 28px 18px;          /* 更像 iOS 卡 */
+    border-radius: 24px;
+    box-shadow: 0 16px 36px rgba(0,0,0,.14);
+  }
+
+  body.home .hs-hero-icon{
+    font-size: 52px;             /* icon 降一階 */
+    margin-bottom: 8px;
+  }
+
+  body.home .hs-title{
+    font-size: 2.1rem;           /* 不要太大 */
+    font-weight: 800;            /* 900 在手機會糊 */
+    letter-spacing: -0.5px;
+  }
+
+  body.home .hs-subtitle{
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  body.home .hs-note{
+    font-size: .9rem;
+    margin-top: 12px;
+  }
+}
+@media (max-width: 767px){
+
+  body.home .hs-btn{
+    border-radius: 18px;
+    min-height: 56px;
+    font-weight: 600;
+  }
+
+  body.home .hs-btn-primary{
+    box-shadow: 0 10px 22px rgba(10,132,255,.28);
+  }
+
+  body.home .hs-btn:active{
+    transform: scale(.985);
+    filter: brightness(.97);
+  }
+}
+@media (max-width: 767px){
+
+  body.home .hs-metrics{
+    background: rgba(245,245,247,.9);
+    border-radius: 18px;
+    padding: 8px 0;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+  }
+
+  body.home .hs-metric{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+    border-radius: 0;
+
+    padding: 14px 16px;
+  }
+
+  body.home .hs-metric + .hs-metric{
+    border-top: 1px solid rgba(0,0,0,.06);
+  }
+
+  body.home .hs-metric-num{
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
+  body.home .hs-metric-text{
+    font-size: .9rem;
+    color: var(--muted);
+  }
+}
+@media (max-width: 767px){
+
+  body.home .hs-section{
+    padding-top: 12px;
+  }
+
+  body.home .hs-feature-card{
+    border-radius: 20px;
+    padding: 20px 18px;
+  }
+
+  body.home .hs-feature-title{
+    font-weight: 800;
+  }
+
+  body.home .hs-feature-text{
+    font-size: .95rem;
+    line-height: 1.65;
+  }
+}
