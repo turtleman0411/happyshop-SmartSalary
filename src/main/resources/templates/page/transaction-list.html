@@ -80,9 +80,11 @@
 
                 <td>
                   <span class="text-body"
-                        th:text="${tx.note != null && !#strings.isEmpty(tx.note) ? tx.note : '—'}"
-                        style="display:inline-block; max-width:520px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                  </span>
+      th:if="${tx.note != null && !#strings.isEmpty(tx.note)}"
+      th:text="${tx.note}"
+      style="display:inline-block; max-width:520px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+</span>
+
                 </td>
 
                 <td class="text-center">
@@ -94,17 +96,19 @@
                        data-bs-toggle="modal"
                        data-bs-target="#imageModal"
                        th:data-image-url="${tx.imageUrl}">
-                  <span th:if="${tx.imageUrl == null}" class="text-body-secondary small">—</span>
+                  <span th:if="${tx.imageUrl == null}" class="text-body-secondary small"></span>
                 </td>
 
                 <td class="text-center">
                   <form th:action="@{/transaction/delete}" method="post" class="m-0">
                     <input type="hidden" name="transactionId" th:value="${tx.transactionId}">
                     <input type="hidden" name="month" th:value="${view.month}">
-                    <button class="btn btn-sm btn-outline-danger rounded-4 px-3"
-                            onclick="return confirm('確定要刪除這筆交易嗎？');">
-                      🗑 刪除
-                    </button>
+                   <button class="btn btn-icon-delete"
+        title="刪除"
+        onclick="return confirm('確定要刪除這筆交易嗎？');">
+  🗑
+</button>
+
                   </form>
                 </td>
               </tr>
@@ -166,10 +170,12 @@
             <form th:action="@{/transaction/delete}" method="post" class="m-0">
               <input type="hidden" name="transactionId" th:value="${tx.transactionId}">
               <input type="hidden" name="month" th:value="${view.month}">
-              <button class="btn btn-sm btn-outline-danger rounded-4 px-3"
-                      onclick="return confirm('確定要刪除這筆交易嗎？');">
-                🗑 刪除
-              </button>
+             <button class="btn btn-icon-delete"
+        title="刪除"
+        onclick="return confirm('確定要刪除這筆交易嗎？');">
+  🗑
+</button>
+
             </form>
           </div>
 
