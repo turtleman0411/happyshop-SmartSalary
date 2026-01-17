@@ -125,12 +125,14 @@ public String result(
 
 @GetMapping("/transactions")
 public String transactionPage(
-        @SessionAttribute(value = "loginUserId", required = false) UserId userId,
+        HttpServletRequest request,
         @RequestParam YearMonth month,
         @RequestParam(required = false) String category,
         Model model
 ) {
-   if (userId == null) {
+    UserId userId = (UserId) request.getAttribute("loginUserId");
+
+    if (userId == null) {
         return "redirect:/happyshop/home?month=" + month;
     }
 
