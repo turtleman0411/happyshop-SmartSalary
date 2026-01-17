@@ -1,40 +1,34 @@
-<!--
-==================================================
-檔案：layout/month-bar.html
-用途：月份切換元件（Prev / Next Month）
+<!-- layout/month-bar.html -->
+<section xmlns:th="http://www.thymeleaf.org"
+         th:fragment="monthBar(baseUrl, month, themeClass)"
+         class="hs-monthbar"
+         th:classappend="${themeClass != null && !themeClass.isBlank() ? ' ' + themeClass : ''}"
+         th:if="${month != null}">
 
-==================================================
--->
+  <div class="hs-monthbar-container">
+    <div class="hs-monthbar-card">
 
-<div th:fragment="monthBar(baseUrl, month)"
-     xmlns:th="http://www.thymeleaf.org"
-     class="container my-3"
-     th:if="${month != null}">
+      <!-- Prev -->
+      <a class="hs-mb-btn is-prev"
+         th:href="@{${baseUrl}(month=${month.minusMonths(1)})}"
+         aria-label="上一個月">
+        <span class="hs-mb-icon">◀</span>
+      </a>
 
-    <div class="cat-card d-flex justify-content-center align-items-center gap-3 py-3">
+      <!-- Month -->
+      <div class="hs-mb-month">
+        <span class="hs-mb-month-text"
+              th:text="${month}">2026-01</span>
+      </div>
 
-        <!-- ◀ 上一個月 -->
-        <a class="btn btn-outline-secondary"
-           th:href="@{${baseUrl}(month=${month.minusMonths(1)})}">
-            ◀
-        </a>
-
-        <!-- 目前月份（僅顯示，不可編輯） -->
-        <div class="fw-bold fs-5">
-            <span th:text="${month}">2026-01</span>
-        </div>
-
-        <!-- ▶ 下一個月 -->
-        <a class="btn btn-outline-secondary"
-           th:href="@{${baseUrl}(month=${month.plusMonths(1)})}">
-            ▶
-        </a>
+      <!-- Next -->
+      <a class="hs-mb-btn is-next"
+         th:href="@{${baseUrl}(month=${month.plusMonths(1)})}"
+         aria-label="下一個月">
+        <span class="hs-mb-icon">▶</span>
+      </a>
 
     </div>
-</div>
+  </div>
 
-<!--
-==================================================
-
-==================================================
--->
+</section>

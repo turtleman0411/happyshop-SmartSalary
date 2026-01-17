@@ -9,17 +9,10 @@
 
 <!-- ================= Navbar ================= -->
 
-<div th:replace="~{layout/navbar :: navbar(
-    @{/happyshop/transactions(month=${view.month})}
-)}"></div>
-
+<div th:replace="~{layout/navbar :: navbar(@{/happyshop/result(month=${view.month})})}"></div>
 <!-- ================= Month Bar ================= -->
 
-<div th:replace="~{layout/month-bar :: monthBar(
-    '/happyshop/transactions',
-    ${view.month}
-)}"></div>
-
+<div th:replace="~{layout/month-bar :: monthBar(baseUrl='/happyshop/result', month=${view.month}, themeClass=${themeClass != null ? themeClass : ''})}"></div>
 <div class="container my-4 page-card">
 
 

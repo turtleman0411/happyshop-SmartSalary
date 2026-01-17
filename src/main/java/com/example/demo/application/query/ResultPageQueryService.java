@@ -274,7 +274,7 @@ int availableAmount =
         view.hasOverSpent = hasOverSpent;
 
         view.overPoolRuleNote =
-                "超額池僅在總消費超過薪水時啟動，與分類平攤懲罰機制分離";
+                "超額池僅在總消費超過薪水時啟動";
 
         view.categorySummaryList = categorySummaryList;
 

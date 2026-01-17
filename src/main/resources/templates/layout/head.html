@@ -29,10 +29,14 @@
   <!-- ✅ Navbar shared (only .hs-navbar) -->
   <link rel="stylesheet" th:href="@{/css/navbar.css}">
 
+  <!-- ✅ Month bar shared (only .hs-monthbar) -->
+  <link rel="stylesheet" th:href="@{/css/month-bar.css}">
+
   <!-- ✅ Page CSS (optional) -->
   <link th:if="${pageCss != null}"
         rel="stylesheet"
         th:href="@{/css/{f}(f=${pageCss})}">
+  
 
   <!-- ✅ Bootstrap Bundle JS（需要 collapse / modal / dropdown） -->
   <script defer

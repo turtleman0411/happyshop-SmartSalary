@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.example.demo.application.Transaction.TransactionPageFlow;
+import com.example.demo.application.Transaction.TransactionPageFlowResult;
 import com.example.demo.application.query.SelectPageQueryService;
-import com.example.demo.application.query.TransactionPageQueryService;
-import com.example.demo.application.query.ResultPageQueryService;
+import com.example.demo.application.result.ResultPageFlow;
+import com.example.demo.application.result.ResultPageFlowResult;
 import com.example.demo.domain.value.UserId;
 import com.example.demo.presentation.dto.request.LoginForm;
 import com.example.demo.presentation.dto.request.RegisterForm;
-import com.example.demo.presentation.dto.view.ResultPageView;
 import com.example.demo.presentation.dto.view.SelectPageView;
-import com.example.demo.presentation.dto.view.TransactionPageView;
-
 import jakarta.servlet.http.HttpSession;
 
 
@@ -27,20 +26,17 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/happyshop")
 public class PageController {
     private final SelectPageQueryService selectPageQueryService;
-    private final ResultPageQueryService resultPageQueryService;
-    private final TransactionPageQueryService transactionPageQueryService;
-    
-    public PageController( 
-        SelectPageQueryService selectPageQueryService,
-        ResultPageQueryService resultPageQueryService,
-        TransactionPageQueryService transactionPageQueryService
-        
-    ){
-        this.selectPageQueryService = selectPageQueryService;
-        this.resultPageQueryService = resultPageQueryService;
-        this.transactionPageQueryService = transactionPageQueryService;
-        
-    }
+    private final TransactionPageFlow transactionPageFlow;
+    private final ResultPageFlow resultPageFlow;
+    public PageController(
+    SelectPageQueryService selectPageQueryService,
+    ResultPageFlow resultPageFlow,
+    TransactionPageFlow transactionPageFlow
+){
+    this.selectPageQueryService = selectPageQueryService;
+    this.resultPageFlow = resultPageFlow;
+    this.transactionPageFlow = transactionPageFlow;
+}
 
  
 
@@ -85,31 +81,30 @@ public class PageController {
         return "page/select";
     }
 
-    @GetMapping("/result")
-    public String result(
-            @RequestParam(required = false) YearMonth month,
-            @SessionAttribute(value = "loginUserId", required = false) UserId userId,
-            HttpSession session,
-            Model model
-    ) {
-        if (userId == null) {
-            userId = UserId.newId(); // demo / debug
-            session.setAttribute("loginUserId", userId);
-        }
-
-        YearMonth targetMonth =
-                (month != null) ? month : YearMonth.now();
-
-       
-        ResultPageView view =
-                resultPageQueryService.getResultPage(
-                        userId,
-                        targetMonth
-                );
-
-        model.addAttribute("view", view);
-        return "page/result";
+@GetMapping("/result")
+public String result(
+        @RequestParam(required = false) YearMonth month,
+        @SessionAttribute(value = "loginUserId", required = false) UserId userId,
+        HttpSession session,
+        Model model
+) {
+    if (userId == null) {
+        userId = UserId.newId(); // demo / debug
+        session.setAttribute("loginUserId", userId);
     }
+
+    YearMonth targetMonth =
+            (month != null) ? month : YearMonth.now();
+
+    ResultPageFlowResult result =
+            resultPageFlow.getResultPage(userId, targetMonth);
+
+    model.addAttribute("view", result.view());
+    model.addAttribute("themeClass", result.themeClass());
+
+    return "page/result";
+}
+
 
 @GetMapping("/transactions")
 public String transactionPage(
@@ -118,22 +113,22 @@ public String transactionPage(
         @RequestParam(required = false) String category,
         Model model
 ) {
-        if (userId == null) {
-        model.addAttribute("error", "請重新進入系統");
+    if (userId == null) {
         return "redirect:/happyshop/home";
     }
 
-    TransactionPageView view =
-            transactionPageQueryService.getTransactionPage(
+    TransactionPageFlowResult result =
+            transactionPageFlow.getTransactionPage(
                     userId,
                     month,
                     category
             );
 
-    model.addAttribute("view", view);
+    model.addAttribute("view", result.view());
+    model.addAttribute("themeClass", result.themeClass());
+
     return "page/transaction-list";
 }
-
 
 
 }

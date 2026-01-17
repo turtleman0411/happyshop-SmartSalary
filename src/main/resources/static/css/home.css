@@ -273,10 +273,7 @@ body.home .hs-divider{
   align-self: center;
 }
 
-@media (max-width: 576px){
-  body.home .hs-divider{ display:none; }
-  body.home .hs-metric{ min-width: 46%; }
-}
+
 
 /* ======================================================
    Features section

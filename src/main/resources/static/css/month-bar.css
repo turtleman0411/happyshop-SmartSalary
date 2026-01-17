@@ -1,0 +1,225 @@
+/* ======================================================
+   month-bar.css (FINAL / STABLE)
+   Scope: .hs-monthbar only
+   Responsibility:
+   - Month bar layout & centering
+   - Prev / Next buttons positioning
+   - Theme hook via class
+====================================================== */
+
+.hs-monthbar{
+  width: 100%;
+  background: rgba(245,245,247,.88);
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+/* ===============================
+   Container
+=============================== */
+.hs-monthbar-container{
+  max-width: 1080px;          /* 與 result.css 對齊 */
+  margin: 0 auto;
+  padding: 14px 14px;
+}
+
+/* ===============================
+   Glass Card
+=============================== */
+.hs-monthbar-card{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;    /* ✅ 月份永遠視覺正中 */
+
+  min-height: 56px;           /* 防止換月抖動 */
+  padding: 12px 56px;         /* 為左右按鈕預留空間 */
+
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+
+/* ===============================
+   Month Text
+=============================== */
+.hs-mb-month{
+   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-mb-month-text{
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.2px;
+  line-height: 1;
+  color: rgba(0,0,0,.86);
+  -webkit-font-smoothing: antialiased;
+
+  /* 動畫（預設） */
+  animation: hsMonthFadeSlide .32s ease-out;
+}
+
+/* ===============================
+   Prev / Next Buttons
+=============================== */
+.hs-mb-btn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,.18);
+  background: rgba(255,255,255,.70);
+  color: rgba(0,0,0,.78);
+
+  transition: transform .12s ease, background .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hs-mb-btn.is-prev{ left: 10px; }
+.hs-mb-btn.is-next{ right: 10px; }
+
+.hs-mb-btn:hover{
+  background: rgba(255,255,255,.90);
+}
+
+.hs-mb-btn:active{
+  transform: translateY(-50%) scale(.98);
+}
+
+.hs-mb-icon{
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 移除 focus ring（只限 monthbar） */
+.hs-monthbar a:focus,
+.hs-monthbar a:focus-visible{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ===============================
+   Theme Hooks
+=============================== */
+
+/* ===============================
+   Seasonal Themes (ALL MONTHS) — HIGHER CONTRAST
+=============================== */
+
+/* 冬（1,2,12） */
+.hs-monthbar.theme-winter{
+  background:
+    radial-gradient(
+      900px 520px at 20% 28%,
+      rgba(10,132,255,.18),
+      transparent 62%
+    ),
+    rgba(245,245,247,.92);
+}
+
+/* 春（3–5） */
+.hs-monthbar.theme-spring{
+  background:
+    radial-gradient(
+      900px 520px at 30% 25%,
+      rgba(52,199,89,.18),
+      transparent 62%
+    ),
+    rgba(245,245,247,.92);
+}
+
+/* 夏（6–8） */
+.hs-monthbar.theme-summer{
+  background:
+    radial-gradient(
+      900px 520px at 50% 22%,
+      rgba(255,204,0,.20),
+      transparent 62%
+    ),
+    rgba(245,245,247,.92);
+}
+
+/* 秋（9–11） */
+.hs-monthbar.theme-autumn{
+  background:
+    radial-gradient(
+      900px 520px at 40% 28%,
+      rgba(255,159,10,.20),
+      transparent 62%
+    ),
+    rgba(245,245,247,.92);
+}
+
+/* 聖誕疊加（12） */
+.hs-monthbar.theme-xmas{
+  background:
+    radial-gradient(
+      900px 520px at 78% 70%,
+      rgba(255,45,85,.22),
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 520px at 20% 30%,
+      rgba(10,132,255,.20),
+      transparent 62%
+    ),
+    rgba(245,245,247,.92);
+}
+
+/* ======================================================
+   Mobile fine-tune (<=576px)
+   Scope: month-bar only
+====================================================== */
+@media (max-width: 576px){
+
+  .hs-monthbar-container{
+    padding: 10px 12px;
+  }
+
+  .hs-monthbar-card{
+    min-height: 52px;
+    padding: 10px 48px; /* 保留按鈕空間但更緊 */
+    border-radius: 16px;
+  }
+
+
+
+  /* 按鈕縮一點，手指仍好點 */
+  .hs-mb-btn{
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .hs-mb-btn.is-prev{ left: 8px; }
+  .hs-mb-btn.is-next{ right: 8px; }
+
+  .hs-mb-icon{
+    font-size: 0.95rem;
+  }
+}
+/* ======================================================
+   Month switch animation (pure CSS)
+====================================================== */
+@keyframes hsMonthFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

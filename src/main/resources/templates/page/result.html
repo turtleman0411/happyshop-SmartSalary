@@ -7,297 +7,293 @@
 
 <!-- ================= Navbar / Month ================= -->
 <div th:replace="~{layout/navbar :: navbar(@{/happyshop/result(month=${view.month})})}"></div>
+<div th:replace="~{layout/month-bar :: monthBar(baseUrl='/happyshop/result', month=${view.month}, themeClass=${themeClass != null ? themeClass : ''})}"></div>
 
-<div th:replace="~{layout/month-bar :: monthBar('/happyshop/result', ${view.month})}"></div>
 
-<div class="container my-4 position-relative">
+<!-- ✅ 只讓 Result 主體進入我們的「背景渲染容器」 -->
+<main class="hs-result-bg">
+  <div class="hs-main-container">
 
-  <!-- ================= 錯誤提示 ================= -->
-  <div th:if="${error}"
-       class="alert alert-danger auto-close-alert show rounded-4 shadow-sm mb-4"
-       style="pointer-events:none;">
-    <span th:text="${error}"></span>
-  </div>
-
-  <!-- ================= 尚未設定分類：舒服的空狀態 ================= -->
-  <div th:if="${!view.hasAllocation()}" class="d-flex justify-content-center">
-    <div class="hs-card pad w-100 text-center" style="max-width:720px;">
-      <div class="fw-bold fs-4 mb-2">📭 尚未設定本月預算分配</div>
-      <div class="text-muted mb-4">
-        先完成本月分類比例設定後，才能開始記帳。
-      </div>
-
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a class="btn btn-primary px-4"
-           th:href="@{/happyshop/select(month=${view.month})}">
-          前往設定分類
-        </a>
-        <a class="btn btn-outline-secondary px-4"
-           th:href="@{/happyshop/home}">
-          回首頁
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= 有分類：結果頁主體 ================= -->
-  <div th:if="${view.hasAllocation()}" class="result-shell">
-
-    <!-- ===== 操作列（永遠在最上） ===== -->
-    <div class="hs-card pad">
-      <div class="d-grid gap-2 d-md-flex align-items-center justify-content-between">
-
-        <div class="d-grid gap-2 d-md-flex">
-          <button type="button"
-                  class="btn btn-outline-secondary rounded-4"
-                  data-bs-toggle="modal"
-                  data-bs-target="#resetAllocationModal">
-            🔄 重新分配
-          </button>
-
-          <a class="btn btn-outline-primary rounded-4"
-             th:href="@{/happyshop/transactions(month=${view.month})}">
-            查看交易
-          </a>
-        </div>
-
-        <div class="text-muted small">
-          本月：<strong th:text="${view.month}">2026-01</strong>
-        </div>
-      </div>
+    <!-- ================= 錯誤提示 ================= -->
+    <div th:if="${error}"
+         class="alert alert-danger auto-close-alert show rounded-4 shadow-sm mb-3"
+         style="pointer-events:none;">
+      <span th:text="${error}"></span>
     </div>
 
-    <!-- ===== 上方兩張總覽卡：月度舒服閱讀 ===== -->
-    <div class="hs-top-grid">
+<!-- ================= 尚未設定分類：Empty State（覆蓋用） ================= -->
+<div th:if="${!view.hasAllocation()}" class="hs-empty-wrap">
+  <div class="hs-empty-card">
 
-      <!-- 月度總覽 -->
-      <div class="hs-card pad">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <div class="hs-label">💰 本月總覽</div>
-            <div class="text-muted small mt-1" th:text="${view.monthlyRuleNote}"></div>
-          </div>
-        </div>
+    <div class="hs-empty-icon">📭</div>
 
-        <!-- 薪水更新 -->
-        <form th:action="@{/income/update(month=${view.month})}"
-              method="post"
-              class="mt-3">
-          <div class="input-group">
-            <span class="input-group-text rounded-start-4">薪水</span>
-            <input type="number"
-                   name="income"
-                   class="form-control"
-                   min="0"
-                   th:value="${view.salary}" />
-            <button class="btn btn-outline-primary rounded-end-4 px-3">
-              更新
+    <h2 class="hs-empty-title">尚未設定本月預算分配</h2>
+
+    <p class="hs-empty-desc">
+      先完成本月「分類比例」設定後，才能開始記帳。<br>
+      設定完成後，你會在結果頁看到每個分類的剩餘、超額與進度條。
+    </p>
+
+    <div class="hs-empty-actions">
+      <a class="btn hs-empty-btn-primary px-4"
+         th:href="@{/happyshop/select(month=${view.month})}">
+        前往設定分類
+      </a>
+
+      <a class="btn hs-empty-btn-ghost px-4"
+         th:href="@{/happyshop/home}">
+        回首頁
+      </a>
+    </div>
+
+  </div>
+</div>
+
+
+
+    <!-- ================= 有分類：結果頁主體 ================= -->
+    <div th:if="${view.hasAllocation()}" class="hs-shell">
+
+      <!-- ===== 操作列 ===== -->
+      <div class="hs-panel hs-pad">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button"
+                    class="btn btn-outline-secondary hs-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#resetAllocationModal">
+              🔄 重新分配
             </button>
-          </div>
-        </form>
 
-        <!-- KPI：本月預算/已用/剩餘/使用率 -->
-        <div class="row g-2 mt-3">
-          <div class="col-6">
-            <div class="kpi-tile">
-              <div class="kpi-label">本月總預算</div>
-              <div class="kpi-value" th:text="${view.monthlyBudgetAmount}">0</div>
-            </div>
+            <a class="btn btn-outline-primary hs-btn"
+               th:href="@{/happyshop/transactions(month=${view.month})}">
+              查看交易
+            </a>
           </div>
 
-          <div class="col-6">
-            <div class="kpi-tile">
-              <div class="kpi-label">🔥 已使用</div>
-              <div class="kpi-value" th:text="${view.monthlySpentAmount}">0</div>
-            </div>
+          <div class="hs-chip">
+            本月：<strong th:text="${view.month}">2026-01</strong>
           </div>
 
-          <div class="col-6">
-            <div class="kpi-tile">
-              <div class="kpi-label">🟢 剩餘</div>
-              <div class="kpi-value" th:text="${view.monthlyRemainingAmount}">0</div>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <div class="kpi-tile">
-              <div class="kpi-label">使用率</div>
-              <div class="kpi-value" th:text="${view.usagePercent + '%'}">0%</div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <!-- 超額池 -->
-      <div class="hs-card pad">
-        <div class="d-flex justify-content-between align-items-start mb-2">
+      <!-- ===== 上方總覽 ===== -->
+      <div class="hs-top-grid">
+
+        <!-- 月度總覽 -->
+        <div class="hs-panel hs-pad">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <div class="hs-label">💰 本月總覽</div>
+              <div class="hs-help mt-1" th:text="${view.monthlyRuleNote}"></div>
+            </div>
+
+            <div class="hs-chip">
+              使用率：<strong th:text="${view.usagePercent + '%'}">0%</strong>
+            </div>
+          </div>
+
+          <!-- 薪水更新 -->
+          <form th:action="@{/income/update(month=${view.month})}"
+                method="post"
+                class="mt-3">
+            <div class="input-group">
+              <span class="input-group-text rounded-start-4">薪水</span>
+              <input type="number"
+                     name="income"
+                     class="form-control"
+                     min="0"
+                     th:value="${view.salary}" />
+              <button class="btn btn-outline-primary rounded-end-4 px-3">
+                更新
+              </button>
+            </div>
+          </form>
+
+          <!-- KPI -->
+          <div class="row g-2 mt-3">
+            <div class="col-6">
+              <div class="hs-kpi">
+                <div class="k">本月總預算</div>
+                <div class="v" th:text="${view.monthlyBudgetAmount}">0</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="hs-kpi">
+                <div class="k">🔥 已使用</div>
+                <div class="v" th:text="${view.monthlySpentAmount}">0</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="hs-kpi">
+                <div class="k">🟢 剩餘</div>
+                <div class="v" th:text="${view.monthlyRemainingAmount}">0</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="hs-kpi">
+                <div class="k">可重新分配</div>
+                <div class="v" th:text="${view.reallocatableAmount}">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 超額池 -->
+        <div class="hs-panel hs-pad">
           <div>
             <div class="hs-label">🧯 超額池（上限 20%）</div>
-            <div class="text-muted small mt-1">
-              超額會降低其他分類可用預算。超額池歸零時，全月會進入「爆掉」狀態。
+            <div class="hs-help mt-1" th:text="${view.overPoolRuleNote}"></div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-end mt-3">
+            <div class="fw-bold">
+              已用超額：
+              <span class="text-danger" th:text="${view.overSpentAmount}">0</span>
+              /
+              <span th:text="${view.overLimitAmount}">0</span>
+            </div>
+
+            <div class="text-muted small">
+              剩餘：<strong th:text="${view.overRemainingAmount}">0</strong>
+            </div>
+          </div>
+
+          <div class="progress hs-progress mt-2">
+            <div class="progress-bar bg-danger"
+                 th:style="'width:' +
+                   (${view.overLimitAmount} == 0
+                     ? 0
+                     : (${view.overSpentAmount} * 100 / ${view.overLimitAmount})) + '%'">
             </div>
           </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-end mt-3">
-          <div class="fw-bold">
-            已用超額：
-            <span class="text-danger" th:text="${view.overSpentAmount}">0</span>
-            /
-            <span th:text="${view.overLimitAmount}">0</span>
-          </div>
+      </div>
 
-          <div class="text-muted small">
-            剩餘：
-            <strong th:text="${view.overRemainingAmount}">0</strong>
-          </div>
-        </div>
-
-        <div class="progress hs-progress mt-2">
-          <div class="progress-bar bg-danger"
-               th:style="'width:' +
-                 (${view.overLimitAmount} == 0
-                   ? 0
-                   : (${view.overSpentAmount} * 100 / ${view.overLimitAmount})) + '%'">
-          </div>
-        </div>
-
-        <div class="hs-label mt-3" th:text="${view.overPoolRuleNote}"></div>
-
-        <div class="mt-3 small text-muted">
-          可重新分配基數：
-          <strong th:text="${view.reallocatableAmount}">0</strong>
+      <!-- ===== 分類區 ===== -->
+      <div class="d-flex justify-content-between align-items-end mt-2">
+        <div>
+          <div class="fw-bold fs-5">📦 本月分類</div>
+          <div class="text-muted small">點擊分類卡可快速新增該分類消費</div>
         </div>
       </div>
 
-    </div>
+      <div class="row g-3 mt-1">
+        <div class="col-md-6"
+             th:each="cat : ${view.categorySummaryList}"
+             th:if="${cat.allocated or cat.categoryCurrentSpent > 0}">
 
-<!-- ===== 分類區：舒服的標題 + 字卡 ===== -->
-<div class="d-flex justify-content-between align-items-end mt-2">
-  <div>
-    <div class="fw-bold fs-5">📦 本月分類</div>
-    <div class="text-muted small">點擊分類卡可快速新增該分類消費</div>
-  </div>
-</div>
+          <div class="hs-panel hs-pad hs-cat-card"
+               th:classappend="${!cat.allocated} ? ' bg-light disabled-card' : ' cat-card'"
+               th:data-category-name="${cat.categoryName}"
+               th:data-category-display="${cat.categoryDisplayName}"
+               th:data-budget="${cat.effectiveCategoryBudgetAmount}"
+               th:data-spent="${cat.categoryCurrentSpent}"
+               th:data-bs-toggle="${cat.clickableForAddTransaction} ? 'modal' : null"
+               th:data-bs-target="${cat.clickableForAddTransaction} ? '#addModal' : null">
 
-<div class="row g-3 mt-1">
-  <div class="col-md-6"
-       th:each="cat : ${view.categorySummaryList}"
-       th:if="${cat.allocated or cat.categoryCurrentSpent > 0}">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div class="pe-2" style="min-width:0;">
+                <div class="hs-cat-title text-truncate" th:text="${cat.categoryDisplayName}"></div>
 
-    <!-- 分類卡 -->
-    <div class="hs-card pad h-100 hs-cat-card"
-         th:classappend="${!cat.allocated} ? 'bg-light disabled-card' : 'cat-card'"
-         th:data-category-name="${cat.categoryName}"
-         th:data-category-display="${cat.categoryDisplayName}"
-         th:data-budget="${cat.effectiveCategoryBudgetAmount}"
-         th:data-spent="${cat.categoryCurrentSpent}"
-         th:data-bs-toggle="${cat.clickableForAddTransaction} ? 'modal' : null"
-         th:data-bs-target="${cat.clickableForAddTransaction} ? '#addModal' : null">
+                <!-- ✅ 有狀態才顯示 -->
+                <div class="mt-2" th:if="${cat.hasStateNote()}">
+                  <span class="hs-badge"
+                        th:classappend="
+                          ${cat.state.name() == 'SELF_OVERSPENT'} ? ' is-danger' :
+                          (${cat.state.name() == 'GLOBAL_OVERFLOW'} ? ' is-danger' :
+                          (${cat.state.name() == 'NO_AVAILABLE_DUE_TO_POOL'} ? ' is-warn' : ''))"
+                        th:text="${cat.stateNoteText}">
+                  </span>
+                </div>
+              </div>
 
-      <!-- Header -->
-      <div class="d-flex justify-content-between align-items-start">
-        <!-- Left -->
-        <div class="pe-2" style="min-width:0;">
-          <div class="cat-title text-truncate" th:text="${cat.categoryDisplayName}"></div>
+              <div class="text-end" style="flex:0 0 auto;">
+                <div class="hs-cat-meta" th:if="${cat.allocated}">
+                  <span th:text="${cat.categoryCurrentSpent}"></span>
+                  <span class="text-muted"> / </span>
+                  <span th:text="${cat.baseCategoryBudgetAmount}"></span>
+                </div>
 
-          <!-- ✅ 有狀態才顯示（不要每張都塞「正常」） -->
-          <div class="mt-2" th:if="${cat.hasStateNote()}">
-            <span class="hs-state-badge"
-                  th:classappend="
-                    ${cat.state.name() == 'SELF_OVERSPENT'} ? ' text-danger' :
-                    (${cat.state.name() == 'GLOBAL_OVERFLOW'} ? ' text-danger' :
-                    (${cat.state.name() == 'NO_AVAILABLE_DUE_TO_POOL'} ? ' text-warning' : ''))"
-                  th:text="${cat.stateNoteText}">
-            </span>
-          </div>
-        </div>
+                <div class="hs-cat-meta" th:if="${!cat.allocated}">
+                  尚未分配
+                </div>
 
-        <!-- Right -->
-        <div class="text-end" style="flex:0 0 auto;">
-          <div class="cat-meta" th:if="${cat.allocated}">
-            <span th:text="${cat.categoryCurrentSpent}"></span>
-            <span class="text-muted"> / </span>
-            <span th:text="${cat.baseCategoryBudgetAmount}"></span>
-          </div>
+                <div class="text-muted small mt-1" th:if="${cat.allocated}">
+                  顯示預算：<strong th:text="${cat.effectiveCategoryBudgetAmount}">0</strong>
+                </div>
+              </div>
+            </div>
 
-          <div class="cat-meta" th:if="${!cat.allocated}">
-            尚未分配
-          </div>
+            <!-- Allocated -->
+            <div class="mt-3" th:if="${cat.allocated}">
+              <div class="hs-cat-kpis">
+                <div class="hs-kpi">
+                  <div class="k">剩餘</div>
+                  <div class="v" th:text="${cat.availableAmount}">0</div>
+                </div>
 
-          <div class="text-muted small mt-1" th:if="${cat.allocated}">
-            顯示預算：<strong th:text="${cat.effectiveCategoryBudgetAmount}">0</strong>
+                <div class="hs-kpi" th:if="${cat.categoryOverSpentAmount > 0}">
+                  <div class="k text-danger">已超額</div>
+                  <div class="v text-danger" th:text="${cat.categoryOverSpentAmount}">0</div>
+                </div>
+
+                <div class="hs-kpi" th:if="${cat.categoryOverSpentAmount == 0}">
+                  <div class="k">使用率</div>
+                  <div class="v" th:text="${cat.categoryUsagePercent + '%'}">0%</div>
+                </div>
+              </div>
+
+              <div class="progress hs-progress mt-3">
+                <div class="progress-bar"
+                     th:classappend="${cat.progressBarBgClass}"
+                     th:style="'width:' + ${cat.displayUsagePercent} + '%'">
+                </div>
+              </div>
+
+              <div class="hs-cat-foot">
+                <span>使用率：<strong th:text="${cat.categoryUsagePercent + '%'}">0%</strong></span>
+                <span th:if="${cat.penalizedByOthers}">
+                  因其他分類超額，本分類預算已調整
+                </span>
+              </div>
+            </div>
+
+            <!-- Not allocated -->
+            <div class="mt-3" th:if="${!cat.allocated}">
+              <div class="small text-muted mb-2">⚠️ 本分類尚未分配預算</div>
+              <div class="fw-bold">
+                已發生消費：<span th:text="${cat.categoryCurrentSpent}"></span>
+              </div>
+              <div class="small text-muted mt-2">
+                建議先「重新分配」以恢復可追蹤狀態
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <!-- Allocated -->
-      <div class="mt-3" th:if="${cat.allocated}">
-        <!-- KPI：固定 3 顆，避免太擠 -->
-        <div class="hs-cat-kpi-grid">
-          <div class="hs-cat-kpi">
-            <div class="k">剩餘</div>
-            <div class="v" th:text="${cat.availableAmount}">0</div>
-          </div>
+    </div><!-- /hs-shell -->
 
-          <div class="hs-cat-kpi" th:if="${cat.categoryOverSpentAmount > 0}">
-            <div class="k text-danger">已超額</div>
-            <div class="v text-danger" th:text="${cat.categoryOverSpentAmount}">0</div>
-          </div>
-
-          <div class="hs-cat-kpi" th:if="${cat.categoryOverSpentAmount == 0}">
-            <div class="k">使用率</div>
-            <div class="v" th:text="${cat.categoryUsagePercent + '%'}">0%</div>
-          </div>
-
-          <div class="hs-cat-kpi">
-            <div class="k">目前已用</div>
-            <div class="v" th:text="${cat.categoryCurrentSpent}">0</div>
-          </div>
-        </div>
-
-        <!-- Progress -->
-        <div class="progress hs-progress mt-3">
-          <div class="progress-bar"
-               th:classappend="${cat.progressBarBgClass}"
-               th:style="'width:' + ${cat.displayUsagePercent} + '%'">
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="hs-cat-foot">
-          <span>使用率：<strong th:text="${cat.categoryUsagePercent + '%'}">0%</strong></span>
-          <span th:if="${cat.penalizedByOthers}">
-            因其他分類超額，本分類預算已調整
-          </span>
-        </div>
-      </div>
-
-      <!-- Not allocated -->
-      <div class="mt-3" th:if="${!cat.allocated}">
-        <div class="small text-muted mb-2">⚠️ 本分類尚未分配預算</div>
-        <div class="fw-bold">
-          已發生消費：<span th:text="${cat.categoryCurrentSpent}"></span>
-        </div>
-        <div class="small text-muted mt-2">
-          建議先「重新分配」以恢復可追蹤狀態
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
+  </div><!-- /hs-main-container -->
+</main>
 
 <!-- ==================================================
-     Modals / Scripts（保留原本邏輯 + 圖片預覽）
+     Modals / Scripts（原邏輯 + 圖片預覽）保留你原本版本
 ================================================== -->
 
 <div class="modal fade" id="addModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
     <div class="modal-content rounded-4">
 
-      <!-- ===== Header ===== -->
       <div class="modal-header border-0">
         <h5 class="fw-bold">➕ 新增消費</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
@@ -313,10 +309,8 @@
             請輸入「這一筆實際花了多少錢」，系統會自動計算預算狀態
           </p>
 
-          <!-- ⭐ 關鍵：分類識別 -->
           <input type="hidden" name="categoryName" id="addCategoryName">
 
-          <!-- 日期 -->
           <div class="mb-3">
             <label class="form-label small text-muted">消費日期</label>
             <input type="date"
@@ -326,7 +320,6 @@
                    required>
           </div>
 
-          <!-- 即時預算顯示 -->
           <div class="border rounded-4 p-3 mb-4 bg-light">
             <div class="d-flex justify-content-between mb-1">
               <strong id="addCategoryDisplay">-</strong>
@@ -351,7 +344,6 @@
             </div>
           </div>
 
-          <!-- 金額 -->
           <div class="mb-3">
             <label class="form-label fw-bold">消費金額</label>
             <input type="number"
@@ -362,7 +354,6 @@
                    required>
           </div>
 
-          <!-- 備註 -->
           <div class="mb-3">
             <label class="form-label small text-muted">備註（選填）</label>
             <textarea class="form-control"
@@ -370,7 +361,6 @@
                       rows="2"></textarea>
           </div>
 
-          <!-- 圖片 -->
           <div class="mb-3">
             <label class="form-label fw-bold">📷 交易圖片（選填）</label>
             <input type="file"
@@ -399,9 +389,6 @@
   </div>
 </div>
 
-<!-- ==================================================
-     Reset Allocation Modal
-================================================== -->
 <div class="modal fade" id="resetAllocationModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4">
@@ -442,9 +429,6 @@
   </div>
 </div>
 
-<!-- ==================================================
-     Scripts（原邏輯 + 圖片預覽）
-================================================== -->
 <script th:inline="javascript">
 function applyBar(bar, percent) {
   const p = Math.min(120, Math.max(0, percent));
@@ -543,7 +527,6 @@ function updateAddPreview(input) {
   applyBar(document.getElementById('addBar'), usage);
 }
 
-/* ===== 圖片即時預覽 ===== */
 addImage.addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;

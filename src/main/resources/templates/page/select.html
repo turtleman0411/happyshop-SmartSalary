@@ -21,9 +21,12 @@
 ========================= -->
 
 <div th:replace="~{layout/month-bar :: monthBar(
-    '/happyshop/select',
-    ${view.month}
+  baseUrl='/happyshop/select',
+  month=${view.month},
+  themeClass=${themeClass != null ? themeClass : ''}
 )}"></div>
+
+
 
 <!-- =========================
      Main Content

@@ -1,64 +1,102 @@
 /* ======================================================
-   result.css (BOSS / NO COLLISION)
+   result.css (RE-DESIGN / NO COLLISION)
    Scope: body.result only
 ====================================================== */
 
 body.result{
-  --bg:#f5f5f7;
-  --text:#1d1d1f;
-  --muted:#6e6e73;
+  --bg: #f5f5f7;
+  --panel: rgba(255,255,255,.92);
+  --panel-border: rgba(0,0,0,.08);
+  --text: #111;
+  --muted: #6e6e73;
 
-  --card: rgba(255,255,255,.92);
-  --border: rgba(0,0,0,.08);
-  --shadow: 0 12px 26px rgba(0,0,0,.08);
+  --shadow: 0 18px 50px rgba(0,0,0,.10);
+  --shadow-soft: 0 10px 26px rgba(0,0,0,.08);
 
-  --pill: rgba(245,245,247,.88);
+  color: var(--text) !important;
+  background: var(--bg) !important;
+  overflow-x: hidden;
 
-  background: var(--bg);
-  color: var(--text);
+  /* ✅ Typography sharpen（解決粗體糊、中文不清楚） */
+  font-family:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "SF Pro Display",
+    "PingFang TC", "PingFang SC",
+    "Noto Sans TC", "Noto Sans SC",
+    "Microsoft JhengHei", "Microsoft YaHei",
+    "Segoe UI", Roboto, Arial, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
 }
 
-/* Container：讓內容不要鋪滿整個螢幕（舒服很多） */
-body.result .container.my-4{
+/* ✅ Home 同款背景渲染（但更柔） */
+body.result .hs-result-bg{
+  min-height: calc(100vh - 120px);
+  padding: 18px 0 60px;
+
+  background:
+    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.16), rgba(245,245,247,0) 60%),
+    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), rgba(245,245,247,0) 60%),
+    linear-gradient(180deg, #eaf2ff 0%, #f5f5f7 48%, #f5f5f7 100%);
+}
+
+/* ✅ Result 主體寬度（不碰 navbar 的 container） */
+body.result .hs-main-container{
   max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+/* ✅ 只有「沒有任何 theme- 類別」才清背景 */
+body.result .hs-monthbar:not([class*="theme-"]){
+  background: transparent;
+  border-bottom: 0;
+  box-shadow: none;
 }
 
 /* ======================================================
-   Section Card
+   Month Bar (Seamless)
+   你的 fragment 是 class="hs-monthbar"
 ====================================================== */
-body.result .hs-card{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
+
+body.result .hs-monthbar .container{
+  background: transparent !important;
+}
+body.result .hs-monthbar .cat-card{
+  /* 你 month-bar 內層目前用 cat-card 這個 class，會吃到白底/邊框 */
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 8px 0 !important;
+}
+body.result .hs-monthbar .btn{
+  border-radius: 14px;
+  font-weight: 700;
 }
 
-body.result .hs-card.pad{
-  padding: 16px;
+/* ======================================================
+   Panels / Layout
+====================================================== */
+body.result .hs-panel{
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 26px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
+body.result .hs-pad{ padding: 16px; }
 @media (min-width: 768px){
-  body.result .hs-card.pad{ padding: 18px; }
+  body.result .hs-pad{ padding: 18px; }
 }
 
-/* Label */
-body.result .hs-label{
-  color: var(--muted);
-  font-weight: 800;
-  letter-spacing: .2px;
-  font-size: .92rem;
-}
-
-/* ======================================================
-   Top layout (monthly dashboard)
-====================================================== */
-body.result .result-shell{
-  display: grid;
-  gap: 14px;
-}
+body.result .hs-shell{ display:grid; gap: 14px; }
 
 body.result .hs-top-grid{
-  display: grid;
+  display:grid;
   grid-template-columns: 1fr;
   gap: 14px;
 }
@@ -70,34 +108,62 @@ body.result .hs-top-grid{
 }
 
 /* ======================================================
-   Buttons (keep bootstrap but nicer)
+   Label / Help / Chip
 ====================================================== */
-body.result .btn{
-  border-radius: 14px;
+body.result .hs-label{
+  color: var(--muted);
+  font-weight: 800;     /* ✅ 原本 900/950 容易糊，降一階更清楚 */
+  letter-spacing: .2px;
+  font-size: .92rem;
+}
+body.result .hs-help{
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.6;
+}
+
+body.result .hs-chip{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(245,245,247,.86);
+  color: rgba(0,0,0,.78);
   font-weight: 800;
-  letter-spacing: .1px;
+  min-height: 44px;
 }
 
 /* ======================================================
-   KPI tiles (月度 4 格)
+   Buttons (讓字不會過粗 + 更像 iOS)
 ====================================================== */
-body.result .kpi-tile{
-  background: var(--pill);
-  border: 1px solid rgba(0,0,0,.06);
+body.result .btn,
+body.result .hs-btn{
   border-radius: 16px;
-  padding: 10px 12px;
+  font-weight: 700;     /* ✅ 按鈕不要用 900，會糊又土 */
+  letter-spacing: 0;
+  min-height: 48px;
 }
 
-body.result .kpi-label{
+/* ======================================================
+   KPI
+====================================================== */
+body.result .hs-kpi{
+  background: rgba(245,245,247,.86);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+body.result .hs-kpi .k{
   color: var(--muted);
   font-weight: 800;
   font-size: .82rem;
 }
-
-body.result .kpi-value{
-  font-weight: 950;
-  font-size: 1.15rem;
+body.result .hs-kpi .v{
+  font-weight: 900;     /* ✅ 950 改 900，數字會更銳利 */
   letter-spacing: .2px;
+  font-size: 1.15rem;
   margin-top: 2px;
 }
 
@@ -108,88 +174,142 @@ body.result .hs-progress{
   height: 10px;
   border-radius: 999px;
   background: rgba(0,0,0,.06);
-  overflow: hidden;
+  overflow:hidden;
 }
 body.result .hs-progress .progress-bar{ border-radius: 999px; }
 
 /* ======================================================
-   Category Cards (重點：舒服、好讀、可掃視)
+   Empty State (Result only) — clean & readable
+   ✅ 你原本 empty 相關區塊重複兩套，這裡只留一套
+====================================================== */
+body.result .hs-empty-wrap{
+  display:flex;
+  justify-content:center;
+  padding: 40px 12px;
+}
+
+body.result .hs-empty-card{
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
+
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 22px;
+  box-shadow: 0 18px 46px rgba(0,0,0,.10);
+  padding: 34px 18px;
+}
+
+@media (min-width: 768px){
+  body.result .hs-empty-card{ padding: 42px 26px; }
+}
+
+body.result .hs-empty-icon{
+  font-size: 54px;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+body.result .hs-empty-title{
+  font-weight: 900; /* ✅ 950 → 900 更清楚 */
+  letter-spacing: -0.3px;
+  font-size: clamp(1.55rem, 2.6vw, 2.05rem);
+  margin: 0 0 10px 0;
+  color: rgba(17,17,17,.96);
+}
+
+body.result .hs-empty-desc{
+  margin: 0 auto 18px auto;
+  max-width: 560px;
+  color: rgba(29,29,31,.68);
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+body.result .hs-empty-actions{
+  display:flex;
+  justify-content:center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+body.result .hs-empty-btn-primary{
+  background: #0a84ff !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  color:#fff !important;
+  box-shadow: 0 10px 18px rgba(0,0,0,.12) !important;
+}
+
+body.result .hs-empty-btn-ghost{
+  background: rgba(10,132,255,.08) !important;
+  border: 1px solid rgba(10,132,255,.22) !important;
+  color: #075fd0 !important;
+}
+
+/* ======================================================
+   Category Cards
 ====================================================== */
 body.result .hs-cat-card{
   transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
 }
 body.result .hs-cat-card.cat-card:hover{
   transform: translateY(-2px);
-  box-shadow: 0 18px 42px rgba(0,0,0,.12);
+  box-shadow: var(--shadow);
 }
 body.result .disabled-card{
   opacity: .72;
   cursor: not-allowed;
-  filter: grayscale(.12);
+  filter: grayscale(.10);
 }
 
-/* Category header */
-body.result .cat-title{
-  font-weight: 950;
+body.result .hs-cat-title{
+  font-weight: 900; /* ✅ 950 → 900 */
   letter-spacing: -0.2px;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
 }
-
-body.result .cat-meta{
+body.result .hs-cat-meta{
   color: var(--muted);
   font-weight: 800;
   font-size: .92rem;
   white-space: nowrap;
 }
 
-/* 狀態 badge：更像 iOS tag，不要太吵 */
-body.result .hs-state-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 999px;
+/* badge */
+body.result .hs-badge{
+  display:inline-flex;
+  align-items:center;
   padding: 6px 10px;
-  font-weight: 900;
-  font-size: .78rem;
+  border-radius: 999px;
   border: 1px solid rgba(0,0,0,.10);
-  background: rgba(245,245,247,.9);
-  color: rgba(0,0,0,.75);
+  background: rgba(245,245,247,.90);
+  color: rgba(0,0,0,.72);
+  font-weight: 800; /* ✅ 950 → 800 */
+  font-size: .78rem;
+}
+body.result .hs-badge.is-danger{
+  border-color: rgba(255,59,48,.25);
+  background: rgba(255,59,48,.10);
+  color: rgba(255,59,48,.95);
+}
+body.result .hs-badge.is-warn{
+  border-color: rgba(255,159,10,.25);
+  background: rgba(255,159,10,.12);
+  color: rgba(120,70,0,.95);
 }
 
-/* KPI pills inside category (用膠囊取代大塊格子) */
-body.result .hs-cat-kpi-grid{
-  display: grid;
+/* category KPIs */
+body.result .hs-cat-kpis{
+  display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
-
 @media (max-width: 576px){
-  body.result .hs-cat-kpi-grid{
-    grid-template-columns: 1fr;
-  }
+  body.result .hs-cat-kpis{ grid-template-columns: 1fr; }
 }
 
-body.result .hs-cat-kpi{
-  background: var(--pill);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 16px;
-  padding: 10px 12px;
-}
-
-body.result .hs-cat-kpi .k{
-  color: var(--muted);
-  font-weight: 800;
-  font-size: .80rem;
-}
-
-body.result .hs-cat-kpi .v{
-  font-weight: 950;
-  font-size: 1.05rem;
-  letter-spacing: .2px;
-  margin-top: 2px;
-}
-
-/* footer line */
+/* foot */
 body.result .hs-cat-foot{
   display:flex;
   justify-content: space-between;
@@ -200,7 +320,15 @@ body.result .hs-cat-foot{
   font-size: .88rem;
 }
 
-/* ======================================================
-   Empty / text spacing
-====================================================== */
 body.result .small{ line-height: 1.45; }
+/* ======================================================
+   Buttons (vertical centering fix)
+====================================================== */
+body.result .btn,
+body.result .hs-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 1.2; /* 關鍵：不要用 bootstrap 預設 */
+}
