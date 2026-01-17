@@ -395,3 +395,35 @@ body.home .hs-btn{
     display: none;
   }
 }
+/* ===============================
+   Metrics：桌機橫排 / 手機直排（修正 100% 卡片邊緣問題）
+=============================== */
+
+/* 桌機：橫向三卡＋分隔線 */
+@media (min-width: 768px){
+  body.home .hs-metrics{
+    flex-direction: row;
+  }
+
+  body.home .hs-divider{
+    display: block;
+  }
+}
+
+/* 手機：改成真正的直向卡片列表 */
+@media (max-width: 767px){
+  body.home .hs-metrics{
+    flex-direction: column;      /* 🔥 關鍵 */
+    align-items: stretch;
+    gap: 16px;                   /* 用 gap，不用 divider */
+  }
+
+  body.home .hs-divider{
+    display: none !important;    /* 完全移除 */
+  }
+
+  body.home .hs-metric{
+    width: 100%;
+    margin: 0;                   /* 清掉 wrap 殘留 */
+  }
+}
