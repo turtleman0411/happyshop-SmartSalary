@@ -20,6 +20,8 @@ import com.example.demo.presentation.dto.request.BudgetAllocationRequest;
 import com.example.demo.presentation.dto.request.LoginForm;
 import com.example.demo.presentation.dto.request.RegisterForm;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -135,7 +137,21 @@ public class CommandController {
         return "redirect:/happyshop/result?month=" + month;
     }
 
+    @PostMapping("/user/logout")
+    public String logout(HttpSession session, HttpServletResponse response) {
 
+        // 1) 清 session
+        session.invalidate();
+
+        // 2) 清 remember-me cookie（名稱要跟你 interceptor 用的一樣）
+        Cookie cookie = new Cookie("REMEMBER_ME", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
+        return "redirect:/happyshop/home";
+    }
 
 
 }

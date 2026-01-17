@@ -41,9 +41,20 @@ public class PageController {
  
 
     @GetMapping("/home")
-    public String home() {
+    public String home(
+            @RequestParam(required = false) YearMonth month,
+            @SessionAttribute(value = "loginUserId", required = false) UserId userId
+    ) {
+        // ✅ 若 remember-me 已補上 session（或本來就有登入）
+        if (userId != null) {
+            YearMonth targetMonth = (month != null) ? month : YearMonth.now();
+            return "redirect:/happyshop/result?month=" + targetMonth;
+        }
+
+        // ❌ 沒登入才顯示首頁
         return "page/home";
     }
+
     @GetMapping("/login")
     public String login(Model model){
         model.addAttribute("login", new LoginForm());
@@ -113,8 +124,8 @@ public String transactionPage(
         @RequestParam(required = false) String category,
         Model model
 ) {
-    if (userId == null) {
-        return "redirect:/happyshop/home";
+   if (userId == null) {
+        return "redirect:/happyshop/home?month=" + month;
     }
 
     TransactionPageFlowResult result =

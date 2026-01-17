@@ -23,9 +23,18 @@ public class UserId implements Serializable {
         return new UserId(UUID.randomUUID().toString());
     }
 
+    public static UserId from(String value) {
+    if (value == null || value.isBlank()) {
+        throw new IllegalArgumentException("userId cannot be blank");
+    }
+    return new UserId(value);
+}
+
     public String value() {
         return value;
     }
+
+
 
     /* =========================
      * equals / hashCode（必要）
@@ -42,5 +51,7 @@ public class UserId implements Serializable {
     public int hashCode() {
         return value.hashCode();
     }
+
+    
 }
 

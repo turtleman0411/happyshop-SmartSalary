@@ -13,36 +13,29 @@
     <div class="hs-navbar-actions">
 
       <!-- 未登入 -->
-      <div th:if="${session.loginUser == null}"
+      <div th:if="${session.loginUserId == null}"
            class="d-flex align-items-center gap-2">
-
-        <!-- ✅ 移除 btn，避免被 result.css / bootstrap btn 覆蓋 -->
         <a th:href="@{/happyshop/login}"
-           class="hs-nav-btn hs-nav-btn-ghost">
-          登入
-        </a>
-
+           class="hs-nav-btn hs-nav-btn-ghost">登入</a>
         <a th:href="@{/happyshop/register}"
-           class="hs-nav-btn hs-nav-btn-primary">
-          註冊
-        </a>
-
+           class="hs-nav-btn hs-nav-btn-primary">註冊</a>
       </div>
 
       <!-- 已登入 -->
-      <div th:if="${session.loginUser != null}"
+      <div th:if="${session.loginUserId != null}"
            class="d-flex align-items-center gap-2">
 
-        <span class="badge hs-nav-badge"
-              th:text="${session.loginUser.mode()}">
-          USER
+        <span class="badge hs-nav-badge">
+          已登入
         </span>
 
-        <!-- ✅ 移除 btn，避免被 result.css / bootstrap btn 覆蓋 -->
-        <a th:href="@{/happyshop/logout}"
-           class="hs-nav-btn hs-nav-btn-danger">
-          登出
-        </a>
+ <form th:action="@{/user/logout}" method="post" class="m-0">
+  <button type="submit"
+          class="hs-nav-btn hs-nav-btn-danger"
+          onclick="return confirm('確定要登出嗎？');">
+    登出
+  </button>
+</form>
 
       </div>
 
