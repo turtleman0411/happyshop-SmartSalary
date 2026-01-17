@@ -22,6 +22,7 @@ import com.example.SmartSpent.presentation.dto.request.LoginForm;
 import com.example.SmartSpent.presentation.dto.request.RegisterForm;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -79,41 +80,49 @@ public String login(
 
 
 
-    @PostMapping("/select")
-    public String submitSelect(
-            @SessionAttribute("loginUserId") UserId userId,
-            @ModelAttribute BudgetAllocationRequest request
-    ) {
-        userFlow.configureMonthlyBudget(
-                userId,
-                request.month(),
-                request.toCategoryPercentMap()
-        );
-
-            System.out.println("🔥 收到 JSON");
-            System.out.println("month = " + request.month());
-            System.out.println("percents = " + request.percents());
-            System.out.println("raw request = " + request);
-
-        // ⭐ 成功後直接回首頁
-        return "redirect:/happyshop/result?month=" + request.month();
-
+@PostMapping("/select")
+public String submitSelect(
+        @ModelAttribute BudgetAllocationRequest request,
+        HttpSession session,
+        HttpServletRequest httpRequest
+) {
+    UserId userId = (UserId) httpRequest.getAttribute("loginUserId");
+    if (userId == null) {
+        userId = (UserId) session.getAttribute("loginUserId");
+    }
+    if (userId == null) {
+        return "redirect:/happyshop/home";
     }
 
-    @PostMapping("/transaction/add")
-    public String addTransaction(
-            @RequestParam YearMonth month,
-            @SessionAttribute("loginUserId") UserId userId,
-            @ModelAttribute AddTransactionRequest request
-    ) {
-        transactionFlow.addTransaction(
-                userId,
-                month,
-                request
-        );
+    userFlow.configureMonthlyBudget(
+            userId,
+            request.month(),
+            request.toCategoryPercentMap()
+    );
 
-        return "redirect:/happyshop/result?month=" + month;
+    return "redirect:/happyshop/result?month=" + request.month();
+}
+
+
+@PostMapping("/transaction/add")
+public String addTransaction(
+        @RequestParam YearMonth month,
+        @ModelAttribute AddTransactionRequest request,
+        HttpSession session,
+        HttpServletRequest httpRequest
+) {
+    UserId userId = (UserId) httpRequest.getAttribute("loginUserId");
+    if (userId == null) {
+        userId = (UserId) session.getAttribute("loginUserId");
     }
+    if (userId == null) {
+        return "redirect:/happyshop/home";
+    }
+
+    transactionFlow.addTransaction(userId, month, request);
+    return "redirect:/happyshop/result?month=" + month;
+}
+
 
     @PostMapping("happyshop/month/reset")
     public String resetMonth(
@@ -125,22 +134,34 @@ public String login(
         return "redirect:/happyshop/select?month=" + month;
     }
 
-    @PostMapping("/transaction/delete")
-    public String delete(
-            @RequestParam Long transactionId,
-            @RequestParam YearMonth month,
-            @SessionAttribute("loginUserId") UserId userId
-    ) {
-        System.out.println("🧨 delete txId = " + transactionId);
-        System.out.println("🧨 delete month = " + month);
-        System.out.println("🧨 delete userId = " + userId);
-        transactionFlow.deleteTransaction(
-                userId,
-                month,
-                TransactionId.of(transactionId)
-        );
-        return "redirect:/happyshop/transactions?month=" + month;
+@PostMapping("/transaction/delete")
+public String delete(
+        @RequestParam Long transactionId,
+        @RequestParam YearMonth month,
+        HttpSession session,
+        HttpServletRequest request
+) {
+    // 🔑 優先用 interceptor 放的（remember-me / demo）
+    UserId userId = (UserId) request.getAttribute("loginUserId");
+
+    // 🚧 fallback session（正式登入）
+    if (userId == null) {
+        userId = (UserId) session.getAttribute("loginUserId");
     }
+
+    if (userId == null) {
+        return "redirect:/happyshop/home";
+    }
+
+    transactionFlow.deleteTransaction(
+            userId,
+            month,
+            TransactionId.of(transactionId)
+    );
+
+    return "redirect:/happyshop/transactions?month=" + month;
+}
+
     
     // CommandController.java
     @PostMapping("/income/update")
