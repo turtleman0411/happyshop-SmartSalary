@@ -435,4 +435,40 @@ body.result .hs-btn{
   body.result .hs-empty-actions .btn{
     width: 100%;
   }
+  body.result .hs-chip{
+  white-space: nowrap;   /* 🔥 核心：永遠一行 */
+}
+/* 使用率整體 */
+body.result .hs-chip{
+  white-space: nowrap;
+}
+
+/* 使用率數字（chip 裡面的 strong） */
+body.result .hs-chip strong{
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.2px;
+}
+
+/* 手機再微調 */
+@media (max-width: 767px){
+  body.result .hs-chip{
+    padding: 8px 10px;
+    gap: 4px;
+  }
+
+  body.result .hs-chip strong{
+    font-size: 1.15rem;
+  }
+}
+@media (max-width: 360px){
+  body.result .hs-chip::before{
+    content: "使用";
+  }
+
+  body.result .hs-chip{
+    font-size: .9rem;
+  }
+}
+
 }

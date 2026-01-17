@@ -106,9 +106,6 @@ public String result(
         return "redirect:/happyshop/home";
     }
 
-    // 🔥 關鍵：用完就清，讓下次不能再靠 session
-    session.removeAttribute("loginUserId");
-
     YearMonth targetMonth =
             (month != null) ? month : YearMonth.now();
 
