@@ -390,3 +390,8 @@ body.home .hs-btn{
     padding-bottom: 48px;
   }
 }
+@media (max-width: 767px){
+  body.home .hs-divider{
+    display: none;
+  }
+}
