@@ -163,16 +163,21 @@ public String delete(
 }
 
     
-    // CommandController.java
-    @PostMapping("/income/update")
-    public String updateIncome(
-            @RequestParam YearMonth month,
-            @RequestParam int income,
-            @SessionAttribute("loginUserId") UserId userId
-    ) {
-        userFlow.updateIncome(userId, month, income);
-        return "redirect:/happyshop/result?month=" + month;
+@PostMapping("/income/update")
+public String updateIncome(
+        @RequestParam YearMonth month,
+        @RequestParam int income,
+        HttpServletRequest request
+) {
+    UserId userId = (UserId) request.getAttribute("loginUserId");
+    if (userId == null) {
+        return "redirect:/happyshop/home";
     }
+
+    userFlow.updateIncome(userId, month, income);
+    return "redirect:/happyshop/result?month=" + month;
+}
+
 
 @PostMapping("/user/logout")
 public String logout(HttpSession session, HttpServletResponse response) {
