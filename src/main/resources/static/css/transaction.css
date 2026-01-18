@@ -1,217 +1,215 @@
 /* ======================================================
-   Transaction Page — Premium Result-Style Skin
-   Scope: body.transaction only
+   Transaction / Select — Unified Premium System Skin
+   Scope:
+   - body.transaction
+   - Select Category Card (no Bootstrap dependency)
 ====================================================== */
 
-body.transaction {
-  /* ===== Design Tokens（與 Home / Result 對齊） ===== */
+/* ===============================
+   Global Tokens
+=============================== */
+:root{
   --bg: #f5f5f7;
   --panel-bg: rgba(255,255,255,.96);
-  --panel-border: rgba(0,0,0,.06);
+  --panel-border: rgba(0,0,0,.08);
   --text-main: #1d1d1f;
   --text-muted: #6e6e73;
-  --accent: #0a84ff;
-  --danger: #ff3b30;
 
-  background: var(--bg);
-  color: var(--text-main);
-
-  font-family:
-    -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", "PingFang TC",
-    "Noto Sans TC", "Microsoft JhengHei",
-    system-ui, sans-serif;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --blue: #0a84ff;
+  --green: #34c759;
+  --yellow: #ffd60a;
+  --red: #ff3b30;
 }
 
 /* ======================================================
-   🌈 World Background（與 Home 完全一致）
+   Transaction Page Base
 ====================================================== */
+body.transaction{
+  background: var(--bg);
+  color: var(--text-main);
+  font-family:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text","PingFang TC","Noto Sans TC",
+    system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
+/* World Background */
 body.transaction .hs-result-bg{
-  min-height: 100vh; /* 🔥 關鍵：防止只渲染一半 */
-
+  min-height: 100vh;
   background:
-    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.18), rgba(245,245,247,0) 60%),
-    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), rgba(245,245,247,0) 60%),
-    linear-gradient(180deg, #eaf2ff 0%, #f5f5f7 48%, #f5f5f7 100%);
-
+    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.18), transparent 60%),
+    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), transparent 60%),
+    linear-gradient(180deg,#eaf2ff 0%,#f5f5f7 48%,#f5f5f7 100%);
   padding: 24px 0 64px;
 }
 
 /* ======================================================
-   Result 世界容器
+   Panels
 ====================================================== */
-
-body.transaction .hs-main-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-body.transaction .hs-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ======================================================
-   Panel（卡片世界）
-====================================================== */
-
-body.transaction .hs-panel {
+body.transaction .hs-panel{
   background: var(--panel-bg);
-  border-radius: 22px;
   border: 1px solid var(--panel-border);
-
+  border-radius: 22px;
   box-shadow:
     0 1px 0 rgba(0,0,0,.04),
     0 18px 40px rgba(0,0,0,.08);
 }
 
-body.transaction .hs-pad {
-  padding: 18px 20px;
-}
+body.transaction .hs-pad{ padding:18px 20px; }
 
 /* ======================================================
-   操作列（分類 + 返回）
+   CATEGORY CARD — SYSTEM STYLE (NO BOOTSTRAP)
 ====================================================== */
-
-body.transaction select.form-select {
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.12);
-  font-size: .9rem;
-  padding: 6px 12px;
+.category-group{
+  background:#fff;
+  border-radius:20px;
+  padding:8px;
+  border:1px solid rgba(0,0,0,.08);
 }
 
-body.transaction .hs-btn {
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: .9rem;
+.category-card{
+  position:relative;
+  width:100%;
+  display:block;
+  cursor:pointer;
 }
 
-/* ======================================================
-   Table（Desktop）
-====================================================== */
+.category-card + .category-card{ margin-top:6px; }
 
-body.transaction table {
-  font-size: .95rem;
-}
-
-body.transaction thead th {
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: .8rem;
-  border-bottom: 1px solid rgba(0,0,0,.08);
-}
-
-body.transaction tbody tr {
-  transition: background .15s ease;
-}
-
-body.transaction tbody tr:hover {
-  background: rgba(0,0,0,.02);
-}
-
-body.transaction tbody td {
-  vertical-align: middle;
-}
-
-/* 金額強調 */
-body.transaction td .fw-bold {
-  font-weight: 700;
-  letter-spacing: .2px;
-}
-
-/* ======================================================
-   圖片縮圖（桌機 + 手機共用）
-====================================================== */
-
-body.transaction .transaction-thumb {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 14px;
-  background: rgba(0,0,0,.04);
-  cursor: zoom-in;
+.category-card-inner{
+  position:relative;
+  background:#fff;
+  border:1px solid rgba(0,0,0,.12);
+  border-radius:14px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:14px;
 
   transition:
-    transform .15s ease,
-    box-shadow .15s ease;
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .08s ease;
 }
 
-body.transaction .transaction-thumb:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+.category-card:hover .category-card-inner{
+  border-color:rgba(0,0,0,.18);
 }
 
-/* ======================================================
-   刪除按鈕（Icon Only）
-====================================================== */
-
-body.transaction .btn-icon-delete {
-  border: none;
-  background: transparent;
-  color: var(--danger);
-  font-size: 1.05rem;
-  padding: 6px;
-  border-radius: 999px;
-  cursor: pointer;
-
-  transition:
-    background .15s ease,
-    transform .1s ease;
+.category-card:active .category-card-inner{
+  transform:scale(.985);
+  box-shadow:0 4px 12px rgba(0,0,0,.10);
 }
 
-body.transaction .btn-icon-delete:hover {
-  background: rgba(255,59,48,.12);
+/* Left Status Bar (Base) */
+.category-card.manual-set .category-card-inner::before{
+  content:'';
+  position:absolute;
+  top:10px;
+  bottom:10px;
+  left:8px;
+  width:4px;
+  border-radius:999px;
 }
 
-body.transaction .btn-icon-delete:active {
-  transform: scale(.92);
+/* Safe */
+.category-card.level-safe.manual-set .category-card-inner::before{
+  background:linear-gradient(180deg,#34c759,#2fb94f);
 }
 
-/* ======================================================
-   Mobile Cards（Apple Wallet / Settings）
-====================================================== */
+/* Warning */
+.category-card.level-warn.manual-set .category-card-inner::before{
+  background:linear-gradient(180deg,#ffd60a,#ffcc00);
+}
 
-@media (max-width: 767px) {
+/* Danger */
+.category-card.level-danger.manual-set .category-card-inner::before{
+  background:linear-gradient(180deg,#ff453a,#ff3b30);
+}
 
-  body.transaction .hs-panel {
-    border-radius: 24px;
-  }
-
-  body.transaction .hs-pad {
-    padding: 16px;
-  }
-
-  body.transaction .thumb-slot-right {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-    background: rgba(0,0,0,.05);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  body.transaction .text-body {
-    font-size: .92rem;
-    line-height: 1.55;
-    color: #3a3a3c;
-  }
+/* Text emphasis */
+.category-card.manual-set .fw-semibold{
+  color:#1f7a3a;
 }
 
 /* ======================================================
-   Modal Image（避免撐爆）
+   Percent Input (Neutral)
 ====================================================== */
+.category-card .percent-input{
+  width:84px;
+  padding:6px 8px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.18);
+  font-size:.9rem;
+  text-align:right;
+  background:#fff;
+}
 
-body.transaction #imageModal img {
-  max-width: 100%;
-  max-height: 90vh;
-  object-fit: contain;
+.category-card .percent-input:disabled{
+  background:rgba(0,0,0,.04);
+  color:#9a9aa0;
+}
+
+/* ======================================================
+   Mobile Polish
+====================================================== */
+@media (max-width:576px){
+  .category-card-inner{
+    border-radius:16px;
+    padding:14px;
+  }
+
+  .category-card.manual-set .category-card-inner::before{
+    left:6px;
+    width:3px;
+  }
+
+  .category-card .percent-input{
+    width:72px;
+    font-size:.85rem;
+  }
+}
+
+/* ======================================================
+   Table / Thumbnail / Buttons (Transaction)
+====================================================== */
+body.transaction table{ font-size:.95rem; }
+
+body.transaction thead th{
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--text-muted);
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+
+body.transaction tbody tr:hover{
+  background:rgba(0,0,0,.02);
+}
+
+body.transaction .transaction-thumb{
+  width:56px;
+  height:56px;
+  border-radius:14px;
+  object-fit:cover;
+  background:rgba(0,0,0,.04);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+
+body.transaction .transaction-thumb:hover{
+  transform:scale(1.04);
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+
+body.transaction .btn-icon-delete{
+  border:none;
+  background:transparent;
+  color:var(--red);
+  font-size:1.05rem;
+  padding:6px;
+  border-radius:999px;
+}
+
+body.transaction .btn-icon-delete:hover{
+  background:rgba(255,59,48,.12);
 }

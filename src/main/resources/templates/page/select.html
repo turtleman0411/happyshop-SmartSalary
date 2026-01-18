@@ -1,119 +1,86 @@
 <!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/head :: head('設定分類｜HappyShop', 'select.css')}"></head>
 
-<html lang="zh"
-      xmlns:th="http://www.thymeleaf.org">
+<body class="select">
 
-<head th:replace="~{layout/head :: head('HappyShop — 讓薪水變聰明', 'home.css')}"></head>
-
-
-<body>
-
-<!-- =========================
-     Navbar（Select 階段不帶 month）
-========================= -->
-
-<div th:replace="~{layout/navbar :: navbar(
-    @{/happyshop/home}
-)}"></div>
-
-<!-- =========================
-     Month Bar（唯一吃月份：view.month）
-========================= -->
+<div th:replace="~{layout/navbar :: navbar(@{/happyshop/home})}"></div>
 
 <div th:replace="~{layout/month-bar :: monthBar(
   baseUrl='/happyshop/select',
-  month=${view.month},
-  themeClass=${themeClass != null ? themeClass : ''}
-)}"></div>
+  month=${view.month}, themeClass=${themeClass != null ? themeClass : ''})}"></div>
 
+<main class="hs-select-bg">
+  <div class="hs-main">
 
+    <header class="hs-select-head">
+  <h1>📊 設定本月分類</h1>
+  <p th:text="|${view.month} 的預算比例設定|"></p>
 
-<!-- =========================
-     Main Content
-========================= -->
+    <form id="categoryForm"
+          th:action="@{/select}"
+          method="post">
 
-<div class="container my-4 page-card">
+      <input type="hidden" name="month" th:value="${view.month}"/>
 
-  <!-- 防呆保護層 -->
+      <!-- 分類群組 -->
+      <section th:each="entry : ${view.groupedCategories}"
+               class="hs-group">
 
-  <div th:if="${view.groupedCategories != null}">
+        <h2 class="hs-group-title" th:text="${entry.key}"></h2>
 
+        <div class="hs-card-list">
+          <label class="hs-cat-card"
+                 th:each="cat : ${entry.value}">
 
-<div class="mb-4 text-center">
-  <h2 class="fw-bold">📊 分類預算設定</h2>
-  <p class="text-muted mt-2"
-     th:text="${view.month} + ' 預算配置'"></p>
-</div>
+            <input type="checkbox"
+                   class="cat-check"
+                   th:name="'enabled[' + ${cat.categoryName()} + ']'"
+                   th:value="true"/>
 
-<!-- POST /select（對齊目前後端） -->
-<form th:action="@{/select}"
-      method="post"
-      id="categoryForm">
+            <div class="hs-cat-inner">
 
-  <!-- ⭐ 月份：只從 view 帶回 -->
-  <input type="hidden"
-         name="month"
-         th:value="${view.month}" />
+              <!-- 左側狀態條（CSS 畫） -->
 
-  <!-- 分類群組 -->
-  <div th:each="entry : ${view.groupedCategories}">
-    <h5 class="fw-bold mt-4 mb-2"
-        th:text="${entry.key}"></h5>
+              <div class="hs-cat-main">
+                <span class="hs-cat-name"
+                      th:text="${cat.categoryDisplayName()}"></span>
 
-    <div class="row g-2">
-      <div class="col-md-6 mb-2"
-           th:each="cat : ${entry.value}">
-        <!-- fragment/category-card：吃 CategoryCardView -->
-        <div th:replace="~{fragment/category-card :: categoryCard(${cat})}"></div>
-      </div>
-    </div>
+                <!-- 第二感知：icon -->
+                <span class="hs-cat-checkmark" aria-label="已設定">✔</span>
+              </div>
+
+              <input type="number"
+                     class="hs-cat-input"
+                     th:name="'percents[' + ${cat.categoryName()} + ']'"
+                     th:value="${cat.percent()}"
+                     min="0" max="100" step="1"
+                     placeholder="%"
+                     disabled/>
+            </div>
+
+          </label>
+        </div>
+      </section>
+
+      <footer class="hs-select-foot">
+        <div class="hs-total">
+          已分配：<strong id="percentTotal">0%</strong>
+        </div>
+
+        <div class="hs-actions">
+          <a th:href="@{/happyshop/home}" class="hs-btn ghost">取消</a>
+          <button type="submit" id="submitBtn" class="hs-btn primary" disabled>
+            下一步
+          </button>
+        </div>
+      </footer>
+
+    </form>
   </div>
+</main>
 
-  <div class="d-flex justify-content-between align-items-center mt-4">
-
-    <div class="text-muted small">
-      已分配：
-      <span id="percentTotal"
-            class="fw-bold text-danger">0%</span>
-    </div>
-
-    <div class="d-flex gap-2">
-      <a th:href="@{/happyshop/home}"
-         class="btn btn-outline-secondary">
-        取消
-      </a>
-
-      <button type="submit"
-              class="btn btn-primary"
-              id="submitBtn"
-              disabled>
-        下一步
-      </button>
-    </div>
-  </div>
-
-</form>
-
-  </div>
-</div>
-
-<!-- =========================
-     JS（尾端）
-========================= -->
-
-<script src="/js/category-card.js"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    if (window.initCategoryCard) {
-      window.initCategoryCard('[[${view.userMode}]]');
-    } else {
-      console.error('❌ initCategoryCard not found');
-    }
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/select-category.js" defer></script>
 
 </body>
 </html>
