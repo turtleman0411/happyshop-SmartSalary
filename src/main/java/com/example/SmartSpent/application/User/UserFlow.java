@@ -84,14 +84,19 @@ public class UserFlow {
     }
 
     public void updateIncome(
-            UserId userId,
-            YearMonth month,
-            int income
+        UserId userId,
+        YearMonth month,
+        int income
     ) {
-        monthService.updateIncome(
-                userId,
-                month,
-                IncomeAmount.of(income)
-        );
+    YearMonth targetMonth = (month != null)
+            ? month
+            : YearMonth.now(); // 或之後換成從 Session / Context 拿
+
+    monthService.updateIncome(
+            userId,
+            targetMonth,
+            IncomeAmount.of(income)
+    );
     }
+
 }

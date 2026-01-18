@@ -1,12 +1,12 @@
 package com.example.SmartSpent.application.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.example.SmartSpent.domain.value.UserId;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class RememberMeInterceptor implements HandlerInterceptor {
@@ -18,45 +18,23 @@ public class RememberMeInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) {
+    public boolean preHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler
+    ) {
 
-    String path = request.getRequestURI();
+        // 🔐 嘗試自動登入（是否成功由 Service 決定）
+        rememberMeService.authenticate(request)
+                .ifPresent(userId ->
+                        attachLoginUser(request, userId)
+                );
 
-    // login / register 永遠不跑
-    if (path.startsWith("/happyshop/login")
-        || path.startsWith("/happyshop/register")) {
+        // 一律放行，流程交給 Controller / Flow
         return true;
     }
 
-    // ✅ 關鍵：如果是「剛登出導回來的 home」
-    if ("1".equals(request.getHeader("X-LOGOUT"))) {
-        return true;
-    }
-System.out.println("PATH = " + path);
-
-
-        UserId userId = null;
-
-        // 1️⃣ session（一次性登入 flow）
-        var session = request.getSession(false);
-        if (session != null) {
-            userId = (UserId) session.getAttribute("loginUserId");
-        }
-
-        // 2️⃣ remember-me（長期登入）
-        if (userId == null) {
-            userId = rememberMeService
-                    .resolveUser(request)
-                    .orElse(null);
-        }
-
-        // 3️⃣ 放 request scope
-        if (userId != null) {
-            request.setAttribute("loginUserId", userId);
-        }
-
-        return true;
+    private void attachLoginUser(HttpServletRequest request, UserId userId) {
+        request.setAttribute("loginUserId", userId);
     }
 }

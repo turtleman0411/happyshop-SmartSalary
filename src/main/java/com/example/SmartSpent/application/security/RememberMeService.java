@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class RememberMeService {
 
-    // ✅ 你可以改名字
     public static final String COOKIE_NAME = "HAPPYSHOP_REMEMBER";
     public static final int COOKIE_DAYS = 30;
 
@@ -30,16 +29,35 @@ public class RememberMeService {
         this.repo = repo;
     }
 
-    /**
-     * 登入成功後呼叫：發 cookie + 存 DB
-     */
+    /* ===============================
+       對外唯一入口（給 Interceptor）
+       =============================== */
+
+    @Transactional(readOnly = true)
+    public Optional<UserId> authenticate(HttpServletRequest request) {
+        String rawToken = readCookie(request, COOKIE_NAME);
+        if (rawToken == null || rawToken.isBlank()) {
+            return Optional.empty();
+        }
+
+        String tokenHash = sha256Hex(rawToken);
+        LocalDateTime now = LocalDateTime.now();
+
+        return repo.findByTokenHash(tokenHash)
+                .filter(t -> !t.isExpired(now))
+                .map(t -> UserId.from(t.getUserId()));
+    }
+
+    /* ===============================
+       登入成功後呼叫
+       =============================== */
+
     @Transactional
     public void issue(UserId userId, HttpServletResponse response, boolean isHttps) {
-        // 同一個使用者只保留一個 token（簡單策略）
         repo.deleteByUserId(userId.toString());
 
-        String rawToken = generateRawToken();        // 給 cookie 的
-        String tokenHash = sha256Hex(rawToken);      // 存 DB 的
+        String rawToken = generateRawToken();
+        String tokenHash = sha256Hex(rawToken);
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expireAt = now.plusDays(COOKIE_DAYS);
@@ -48,11 +66,10 @@ public class RememberMeService {
 
         Cookie cookie = new Cookie(COOKIE_NAME, rawToken);
         cookie.setHttpOnly(true);
-        cookie.setSecure(isHttps); // Railway https => true
-        cookie.setPath("/");       // 讓全站都吃得到
+        cookie.setSecure(isHttps);
+        cookie.setPath("/");
         cookie.setMaxAge(COOKIE_DAYS * 24 * 60 * 60);
 
-        // SameSite 用 response header 補（Cookie API 沒有 SameSite）
         response.addCookie(cookie);
         response.addHeader("Set-Cookie",
                 String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Lax%s",
@@ -64,25 +81,10 @@ public class RememberMeService {
         );
     }
 
-    /**
-     * 進站自動登入：用 request cookie 去 DB 換回 userId
-     */
-    @Transactional(readOnly = true)
-    public Optional<UserId> resolveUser(HttpServletRequest request) {
-        String rawToken = readCookie(request, COOKIE_NAME);
-        if (rawToken == null || rawToken.isBlank()) return Optional.empty();
+    /* ===============================
+       登出
+       =============================== */
 
-        String tokenHash = sha256Hex(rawToken);
-        var now = LocalDateTime.now();
-
-        return repo.findByTokenHash(tokenHash)
-                .filter(t -> !t.isExpired(now))
-                .map(t -> UserId.from(t.getUserId())); // ✅ 若你沒有 from()，改成你自己的建構方式
-    }
-
-    /**
-     * 登出：清 DB + 清 cookie
-     */
     @Transactional
     public void clear(HttpServletRequest request, HttpServletResponse response, boolean isHttps) {
         String rawToken = readCookie(request, COOKIE_NAME);
@@ -104,6 +106,10 @@ public class RememberMeService {
                 )
         );
     }
+
+    /* ===============================
+       private helpers
+       =============================== */
 
     private String generateRawToken() {
         byte[] bytes = new byte[32];

@@ -78,80 +78,82 @@ public class PageController {
     @GetMapping("/select")
     public String select(
             @RequestParam(required = false) YearMonth month,
-            @SessionAttribute(value = "loginUserId",required = false) UserId userId,
-            HttpSession session,
+            HttpServletRequest request,
             Model model
     ) {
+        UserId userId = (UserId) request.getAttribute("loginUserId");
+        if (userId == null) {
+            return "redirect:/happyshop/home";
+        }
 
-        YearMonth targetMonth =
-            (month != null) ? month : YearMonth.now();
+        YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 
-        
-        SelectPageView view =
-                selectPageQueryService.getSelectPage(userId, targetMonth);
+        SelectPageView view = selectPageQueryService.getSelectPage(userId, targetMonth);
         String themeClass = monthThemeResolver.resolve(targetMonth);
+
         model.addAttribute("themeClass", themeClass);
         model.addAttribute("view", view);
 
         return "page/select";
     }
 
-@GetMapping("/result")
-public String result(
-        @RequestParam(required = false) YearMonth month,
-        HttpServletRequest request,
-        HttpSession session,
-        Model model
-) {
-    // 🔑 只從 request 取登入者（Interceptor 已處理 session / cookie）
-    UserId userId = (UserId) request.getAttribute("loginUserId");
 
-    // 🚧 登入邊界
-    if (userId == null) {
-        return "redirect:/happyshop/home";
-    }
+    @GetMapping("/result")
+    public String result(
+            @RequestParam(required = false) YearMonth month,
+            HttpServletRequest request,
+            HttpSession session,
+            Model model
+    ) {
+        // 🔑 只從 request 取登入者（Interceptor 已處理 session / cookie）
+        UserId userId = (UserId) request.getAttribute("loginUserId");
 
-    YearMonth targetMonth =
-            (month != null) ? month : YearMonth.now();
+        // 🚧 登入邊界
+        if (userId == null) {
+            return "redirect:/happyshop/home";
+        }
 
-    ResultPageView result =
-            resultPageFlow.getResultPage(userId, targetMonth);
-    String themeClass = monthThemeResolver.resolve(targetMonth);
-    model.addAttribute("view", result);
-    model.addAttribute("themeClass", themeClass);
-    model.addAttribute("loginUserId", userId);
-    return "page/result";
-}
+        YearMonth targetMonth =
+                (month != null) ? month : YearMonth.now();
 
-
-
-@GetMapping("/transactions")
-public String transactionPage(
-        HttpServletRequest request,
-        @RequestParam YearMonth month,
-        @RequestParam(required = false) String category,
-        Model model
-) {
-    UserId userId = (UserId) request.getAttribute("loginUserId");
-    YearMonth targetMonth =
-            (month != null) ? month : YearMonth.now();
-    if (userId == null) {
-        return "redirect:/happyshop/home?month=" + month;
-    }
-
-    TransactionPageView result =
-            transactionPageFlow.getTransactionPage(
-                    userId,
-                    month,
-                    category
-            );
-     String themeClass = monthThemeResolver.resolve(targetMonth);
+        ResultPageView result =
+                resultPageFlow.getResultPage(userId, targetMonth);
+        String themeClass = monthThemeResolver.resolve(targetMonth);
+        model.addAttribute("view", result);
         model.addAttribute("themeClass", themeClass);
-    model.addAttribute("view", result);
-    
-        
-    return "page/transaction-list";
-}
+        model.addAttribute("loginUserId", userId);
+        return "page/result";
+    }
+
+
+
+            @GetMapping("/transactions")
+        public String transactionPage(
+                HttpServletRequest request,
+                @RequestParam YearMonth month,
+                @RequestParam(required = false) String category,
+                Model model
+        ) {
+            UserId userId = (UserId) request.getAttribute("loginUserId");
+            YearMonth targetMonth =
+                    (month != null) ? month : YearMonth.now();
+            if (userId == null) {
+                return "redirect:/happyshop/home?month=" + month;
+            }
+
+            TransactionPageView result =
+                    transactionPageFlow.getTransactionPage(
+                            userId,
+                            month,
+                            category
+                    );
+            String themeClass = monthThemeResolver.resolve(targetMonth);
+                model.addAttribute("themeClass", themeClass);
+            model.addAttribute("view", result);
+            
+                
+            return "page/transaction-list";
+        }
 
 
 }
