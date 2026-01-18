@@ -1,288 +1,133 @@
 /* ======================================================
-   Month Picker — Apple Premium (Centered)
-   Scope: .month-picker only
+   Month Picker — Bank Pill UI (NO arrows)
+   Scope: #monthPickerModal only
 ====================================================== */
 
-.month-picker {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #fbfbfd 100%
-  );
-
-  border-radius: 28px;
-  padding: 26px 22px 22px;
-
-  box-shadow:
-    0 30px 80px rgba(0,0,0,.22),
-    inset 0 1px 0 rgba(255,255,255,.8);
-
-  text-align: center;
-
-  font-family:
-    -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", "PingFang TC",
-    "Noto Sans TC",
-    system-ui, sans-serif;
-}
-
-/* ================= Header ================= */
-
-.month-picker-header {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  align-items: center;
-  margin-bottom: 22px;
-}
-
-.year-label {
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: .8px;
-  color: #1d1d1f;
-}
-
-/* 年份左右切換 */
-.nav-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
+#monthPickerModal .hs-monthpicker-modal{
   border: none;
-  background: #f2f2f7;
-  font-size: 1.4rem;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition:
-    background .15s ease,
-    transform .08s ease;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 28px 80px rgba(0,0,0,.28);
 }
 
-.nav-btn:hover {
-  background: #e5e5ea;
+/* modal header：乾淨 */
+#monthPickerModal .modal-header{
+  padding: 18px 18px 10px;
 }
 
-.nav-btn:active {
-  transform: scale(.9);
+#monthPickerModal .modal-title{
+  font-weight: 900;
+  letter-spacing: .3px;
 }
 
-/* ================= Month Grid ================= */
-
-.month-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-
-  margin: 0 auto 18px;
+#monthPickerModal .modal-body{
+  padding: 12px 18px 20px;
 }
 
-/* 月份按鈕 */
-.month-btn {
-  height: 46px;
-  border-radius: 16px;
-  border: none;
-
-  background: #f5f5f7;
-  color: #1d1d1f;
-
-  font-size: .95rem;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition:
-    background .15s ease,
-    color .15s ease,
-    transform .1s ease,
-    box-shadow .15s ease;
+/* ===== 主容器 ===== */
+#monthPickerModal .mp{
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+  color: #111;
 }
 
-.month-btn:hover {
-  background: #ededf2;
+/* ===== 年份顯示（可點） ===== */
+#monthPickerModal .mp-year{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: .6px;
+
+  padding: 10px 0 14px;
 }
 
-/* Active Month */
-.month-btn.active {
-  background: linear-gradient(
-    180deg,
-    #1e90ff 0%,
-    #0a84ff 100%
-  );
-  color: #fff;
-
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 10px 24px rgba(10,132,255,.45),
-    inset 0 1px 0 rgba(255,255,255,.4);
-}
-
-/* ================= Footer ================= */
-
-.month-picker-footer {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.today-btn {
+#monthPickerModal .mp-year-btn{
   border: none;
   background: transparent;
-
-  color: #0a84ff;
-  font-size: .9rem;
-  font-weight: 700;
-
   padding: 8px 14px;
-  border-radius: 12px;
-
+  border-radius: 999px;
   cursor: pointer;
-  transition: background .15s ease;
+  transition: transform .08s ease, background .15s ease;
 }
 
-.today-btn:hover {
-  background: rgba(10,132,255,.1);
+#monthPickerModal .mp-year-btn:active{
+  transform: scale(.96);
+  background: rgba(0,0,0,.04);
 }
 
-/* ================= Modal 專用微調 ================= */
-
-.hs-monthpicker-modal {
-  border-radius: 32px;
-  border: none;
-  overflow: hidden;
-
-  box-shadow:
-    0 40px 120px rgba(0,0,0,.35);
-}
-/* ================= Year Grid (Apple-style) ================= */
-
-.year-grid {
-  display: grid;
+/* ===== Month grid：12 months（3 columns） ===== */
+#monthPickerModal .mp-month-grid{
+  display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  margin-top: 18px;
 }
 
-.year-btn {
+/* ===== Year grid：9 years（3 columns） ===== */
+#monthPickerModal .mp-year-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding-top: 6px;
+}
+
+/* ===== 膠囊按鈕（共用） ===== */
+#monthPickerModal .mp-pill{
   appearance: none;
   border: none;
+  width: 100%;
+  height: 52px;
+  border-radius: 999px;
 
-  padding: 14px 0;
-  border-radius: 16px;
+  background: #f2f2f2;
+  color: rgba(17,17,17,.55);
 
-  background: #f5f5f7;
-  color: #1d1d1f;
+  font-size: 18px;
+  font-weight: 800;
 
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: .2px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
   cursor: pointer;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.9),
-    0 1px 2px rgba(0,0,0,.04);
-
-  transition:
-    background .18s ease,
-    box-shadow .18s ease,
-    transform .12s ease;
+  transition: transform .08s ease, background .15s ease, color .15s ease;
 }
 
-/* Hover（桌機） */
-.year-btn:hover {
-  background: #ededf0;
+#monthPickerModal .mp-pill:active{
+  transform: scale(.97);
 }
 
-/* Active（點擊瞬間） */
-.year-btn:active {
-  transform: scale(.96);
+/* active：整塊亮色（你可改成藍 / 黑） */
+#monthPickerModal .mp-pill.is-active{
+  background: #ffe600;
+  color: #111;
 }
 
-/* ⭐ 選中年份（重點） */
-.year-btn.active {
-  background: linear-gradient(180deg, #0a84ff, #007aff);
-  color: #fff;
-
-  box-shadow:
-    0 10px 26px rgba(10,132,255,.35),
-    inset 0 1px 0 rgba(255,255,255,.35);
+/* ===== footer：回到本月（可選） ===== */
+#monthPickerModal .mp-footer{
+  margin-top: 18px;
+  display:flex;
+  justify-content:center;
 }
 
-/* Active hover（保持藍色） */
-.year-btn.active:hover {
-  background: linear-gradient(180deg, #1a8cff, #0a7aff);
+#monthPickerModal .mp-today{
+  border: none;
+  background: transparent;
+  color: rgba(17,17,17,.55);
+  font-weight: 900;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .15s ease, transform .08s ease;
 }
-/* ======================================================
-   📱 Month Picker — Mobile Refinement (iOS style)
-   Target: phones only
-====================================================== */
+#monthPickerModal .mp-today:active{
+  transform: scale(.98);
+  background: rgba(0,0,0,.04);
+}
 
-@media (max-width: 767px) {
-
-  /* 整體容器再柔一點 */
-  .month-picker {
-    padding: 22px 18px 20px;
-    border-radius: 24px;
-    box-shadow:
-      0 18px 48px rgba(0,0,0,.18);
-  }
-
-  /* Header 年份不要太張揚 */
-  .year-label {
-    font-size: 1.45rem;
-    letter-spacing: .4px;
-  }
-
-  /* 月份間距微收 */
-  .month-grid {
-    gap: 12px;
-  }
-
-  /* 月份按鈕（非 active） */
-  .month-btn {
-    height: 44px;
-    border-radius: 14px;
-    font-size: .9rem;
-    font-weight: 600;
-    background: #f5f5f7;
-  }
-
-  /* ✅ 手機版 Active 月份（重點） */
-  .month-btn.active {
-    /* 改成純色，避免亮度爆掉 */
-    background: #0a84ff;
-    color: #fff;
-
-    /* ❌ 不要浮起 */
-    transform: none;
-
-    /* ⬇️ 極輕陰影（貼在平面） */
-    box-shadow:
-      0 4px 10px rgba(10,132,255,.28),
-      inset 0 1px 0 rgba(255,255,255,.25);
-  }
-
-  /* 點擊回饋（iOS 感） */
-  .month-btn:active {
-    transform: scale(.97);
-  }
-
-  /* 回到本月 */
-  .today-btn {
-    font-size: .9rem;
-    font-weight: 600;
-    padding: 6px 12px;
-  }
+/* Phone 微調 */
+@media (max-width: 420px){
+  #monthPickerModal .mp-pill{ height: 50px; font-size: 17px; }
+  #monthPickerModal .mp-year{ font-size: 21px; }
 }
