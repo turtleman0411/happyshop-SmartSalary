@@ -1,6 +1,3 @@
-// src/main/resources/static/js/category-card.js
-// 覆蓋版：保留全部既有邏輯 + 修正 disabled input 無法送出問題
-
 function initCategoryCard(userMode) {
 
   const checks = Array.from(document.querySelectorAll('.category-check'));
@@ -21,29 +18,44 @@ function initCategoryCard(userMode) {
     if (idxs.length === 0) {
       totalEl.textContent = '0%';
       submitBtn.disabled = true;
-
-      inputs.forEach(inp => {
-        inp.value = '';
-        inp.disabled = true;
-      });
+     inputs.forEach((inp, i) => {
+  if (!checks[i].checked) {
+    inp.value = '';
+    inp.disabled = true;
+    inp.dataset.manual = '';
+    inp.closest('.category-card')?.classList.remove('manual-set');
+  }
+});
       return;
     }
 
-    const base = Math.floor(100 / idxs.length);
-    let remain = 100 - base * idxs.length;
-
-    inputs.forEach(inp => {
-      inp.value = '';
-      inp.disabled = true;
-    });
+    let manualTotal = 0;
+    const autoIdxs = [];
 
     idxs.forEach(i => {
-      inputs[i].value = base;
-      inputs[i].disabled = false;
+      const inp = inputs[i];
+      inp.disabled = false; // ⭐ 勾選的先啟用
+
+      if (inp.dataset.manual === 'true') {
+        manualTotal += Number(inp.value || 0);
+      } else {
+        autoIdxs.push(i);
+      }
     });
 
-    if (remain > 0) {
-      inputs[idxs[0]].value = base + remain;
+    let remain = Math.max(0, 100 - manualTotal);
+
+    if (autoIdxs.length > 0) {
+      const base = Math.floor(remain / autoIdxs.length);
+      let rest = remain - base * autoIdxs.length;
+
+      autoIdxs.forEach(i => {
+        inputs[i].value = base;
+      });
+
+      if (rest > 0) {
+        inputs[autoIdxs[0]].value = base + rest;
+      }
     }
 
     recalc();
@@ -51,7 +63,6 @@ function initCategoryCard(userMode) {
 
   function recalc() {
     let total = 0;
-
     inputs.forEach(inp => {
       if (!inp.disabled) {
         total += Number(inp.value || 0);
@@ -60,42 +71,36 @@ function initCategoryCard(userMode) {
 
     totalEl.textContent = total + '%';
 
-    if (total === 100) {
-      submitBtn.disabled = false;
-      totalEl.classList.remove('text-danger');
-      totalEl.classList.add('text-success');
-    } else {
-      submitBtn.disabled = true;
-      totalEl.classList.remove('text-success');
-      totalEl.classList.add('text-danger');
-    }
+    submitBtn.disabled = total !== 100;
+    totalEl.classList.toggle('text-success', total === 100);
+    totalEl.classList.toggle('text-danger', total !== 100);
   }
 
+  // ✅ checkbox 控制啟用 + 重分配
   checks.forEach(chk => {
     chk.addEventListener('change', redistribute);
   });
 
+  // ✅ input 才標記為 manual
   inputs.forEach(inp => {
-    inp.addEventListener('input', recalc);
+    inp.addEventListener('input', () => {
+      inp.dataset.manual = 'true';
+      inp.closest('.category-card')
+         ?.classList.add('manual-set');
+      redistribute();
+    });
   });
 
-  /**
-   * ⭐⭐ 關鍵修正 ⭐⭐
-   * HTML form submit 時，disabled input 不會被送出
-   * 在 submit 前，強制把「有值的 input」解除 disabled
-   */
+  // submit 前解除 disabled
   if (form) {
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', () => {
       inputs.forEach(inp => {
-        if (inp.value !== '') {
-          inp.disabled = false;
-        }
+        if (inp.value !== '') inp.disabled = false;
       });
     });
   }
 
-  recalc();
+  redistribute();
 }
 
-// ⭐ 掛到全域（給 Thymeleaf inline script 呼叫）
 window.initCategoryCard = initCategoryCard;

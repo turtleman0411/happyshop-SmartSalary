@@ -1,0 +1,19 @@
+/* 手動設定過的分類卡片（淡綠 / 高級感） */
+.category-card.manual-set {
+  background: linear-gradient(
+    180deg,
+    rgba(52, 199, 89, 0.12),
+    rgba(52, 199, 89, 0.06)
+  );
+  border-color: rgba(52, 199, 89, 0.35);
+  box-shadow: 0 6px 18px rgba(52, 199, 89, 0.12);
+}
+
+/* 文字微提亮 */
+.category-card.manual-set .fw-semibold {
+  color: #1c7c3a;
+}
+.category-card {
+  display: block;
+  position: relative;
+}
