@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
 import com.example.SmartSpent.application.Transaction.TransactionPageFlow;
-import com.example.SmartSpent.application.Transaction.TransactionPageFlowResult;
+import com.example.SmartSpent.application.common.MonthThemeResolver;
 import com.example.SmartSpent.application.query.SelectPageQueryService;
 import com.example.SmartSpent.application.result.ResultPageFlow;
-import com.example.SmartSpent.application.result.ResultPageFlowResult;
 import com.example.SmartSpent.domain.value.UserId;
 import com.example.SmartSpent.presentation.dto.request.LoginForm;
 import com.example.SmartSpent.presentation.dto.request.RegisterForm;
+import com.example.SmartSpent.presentation.dto.view.ResultPageView;
 import com.example.SmartSpent.presentation.dto.view.SelectPageView;
+import com.example.SmartSpent.presentation.dto.view.TransactionPageView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -30,14 +30,19 @@ public class PageController {
     private final SelectPageQueryService selectPageQueryService;
     private final TransactionPageFlow transactionPageFlow;
     private final ResultPageFlow resultPageFlow;
+    private final MonthThemeResolver monthThemeResolver;
+
+
     public PageController(
     SelectPageQueryService selectPageQueryService,
     ResultPageFlow resultPageFlow,
-    TransactionPageFlow transactionPageFlow
+    TransactionPageFlow transactionPageFlow,
+    MonthThemeResolver monthThemeResolver
 ){
     this.selectPageQueryService = selectPageQueryService;
     this.resultPageFlow = resultPageFlow;
     this.transactionPageFlow = transactionPageFlow;
+    this.monthThemeResolver = monthThemeResolver;
 }
 
  
@@ -84,8 +89,8 @@ public class PageController {
         
         SelectPageView view =
                 selectPageQueryService.getSelectPage(userId, targetMonth);
-
-        
+        String themeClass = monthThemeResolver.resolve(targetMonth);
+        model.addAttribute("themeClass", themeClass);
         model.addAttribute("view", view);
 
         return "page/select";
@@ -109,11 +114,11 @@ public String result(
     YearMonth targetMonth =
             (month != null) ? month : YearMonth.now();
 
-    ResultPageFlowResult result =
+    ResultPageView result =
             resultPageFlow.getResultPage(userId, targetMonth);
-
-    model.addAttribute("view", result.view());
-    model.addAttribute("themeClass", result.themeClass());
+    String themeClass = monthThemeResolver.resolve(targetMonth);
+    model.addAttribute("view", result);
+    model.addAttribute("themeClass", themeClass);
     model.addAttribute("loginUserId", userId);
     return "page/result";
 }
@@ -128,21 +133,23 @@ public String transactionPage(
         Model model
 ) {
     UserId userId = (UserId) request.getAttribute("loginUserId");
-
+    YearMonth targetMonth =
+            (month != null) ? month : YearMonth.now();
     if (userId == null) {
         return "redirect:/happyshop/home?month=" + month;
     }
 
-    TransactionPageFlowResult result =
+    TransactionPageView result =
             transactionPageFlow.getTransactionPage(
                     userId,
                     month,
                     category
             );
-
-    model.addAttribute("view", result.view());
-    model.addAttribute("themeClass", result.themeClass());
-
+     String themeClass = monthThemeResolver.resolve(targetMonth);
+        model.addAttribute("themeClass", themeClass);
+    model.addAttribute("view", result);
+    
+        
     return "page/transaction-list";
 }
 

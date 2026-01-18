@@ -1,0 +1,42 @@
+<div th:fragment="monthPicker(month)"
+     class="month-picker"
+     th:attr="data-current-month=${month}">
+
+  <!-- Header -->
+  <div class="month-picker-header">
+    <button class="nav-btn"
+            th:attr="data-year=${month.minusYears(1).year}">
+      ‹
+    </button>
+
+    <div class="year-label"
+         th:text="${month.year}">
+      2026
+    </div>
+
+    <button class="nav-btn"
+            th:attr="data-year=${month.plusYears(1).year}">
+      ›
+    </button>
+  </div>
+
+  <!-- Month Grid -->
+  <div class="month-grid">
+    <button th:each="m : ${T(java.time.Month).values()}"
+            class="month-btn"
+            th:text="${m.value + '月'}"
+            th:classappend="${m.value == month.monthValue} ? 'active'"
+            th:attr="data-target-month=${month.withMonth(m.value)}">
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="month-picker-footer">
+    <button class="today-btn"
+            th:attr="data-target-month=${T(java.time.YearMonth).now()}">
+      回到本月
+    </button>
+  </div>
+
+</div>
+<script src="/js/month-picker.js" defer></script>

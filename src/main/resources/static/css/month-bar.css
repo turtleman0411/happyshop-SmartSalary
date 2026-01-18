@@ -1,10 +1,11 @@
 /* ======================================================
-   month-bar.css (FINAL / STABLE)
+   month-bar.css (FINAL / STABLE + Month Picker Modal)
    Scope: .hs-monthbar only
    Responsibility:
    - Month bar layout & centering
    - Prev / Next buttons positioning
    - Theme hook via class
+   - Month picker modal (year/month quick jump)
 ====================================================== */
 
 .hs-monthbar{
@@ -44,7 +45,7 @@
    Month Text
 =============================== */
 .hs-mb-month{
-   display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -59,6 +60,21 @@
 
   /* 動畫（預設） */
   animation: hsMonthFadeSlide .32s ease-out;
+}
+
+/* ✅ Month text becomes a button (keep same look) */
+.hs-mb-month-text{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hs-mb-month-text:focus,
+.hs-mb-month-text:focus-visible{
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* ===============================
@@ -111,11 +127,8 @@
 }
 
 /* ===============================
-   Theme Hooks
-=============================== */
-
-/* ===============================
    Seasonal Themes (ALL MONTHS) — HIGHER CONTRAST
+   Hook: .hs-monthbar.theme-*
 =============================== */
 
 /* 冬（1,2,12） */
@@ -194,8 +207,6 @@
     border-radius: 16px;
   }
 
-
-
   /* 按鈕縮一點，手指仍好點 */
   .hs-mb-btn{
     width: 40px;
@@ -210,6 +221,7 @@
     font-size: 0.95rem;
   }
 }
+
 /* ======================================================
    Month switch animation (pure CSS)
 ====================================================== */
@@ -222,4 +234,161 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ======================================================
+   Month Picker Modal (Bootstrap modal content)
+   Scope: month-bar only
+====================================================== */
+
+/* modal content card */
+.hs-monthpicker-modal{
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 18px 50px rgba(0,0,0,.14);
+  background: rgba(255,255,255,.96);
+}
+
+/* reduce header spacing a bit */
+.hs-monthpicker-modal .modal-header{
+  padding: 16px 18px 6px;
+}
+
+.hs-monthpicker-modal .modal-title{
+  font-weight: 900;
+  letter-spacing: -.2px;
+}
+
+/* body */
+.hs-monthpicker-body{
+  display: grid;
+  gap: 16px;
+  padding: 6px 4px 8px;
+}
+
+/* year block */
+.hs-mp-year-title{
+  font-weight: 900;
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: rgba(0,0,0,.78);
+}
+
+/* month grid */
+.hs-mp-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* month pill button */
+.hs-mp-month{
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 999px;
+  padding: 12px 10px;
+  background: rgba(0,0,0,.06);
+  font-weight: 800;
+  color: rgba(0,0,0,.80);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .08s ease, background .12s ease;
+}
+
+.hs-mp-month:hover{
+  background: rgba(0,0,0,.08);
+}
+
+.hs-mp-month:active{
+  transform: scale(.98);
+}
+
+/* active month (default = warm yellow) */
+.hs-mp-month.is-active{
+  background: rgba(255,204,0,.32);
+  border-color: rgba(255,204,0,.22);
+}
+
+/* ✅ season-aware overrides (optional but nice) */
+.hs-monthbar.theme-winter .hs-mp-month.is-active{
+  background: rgba(10,132,255,.18);
+  border-color: rgba(10,132,255,.16);
+}
+.hs-monthbar.theme-spring .hs-mp-month.is-active{
+  background: rgba(52,199,89,.18);
+  border-color: rgba(52,199,89,.16);
+}
+.hs-monthbar.theme-summer .hs-mp-month.is-active{
+  background: rgba(255,204,0,.32);
+  border-color: rgba(255,204,0,.22);
+}
+.hs-monthbar.theme-autumn .hs-mp-month.is-active{
+  background: rgba(255,159,10,.22);
+  border-color: rgba(255,159,10,.18);
+}
+.hs-monthbar.theme-xmas .hs-mp-month.is-active{
+  background: rgba(255,45,85,.18);
+  border-color: rgba(255,45,85,.16);
+}
+
+/* tighter on small screens */
+@media (max-width: 576px){
+  .hs-monthpicker-modal .modal-header{
+    padding: 14px 16px 6px;
+  }
+
+  .hs-mp-grid{
+    gap: 10px;
+  }
+
+  .hs-mp-month{
+    padding: 11px 10px;
+  }
+}
+/* ===============================
+   Month Text (Center Button)
+=============================== */
+
+.hs-mb-month-text{
+  appearance: none;
+  border: none;
+  background: rgba(255,255,255,.85);
+
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+
+  color: #1d1d1f;
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.08),
+    0 6px 16px rgba(0,0,0,.12);
+
+  transition:
+    background .15s ease,
+    transform .08s ease,
+    box-shadow .15s ease;
+}
+
+/* hover：告訴使用者「可點」 */
+.hs-mb-month-text:hover{
+  background: rgba(255,255,255,.95);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.12),
+    0 10px 24px rgba(0,0,0,.18);
+}
+
+/* active：iOS 壓感 */
+.hs-mb-month-text:active{
+  transform: scale(.96);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.14),
+    0 4px 12px rgba(0,0,0,.14);
+}
+
+/* focus 不要藍框 */
+.hs-mb-month-text:focus{
+  outline: none;
 }

@@ -1,0 +1,167 @@
+/* ======================================================
+   Month Picker — Apple Premium (Centered)
+   Scope: .month-picker only
+====================================================== */
+
+.month-picker {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fbfbfd 100%
+  );
+
+  border-radius: 28px;
+  padding: 26px 22px 22px;
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.8);
+
+  text-align: center;
+
+  font-family:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "PingFang TC",
+    "Noto Sans TC",
+    system-ui, sans-serif;
+}
+
+/* ================= Header ================= */
+
+.month-picker-header {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.year-label {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: .8px;
+  color: #1d1d1f;
+}
+
+/* 年份左右切換 */
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: #f2f2f7;
+  font-size: 1.4rem;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background .15s ease,
+    transform .08s ease;
+}
+
+.nav-btn:hover {
+  background: #e5e5ea;
+}
+
+.nav-btn:active {
+  transform: scale(.9);
+}
+
+/* ================= Month Grid ================= */
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+
+  margin: 0 auto 18px;
+}
+
+/* 月份按鈕 */
+.month-btn {
+  height: 46px;
+  border-radius: 16px;
+  border: none;
+
+  background: #f5f5f7;
+  color: #1d1d1f;
+
+  font-size: .95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background .15s ease,
+    color .15s ease,
+    transform .1s ease,
+    box-shadow .15s ease;
+}
+
+.month-btn:hover {
+  background: #ededf2;
+}
+
+/* Active Month */
+.month-btn.active {
+  background: linear-gradient(
+    180deg,
+    #1e90ff 0%,
+    #0a84ff 100%
+  );
+  color: #fff;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 24px rgba(10,132,255,.45),
+    inset 0 1px 0 rgba(255,255,255,.4);
+}
+
+/* ================= Footer ================= */
+
+.month-picker-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.today-btn {
+  border: none;
+  background: transparent;
+
+  color: #0a84ff;
+  font-size: .9rem;
+  font-weight: 700;
+
+  padding: 8px 14px;
+  border-radius: 12px;
+
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.today-btn:hover {
+  background: rgba(10,132,255,.1);
+}
+
+/* ================= Modal 專用微調 ================= */
+
+.hs-monthpicker-modal {
+  border-radius: 32px;
+  border: none;
+  overflow: hidden;
+
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.35);
+}

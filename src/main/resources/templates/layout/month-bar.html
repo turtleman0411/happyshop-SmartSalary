@@ -1,34 +1,56 @@
-<!-- layout/month-bar.html -->
-<section xmlns:th="http://www.thymeleaf.org"
-         th:fragment="monthBar(baseUrl, month, themeClass)"
-         class="hs-monthbar"
-         th:classappend="${themeClass != null && !themeClass.isBlank() ? ' ' + themeClass : ''}"
-         th:if="${month != null}">
+<div th:fragment="monthBar(baseUrl, month, themeClass)"
+     class="hs-monthbar"
+     th:classappend="${themeClass}">
 
   <div class="hs-monthbar-container">
-    <div class="hs-monthbar-card">
+    <div class="hs-monthbar-card"
+         th:attr="data-base-url=${baseUrl}, data-current-month=${month}">
 
       <!-- Prev -->
       <a class="hs-mb-btn is-prev"
          th:href="@{${baseUrl}(month=${month.minusMonths(1)})}"
-         aria-label="上一個月">
-        <span class="hs-mb-icon">◀</span>
+         aria-label="上一月">
+        <span class="hs-mb-icon">‹</span>
       </a>
 
-      <!-- Month -->
-      <div class="hs-mb-month">
-        <span class="hs-mb-month-text"
-              th:text="${month}">2026-01</span>
-      </div>
+      <!-- Month (可點開) -->
+     <button type="button"
+        class="hs-mb-month-text"
+        data-bs-toggle="modal"
+        data-bs-target="#monthPickerModal"
+        th:text="${month}"
+        th:data-current-month="${month}">
+  2026-01
+</button>
+
 
       <!-- Next -->
       <a class="hs-mb-btn is-next"
          th:href="@{${baseUrl}(month=${month.plusMonths(1)})}"
-         aria-label="下一個月">
-        <span class="hs-mb-icon">▶</span>
+         aria-label="下一月">
+        <span class="hs-mb-icon">›</span>
       </a>
 
     </div>
   </div>
 
-</section>
+  <!-- ✅ 月份選擇 Modal -->
+  <div class="modal fade" id="monthPickerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content hs-monthpicker-modal">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title">選擇月份</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+        </div>
+
+        <div class="modal-body">
+          <div id="monthPickerBody" class="hs-monthpicker-body"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/month-picker.js" defer></script>
+</div>
