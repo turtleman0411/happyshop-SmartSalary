@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
    Month Mode
 ========================= */
 function renderMonthMode(container, baseUrl, year, currentMonth) {
+  setMonthPickerTitle("選擇月份");
   container.innerHTML = `
     <div class="mp" data-mode="month" data-year="${year}">
       <div class="mp-year">
@@ -80,6 +81,7 @@ function renderMonthButtons(year, currentMonth) {
    Rule: [newestYear, newestYear-1, ... newestYear-8]
 ========================= */
 function renderYearMode(container, baseUrl, newestYear, currentMonth) {
+  setMonthPickerTitle("選擇年份");
   const start = newestYear;
   const end = newestYear - 8;
 
@@ -126,4 +128,8 @@ function renderYearButtons(newestYear) {
 function currentYearMonth() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+function setMonthPickerTitle(text) {
+  const title = document.getElementById("monthPickerTitle");
+  if (title) title.textContent = text;
 }
