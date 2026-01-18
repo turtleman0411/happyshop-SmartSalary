@@ -1,12 +1,5 @@
 /**
- * Month Picker
- * - 只負責 UI 互動
- * - 不呼叫後端
- * - 不碰商業邏輯
- *
- * 依賴：
- * - hs-monthbar-card 上的 data-base-url
- * - hs-mb-month-text 上的 data-current-month (YYYY-MM)
+ * Month Picker — iOS Style (Month / Year Mode)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,28 +14,31 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!card) return;
 
     const baseUrl = card.dataset.baseUrl;
-    const current = card.dataset.currentMonth;
-
+    const current = card.dataset.currentMonth; // YYYY-MM
     if (!current) return;
 
     const [year, month] = current.split("-").map(Number);
 
-    renderMonthPicker(body, baseUrl, year, month);
+    renderMonthMode(body, baseUrl, year, month);
   });
 
 });
 
-/* =========================
-   Render
-========================= */
+/* ======================================================
+   MODE: MONTH
+====================================================== */
 
-function renderMonthPicker(container, baseUrl, year, currentMonth) {
+function renderMonthMode(container, baseUrl, year, currentMonth) {
+  container.dataset.mode = "month";
+
   container.innerHTML = `
     <div class="month-picker">
 
       <div class="month-picker-header">
         <button class="nav-btn" data-year="${year - 1}">‹</button>
-        <div class="year-label">${year} 年</div>
+
+        <div class="year-label js-year-toggle">${year} 年</div>
+
         <button class="nav-btn" data-year="${year + 1}">›</button>
       </div>
 
@@ -60,12 +56,46 @@ function renderMonthPicker(container, baseUrl, year, currentMonth) {
     </div>
   `;
 
-  bindYearSwitch(container, baseUrl, currentMonth);
+  bindMonthEvents(container, baseUrl, year, currentMonth);
 }
 
-/* =========================
-   Months
-========================= */
+/* ======================================================
+   MODE: YEAR
+====================================================== */
+
+function renderYearMode(container, baseUrl, centerYear, currentMonth) {
+  container.dataset.mode = "year";
+
+  const start = centerYear - 4;
+
+  container.innerHTML = `
+    <div class="month-picker">
+
+      <div class="month-picker-header">
+        <button class="nav-btn" data-center="${centerYear - 9}">‹</button>
+
+        <div class="year-label">${centerYear - 4} – ${centerYear + 4}</div>
+
+        <button class="nav-btn" data-center="${centerYear + 9}">›</button>
+      </div>
+
+      <div class="year-grid">
+        ${Array.from({ length: 9 }, (_, i) => {
+          const y = start + i;
+          const active = y === centerYear ? "active" : "";
+          return `<button class="year-btn ${active}" data-year="${y}">${y}</button>`;
+        }).join("")}
+      </div>
+
+    </div>
+  `;
+
+  bindYearEvents(container, baseUrl, currentMonth);
+}
+
+/* ======================================================
+   Render Helpers
+====================================================== */
 
 function renderMonths(baseUrl, year, currentMonth) {
   return Array.from({ length: 12 }, (_, i) => {
@@ -82,24 +112,49 @@ function renderMonths(baseUrl, year, currentMonth) {
   }).join("");
 }
 
-/* =========================
-   Year switch
-========================= */
+/* ======================================================
+   Bind Events
+====================================================== */
 
-function bindYearSwitch(container, baseUrl, currentMonth) {
+function bindMonthEvents(container, baseUrl, year, currentMonth) {
+
+  // 年份點擊 → 年份模式
+  container.querySelector(".js-year-toggle")
+    ?.addEventListener("click", () => {
+      renderYearMode(container, baseUrl, year, currentMonth);
+    });
+
+  // 上下年
   container.querySelectorAll(".nav-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      const year = Number(btn.dataset.year);
-      container.querySelector(".year-label").textContent = `${year} 年`;
-      container.querySelector(".month-grid").innerHTML =
-        renderMonths(baseUrl, year, currentMonth);
+      const y = Number(btn.dataset.year);
+      renderMonthMode(container, baseUrl, y, currentMonth);
     });
   });
 }
 
-/* =========================
+function bindYearEvents(container, baseUrl, currentMonth) {
+
+  // 點某一年 → 回到月份模式
+  container.querySelectorAll(".year-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const y = Number(btn.dataset.year);
+      renderMonthMode(container, baseUrl, y, currentMonth);
+    });
+  });
+
+  // 年份區間切換
+  container.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const center = Number(btn.dataset.center);
+      renderYearMode(container, baseUrl, center, currentMonth);
+    });
+  });
+}
+
+/* ======================================================
    Utils
-========================= */
+====================================================== */
 
 function currentYearMonth() {
   const now = new Date();

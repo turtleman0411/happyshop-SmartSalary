@@ -165,3 +165,62 @@
   box-shadow:
     0 40px 120px rgba(0,0,0,.35);
 }
+/* ================= Year Grid (Apple-style) ================= */
+
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.year-btn {
+  appearance: none;
+  border: none;
+
+  padding: 14px 0;
+  border-radius: 16px;
+
+  background: #f5f5f7;
+  color: #1d1d1f;
+
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 1px 2px rgba(0,0,0,.04);
+
+  transition:
+    background .18s ease,
+    box-shadow .18s ease,
+    transform .12s ease;
+}
+
+/* Hover（桌機） */
+.year-btn:hover {
+  background: #ededf0;
+}
+
+/* Active（點擊瞬間） */
+.year-btn:active {
+  transform: scale(.96);
+}
+
+/* ⭐ 選中年份（重點） */
+.year-btn.active {
+  background: linear-gradient(180deg, #0a84ff, #007aff);
+  color: #fff;
+
+  box-shadow:
+    0 10px 26px rgba(10,132,255,.35),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Active hover（保持藍色） */
+.year-btn.active:hover {
+  background: linear-gradient(180deg, #1a8cff, #0a7aff);
+}
