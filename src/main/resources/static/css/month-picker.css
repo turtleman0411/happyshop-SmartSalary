@@ -224,3 +224,65 @@
 .year-btn.active:hover {
   background: linear-gradient(180deg, #1a8cff, #0a7aff);
 }
+/* ======================================================
+   📱 Month Picker — Mobile Refinement (iOS style)
+   Target: phones only
+====================================================== */
+
+@media (max-width: 767px) {
+
+  /* 整體容器再柔一點 */
+  .month-picker {
+    padding: 22px 18px 20px;
+    border-radius: 24px;
+    box-shadow:
+      0 18px 48px rgba(0,0,0,.18);
+  }
+
+  /* Header 年份不要太張揚 */
+  .year-label {
+    font-size: 1.45rem;
+    letter-spacing: .4px;
+  }
+
+  /* 月份間距微收 */
+  .month-grid {
+    gap: 12px;
+  }
+
+  /* 月份按鈕（非 active） */
+  .month-btn {
+    height: 44px;
+    border-radius: 14px;
+    font-size: .9rem;
+    font-weight: 600;
+    background: #f5f5f7;
+  }
+
+  /* ✅ 手機版 Active 月份（重點） */
+  .month-btn.active {
+    /* 改成純色，避免亮度爆掉 */
+    background: #0a84ff;
+    color: #fff;
+
+    /* ❌ 不要浮起 */
+    transform: none;
+
+    /* ⬇️ 極輕陰影（貼在平面） */
+    box-shadow:
+      0 4px 10px rgba(10,132,255,.28),
+      inset 0 1px 0 rgba(255,255,255,.25);
+  }
+
+  /* 點擊回饋（iOS 感） */
+  .month-btn:active {
+    transform: scale(.97);
+  }
+
+  /* 回到本月 */
+  .today-btn {
+    font-size: .9rem;
+    font-weight: 600;
+    padding: 6px 12px;
+  }
+}
