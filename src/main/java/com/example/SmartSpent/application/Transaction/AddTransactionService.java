@@ -1,6 +1,6 @@
 package com.example.SmartSpent.application.Transaction;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ class AddTransactionService {
         UserId userId,
         YearMonth month,
         CategoryType category,
-        LocalDate date,
+        LocalDateTime date,
         int amount,
         String note
 ) {

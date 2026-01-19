@@ -1,6 +1,6 @@
 package com.example.SmartSpent.domain.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +126,7 @@ public class BudgetMonth {
 public TransactionId addTransaction(
         CategoryType category,
         int amount,
-        LocalDate date,
+        LocalDateTime date,
         String note
 ) {
     Transaction tx = Transaction.create(category, amount, date, note);
@@ -162,7 +162,7 @@ public String replaceTransactionImage(TransactionId transactionId, String newIma
 /**
  * ImageStorage.save 需要交易日期來命名檔案（edit 不允許改日期）
  */
-public LocalDate getTransactionDate(TransactionId transactionId) {
+public LocalDateTime getTransactionDate(TransactionId transactionId) {
     return findTransactionOrThrow(transactionId).getDate();
 }
 

@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
@@ -38,7 +38,7 @@ public class ImageStorage {
     public String save(
             YearMonth month,
             TransactionId transactionId,
-            LocalDate transactionDate,
+            LocalDateTime transactionDate,
             MultipartFile file
     ) {
         try {

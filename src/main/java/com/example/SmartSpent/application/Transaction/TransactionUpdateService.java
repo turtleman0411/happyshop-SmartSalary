@@ -1,7 +1,6 @@
 package com.example.SmartSpent.application.Transaction;
 
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public TransactionId update(
     // ✅ 有上傳才換圖
     if (image != null && !image.isEmpty()) {
 
-        LocalDate txDate = bm.getTransactionDate(txId);
+        LocalDateTime txDate = bm.getTransactionDate(txId);
         String saved = imageStorage.save(month, txId, txDate, image);
         String oldPath = bm.replaceTransactionImage(txId, saved);
         imageStorage.delete(oldPath);

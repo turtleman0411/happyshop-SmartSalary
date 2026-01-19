@@ -1,6 +1,6 @@
 package com.example.SmartSpent.domain.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.SmartSpent.domain.value.TransactionId;
 
@@ -36,7 +36,7 @@ class Transaction {
     private int amount;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(name = "image_path")
     private String imagePath;
@@ -51,7 +51,7 @@ class Transaction {
     static Transaction create(
             CategoryType category,
             int amount,
-            LocalDate date,
+            LocalDateTime date,
             String note
     ) {
         Transaction tx = new Transaction();
@@ -96,7 +96,7 @@ class Transaction {
         return amount;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
