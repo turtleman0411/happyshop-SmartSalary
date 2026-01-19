@@ -62,7 +62,7 @@
                 <th class="text-end" style="width:120px;">金額</th>
                 <th>備註</th>
                 <th class="text-center" style="width:96px;">圖片</th>
-                <th class="text-center" style="width:100px;">操作</th>
+                <th class="text-center" style="width:120px;">操作</th>
               </tr>
             </thead>
 
@@ -80,11 +80,10 @@
 
                 <td>
                   <span class="text-body"
-      th:if="${tx.note != null && !#strings.isEmpty(tx.note)}"
-      th:text="${tx.note}"
-      style="display:inline-block; max-width:520px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-</span>
-
+                        th:if="${tx.note != null && !#strings.isEmpty(tx.note)}"
+                        th:text="${tx.note}"
+                        style="display:inline-block; max-width:520px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  </span>
                 </td>
 
                 <td class="text-center">
@@ -99,17 +98,37 @@
                   <span th:if="${tx.imageUrl == null}" class="text-body-secondary small"></span>
                 </td>
 
+                <!-- ✅ 操作：編輯 + 刪除（icon 同風格） -->
                 <td class="text-center">
-                  <form th:action="@{/transaction/delete}" method="post" class="m-0">
-                    <input type="hidden" name="transactionId" th:value="${tx.transactionId}">
-                    <input type="hidden" name="month" th:value="${view.month}">
-                   <button class="btn btn-icon-delete"
-        title="刪除"
-        onclick="return confirm('確定要刪除這筆交易嗎？');">
-  🗑
-</button>
+                  <div class="d-inline-flex align-items-center gap-2">
 
-                  </form>
+                    <!-- ✏️ Edit -->
+                    <button type="button"
+                            class="btn btn-icon-delete js-edit-open"
+                            title="修改"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editModal"
+                            th:data-transaction-id="${tx.transactionId}"
+                            th:data-date="${tx.date}"
+                            th:data-category-display="${tx.categoryDisplayName}"
+                            th:data-amount="${tx.amount}"
+                            th:data-note="${tx.note}"
+                            th:data-image-url="${tx.imageUrl}">
+                      ✏️
+                    </button>
+
+                    <!-- 🗑 Delete -->
+                    <form th:action="@{/happyshop/transaction/delete}" method="post" class="m-0">
+                      <input type="hidden" name="transactionId" th:value="${tx.transactionId}">
+                      <input type="hidden" name="month" th:value="${view.month}">
+                      <button class="btn btn-icon-delete"
+                              title="刪除"
+                              onclick="return confirm('確定要刪除這筆交易嗎？');">
+                        🗑
+                      </button>
+                    </form>
+
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -166,17 +185,33 @@
 
           </div>
 
-          <div class="d-flex justify-content-end mt-2">
-            <form th:action="@{/transaction/delete}" method="post" class="m-0">
+          <!-- ✅ 手機操作：編輯 + 刪除 -->
+          <div class="d-flex justify-content-end mt-2 gap-2">
+
+            <button type="button"
+                    class="btn btn-icon-delete js-edit-open"
+                    title="修改"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    th:data-transaction-id="${tx.transactionId}"
+                    th:data-date="${tx.date}"
+                    th:data-category-display="${tx.categoryDisplayName}"
+                    th:data-amount="${tx.amount}"
+                    th:data-note="${tx.note}"
+                    th:data-image-url="${tx.imageUrl}">
+              ✏️
+            </button>
+
+            <form th:action="@{/happyshop/transaction/delete}" method="post" class="m-0">
               <input type="hidden" name="transactionId" th:value="${tx.transactionId}">
               <input type="hidden" name="month" th:value="${view.month}">
-             <button class="btn btn-icon-delete"
-        title="刪除"
-        onclick="return confirm('確定要刪除這筆交易嗎？');">
-  🗑
-</button>
-
+              <button class="btn btn-icon-delete"
+                      title="刪除"
+                      onclick="return confirm('確定要刪除這筆交易嗎？');">
+                🗑
+              </button>
             </form>
+
           </div>
 
         </div>
@@ -185,6 +220,9 @@
     </div>
   </div>
 </main>
+
+<!-- ✅ Edit Modal：用 fragment 引入（只放一次） -->
+<div th:replace="~{fragment/transaction-edit-modal :: editTransactionModal}"></div>
 
 <!-- ================= Image Modal ================= -->
 <div class="modal fade" id="imageModal" tabindex="-1">
@@ -202,28 +240,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- ================= Image Preview Logic（含 iOS 縮回感） ================= -->
-<script>
-document.querySelectorAll('.transaction-thumb').forEach(img => {
-  img.addEventListener('click', () => {
-    document.getElementById('modalImage').src = img.dataset.imageUrl;
-  });
-});
-
-const modalImage = document.getElementById('modalImage');
-modalImage.addEventListener('click', () => {
-  modalImage.style.transform = 'scale(0.96)';
-  modalImage.style.transition = 'transform .12s ease';
-
-  setTimeout(() => {
-    modalImage.style.transform = '';
-    bootstrap.Modal.getInstance(
-      document.getElementById('imageModal')
-    ).hide();
-  }, 120);
-});
-</script>
+<script src="/js/transaction-edit.js" defer></script>
 
 </body>
 </html>

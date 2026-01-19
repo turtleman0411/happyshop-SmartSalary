@@ -20,7 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RememberMeService {
 
     public static final String COOKIE_NAME = "HAPPYSHOP_REMEMBER";
-    public static final int COOKIE_DAYS = 30;
+    public static final int REMEMBER_DAYS = 30;
+    public static final int SESSION_DAYS = 1; // 沒勾選：DB 留短期即可（例如 1 天）
 
     private final RememberMeTokenRepository repo;
     private final SecureRandom random = new SecureRandom();
@@ -30,63 +31,60 @@ public class RememberMeService {
     }
 
     /* ===============================
-       對外唯一入口（給 Interceptor）
+       對外唯一入口（給 Interceptor / Controller fallback）
        =============================== */
-
     @Transactional(readOnly = true)
     public Optional<UserId> authenticate(HttpServletRequest request) {
         String rawToken = readCookie(request, COOKIE_NAME);
-        if (rawToken == null || rawToken.isBlank()) {
-            return Optional.empty();
-        }
+        if (rawToken == null || rawToken.isBlank()) return Optional.empty();
 
         String tokenHash = sha256Hex(rawToken);
         LocalDateTime now = LocalDateTime.now();
 
         return repo.findByTokenHash(tokenHash)
                 .filter(t -> !t.isExpired(now))
-                .map(t -> UserId.from(t.getUserId()));
+                .map(t -> UserId.from(t.getUserId())); // ✅ DB 存的是 userId.value()
     }
 
-    /* ===============================
-       登入成功後呼叫
-       =============================== */
-
+    /** ✅ 登入成功後呼叫：是否持久化由 rememberMe 決定 */
     @Transactional
-    public void issue(UserId userId, HttpServletResponse response, boolean isHttps) {
-        repo.deleteByUserId(userId.toString());
+    public void issue(
+            UserId userId,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            boolean rememberMe
+    ) {
+        // ✅ 只存「純 value」，避免 toString() 超長炸 DB
+        String userIdValue = userId.value();
+
+        // 這個使用者只留一個有效 token（避免堆積）
+        repo.deleteByUserId(userIdValue);
 
         String rawToken = generateRawToken();
         String tokenHash = sha256Hex(rawToken);
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expireAt = now.plusDays(COOKIE_DAYS);
+        int days = rememberMe ? REMEMBER_DAYS : SESSION_DAYS;
+        LocalDateTime expireAt = now.plusDays(days);
+        System.out.println("userId.value()=" + userId.value());
+System.out.println("len=" + userId.value().length());
+        repo.save(new RememberMeToken(tokenHash, userIdValue, expireAt, now));
 
-        repo.save(new RememberMeToken(tokenHash, userId.toString(), expireAt, now));
+        boolean isHttps = isHttps(request);
 
         Cookie cookie = new Cookie(COOKIE_NAME, rawToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(isHttps);
         cookie.setPath("/");
-        cookie.setMaxAge(COOKIE_DAYS * 24 * 60 * 60);
+
+        // ✅ 關鍵：沒勾選 → Session Cookie（關瀏覽器消失）
+        cookie.setMaxAge(rememberMe ? (REMEMBER_DAYS * 24 * 60 * 60) : -1);
 
         response.addCookie(cookie);
-        response.addHeader("Set-Cookie",
-                String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Lax%s",
-                        COOKIE_NAME,
-                        rawToken,
-                        COOKIE_DAYS * 24 * 60 * 60,
-                        isHttps ? "; Secure" : ""
-                )
-        );
     }
 
-    /* ===============================
-       登出
-       =============================== */
-
     @Transactional
-    public void clear(HttpServletRequest request, HttpServletResponse response, boolean isHttps) {
+    public void clear(HttpServletRequest request, HttpServletResponse response) {
         String rawToken = readCookie(request, COOKIE_NAME);
         if (rawToken != null && !rawToken.isBlank()) {
             repo.deleteById(sha256Hex(rawToken));
@@ -94,22 +92,19 @@ public class RememberMeService {
 
         Cookie cookie = new Cookie(COOKIE_NAME, "");
         cookie.setHttpOnly(true);
-        cookie.setSecure(isHttps);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-
-        response.addHeader("Set-Cookie",
-                String.format("%s=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax%s",
-                        COOKIE_NAME,
-                        isHttps ? "; Secure" : ""
-                )
-        );
     }
 
-    /* ===============================
-       private helpers
-       =============================== */
+    // -------- helpers --------
+
+    /** ✅ Railway/反代下，request.isSecure() 可能永遠 false，所以讀 X-Forwarded-Proto */
+    private boolean isHttps(HttpServletRequest request) {
+        String xfProto = request.getHeader("X-Forwarded-Proto");
+        if (xfProto != null) return "https".equalsIgnoreCase(xfProto);
+        return request.isSecure();
+    }
 
     private String generateRawToken() {
         byte[] bytes = new byte[32];

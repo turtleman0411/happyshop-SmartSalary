@@ -2,12 +2,11 @@ package com.example.SmartSpent.presentation.web;
 
 import java.time.YearMonth;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.SmartSpent.application.BudgetMonth.BudgetMonthResetFlow;
@@ -20,167 +19,163 @@ import com.example.SmartSpent.presentation.dto.request.AddTransactionRequest;
 import com.example.SmartSpent.presentation.dto.request.BudgetAllocationRequest;
 import com.example.SmartSpent.presentation.dto.request.LoginForm;
 import com.example.SmartSpent.presentation.dto.request.RegisterForm;
+import com.example.SmartSpent.presentation.dto.request.UpdateTransactionRequest;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
+@RequestMapping("/happyshop")
 public class CommandController {
 
     private final UserFlow userFlow;
     private final TransactionFlow transactionFlow;
     private final BudgetMonthResetFlow budgetMonthResetFlow;
+    private final RememberMeService rememberMeService;
 
     public CommandController(
             UserFlow userFlow,
             TransactionFlow transactionFlow,
-            BudgetMonthResetFlow budgetMonthResetFlow
+            BudgetMonthResetFlow budgetMonthResetFlow,
+            RememberMeService rememberMeService
     ) {
         this.userFlow = userFlow;
         this.transactionFlow = transactionFlow;
         this.budgetMonthResetFlow = budgetMonthResetFlow;
+        this.rememberMeService = rememberMeService;
     }
 
-    @PostMapping("/register")
-    public String register(
-            @ModelAttribute RegisterForm req,
-            RedirectAttributes redirect
-    ) {
-        userFlow.register(req.getName(), req.getPassword());
-        redirect.addFlashAttribute("message", "註冊成功");
-        return "redirect:/happyshop/login";
+    private UserId resolveLoginUserId(HttpServletRequest request) {
+
+    UserId userId = (UserId) request.getAttribute("loginUserId");
+    if (userId != null) return userId;
+
+    Object sessionUser = request.getSession().getAttribute("loginUserId");
+    if (sessionUser instanceof UserId) {
+        return (UserId) sessionUser;
     }
 
-@PostMapping("/login")
-public String login(
-        @ModelAttribute LoginForm form,
-        HttpServletResponse response
-) {
-    UserId userId = userFlow.login(
-            form.getUsername(),
-            form.getPassword()
-    );
-
-    // ✅ 永遠發 token（你不使用 session 的前提下，這就是唯一登入憑證）
-    String token = userFlow.issueRememberMeToken(userId, 30);
-
-    Cookie cookie = new Cookie(RememberMeService.COOKIE_NAME, token);
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-
-    if (form.isRememberMe()) {
-        // ✅ 勾選：持久化 30 天
-        cookie.setMaxAge(30 * 24 * 60 * 60);
-    } else {
-        // ✅ 沒勾：Session Cookie（關瀏覽器就消失）
-        cookie.setMaxAge(-1);
-    }
-
-    response.addCookie(cookie);
-
-    return "redirect:/happyshop/result";
+    return null;
 }
 
 
-    @PostMapping("/select")
-    public String submitSelect(
-            @ModelAttribute BudgetAllocationRequest request,
-            HttpServletRequest httpRequest
+    // =========================
+    // Auth
+    // =========================
+
+    @PostMapping("/register")
+    public String register(
+            @ModelAttribute RegisterForm form,
+            RedirectAttributes redirect
     ) {
-        UserId userId = (UserId) httpRequest.getAttribute("loginUserId");
-        if (userId == null) {
-            return "redirect:/happyshop/home";
-        }
-
-        userFlow.configureMonthlyBudget(
-                userId,
-                request.month(),
-                request.toCategoryPercentMap()
-        );
-
-        return "redirect:/happyshop/result?month=" + request.month();
+        userFlow.register(form.getName(), form.getPassword());
+        redirect.addFlashAttribute("message", "註冊成功，請登入");
+        return "redirect:/happyshop/login";
     }
+
+    @PostMapping("/login")
+    public String login(
+            @ModelAttribute LoginForm form,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            RedirectAttributes redirect
+    ) {
+        UserId userId = userFlow.login(form.getUsername(), form.getPassword());
+
+        // ✅ 勾選才持久化，不勾就是 Session Cookie（關瀏覽器失效）
+        rememberMeService.issue(userId, request, response, form.isRememberMe());
+
+        return "redirect:/happyshop/result";
+    }
+
+    @PostMapping("/user/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        rememberMeService.clear(request, response);
+        return "redirect:/happyshop/home";
+    }
+
+    // =========================
+    // Transactions
+    // =========================
 
     @PostMapping("/transaction/add")
     public String addTransaction(
             @RequestParam YearMonth month,
-            @ModelAttribute AddTransactionRequest request,
-            HttpServletRequest httpRequest
+            @ModelAttribute AddTransactionRequest req,
+            HttpServletRequest request
     ) {
-        UserId userId = (UserId) httpRequest.getAttribute("loginUserId");
-        if (userId == null) {
-            return "redirect:/happyshop/home";
-        }
+        System.out.println("🔥 HIT CommandController.addTransaction");
+        UserId userId = resolveLoginUserId(request);
+        if (userId == null) return "redirect:/happyshop/login";
 
-        transactionFlow.addTransaction(userId, month, request);
+        transactionFlow.addTransaction(userId, month, req);
         return "redirect:/happyshop/result?month=" + month;
     }
 
-
-    
-    @PostMapping("/month/reset")
-    public String resetMonth(
-            HttpServletRequest request,
-            @RequestParam String month
-    ) {
-        UserId userId = (UserId) request.getAttribute("loginUserId");
-        if (userId == null) {
-            return "redirect:/happyshop/home";
-        }
-
-        budgetMonthResetFlow.reset(userId, month);
-        return "redirect:/happyshop/select?month=" + month;
-    }
-
-    @PostMapping("/transaction/delete")
-    public String delete(
-            @RequestParam Long transactionId,
+    @PostMapping("/transaction/update")
+    public String updateTransaction(
             @RequestParam YearMonth month,
+            @ModelAttribute UpdateTransactionRequest form,
             HttpServletRequest request
     ) {
-        UserId userId = (UserId) request.getAttribute("loginUserId");
-        if (userId == null) {
-            return "redirect:/happyshop/home";
-        }
+        UserId userId = resolveLoginUserId(request);
+        if (userId == null) return "redirect:/happyshop/login";
 
-        transactionFlow.deleteTransaction(
-                userId,
-                month,
-                TransactionId.of(transactionId)
+        transactionFlow.updateTransaction(
+                userId, month,
+                form.transactionId(),
+                form.amount(),
+                form.note(),
+                form.image()
         );
 
         return "redirect:/happyshop/transactions?month=" + month;
     }
 
-    @PostMapping("/income/update")
-    public String updateIncome(
-            @RequestParam(required = false) YearMonth month,
-            @RequestParam int income,
+    @PostMapping("/transaction/delete")
+    public String deleteTransaction(
+            @RequestParam Long transactionId,
+            @RequestParam YearMonth month,
             HttpServletRequest request
     ) {
-        UserId userId = (UserId) request.getAttribute("loginUserId");
-        if (userId == null) {
-            return "redirect:/happyshop/home";
-        }
+        UserId userId = resolveLoginUserId(request);
+        if (userId == null) return "redirect:/happyshop/login";
 
-        userFlow.updateIncome(userId, month, income);
-        return "redirect:/happyshop/result?month=" + month;
+        transactionFlow.deleteTransaction(userId, month, TransactionId.of(transactionId));
+        return "redirect:/happyshop/transactions?month=" + month;
     }
 
-    @PostMapping("/user/logout")
-    public String logout(HttpServletResponse response) {
+    // =========================
+    // Month reset
+    // =========================
 
-        // ✅ 純 cookie 登出：只清 remember-me cookie
-        Cookie cookie = new Cookie(RememberMeService.COOKIE_NAME, "");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+    @PostMapping("/month/reset")
+    public String resetMonth(
+            @RequestParam String month,
+            HttpServletRequest request
+    ) {
+        UserId userId = resolveLoginUserId(request);
+        if (userId == null) return "redirect:/happyshop/login";
 
-        // ✅ 關鍵：告訴下一次 request「我剛登出」
-        response.addHeader("X-LOGOUT", "1");
-
-        return "redirect:/happyshop/home";
+        budgetMonthResetFlow.reset(userId, month);
+        return "redirect:/happyshop/select?month=" + month;
     }
+
+
+@PostMapping("/select")
+public String submitSelect(
+        @ModelAttribute BudgetAllocationRequest form,
+        HttpServletRequest request
+) {
+    UserId userId = resolveLoginUserId(request);
+    if (userId == null) return "redirect:/happyshop/login";
+
+    userFlow.configureMonthlyBudget(
+            userId,
+            form.month(),
+            form.toCategoryPercentMap()
+    );
+
+    return "redirect:/happyshop/result?month=" + form.month();
+}
 }

@@ -18,7 +18,7 @@
   <p th:text="|${view.month} 的預算比例設定|"></p>
 
     <form id="categoryForm"
-          th:action="@{/select}"
+          th:action="@{/happyshop/select}"
           method="post">
 
       <input type="hidden" name="month" th:value="${view.month}"/>

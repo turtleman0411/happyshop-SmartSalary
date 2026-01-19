@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.SmartSpent.domain.model.BudgetMonth;
 import com.example.SmartSpent.domain.model.CategoryType;
+import com.example.SmartSpent.domain.value.TransactionId;
 import com.example.SmartSpent.domain.value.UserId;
 import com.example.SmartSpent.infrastructure.repository.BudgetMonthRepository;
 
@@ -21,27 +22,24 @@ class AddTransactionService {
         this.budgetMonthRepository = budgetMonthRepository;
     }
 
-    void addTransaction(
-            UserId userId,
-            YearMonth month,
-            CategoryType category,
-            LocalDate date,
-            int amount,
-            String note
-    ) {
-        BudgetMonth budgetMonth =
-                budgetMonthRepository
-                        .findByUserIdAndMonth(userId, month)
-                        .orElseThrow(() ->
-                                new IllegalStateException("本月尚未設定預算")
-                        );
+    TransactionId addTransaction(
+        UserId userId,
+        YearMonth month,
+        CategoryType category,
+        LocalDate date,
+        int amount,
+        String note
+) {
+    BudgetMonth bm = budgetMonthRepository
+            .findByUserIdAndMonth(userId, month)
+            .orElseThrow(() -> new IllegalStateException("本月尚未設定預算"));
 
-        budgetMonth.addTransaction(
-                category,
-                amount,
-                date,
-                note
-        );
-        // ⭐ Dirty Checking 會存
-    }
+    bm.addTransaction(category, amount, date, note);
+
+
+    // ✅ 不碰 Transaction 型別，直接拿 VO
+    return bm.lastTransactionId();
 }
+
+}
+

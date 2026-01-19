@@ -9,13 +9,13 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "remember_me_token")
- class RememberMeToken {
+class RememberMeToken {
 
     @Id
     @Column(name = "token_hash", length = 64, nullable = false)
     private String tokenHash;
 
-    @Column(name = "user_id", length = 50, nullable = false)
+    @Column(name = "user_id", length = 255, nullable = false)
     private String userId;
 
     @Column(name = "expire_at", nullable = false)
@@ -38,6 +38,7 @@ import jakarta.persistence.Table;
     public LocalDateTime getExpireAt() { return expireAt; }
 
     public boolean isExpired(LocalDateTime now) {
-        return expireAt.isBefore(now) || expireAt.isEqual(now);
+        return !expireAt.isAfter(now);
     }
 }
+

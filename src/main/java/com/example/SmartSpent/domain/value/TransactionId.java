@@ -2,27 +2,34 @@ package com.example.SmartSpent.domain.value;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Transaction 的識別 Value Object
- * 由資料庫產生（IDENTITY），Domain 只負責使用
+ * 由 Domain 產生（UUID），不依賴資料庫
  */
 public final class TransactionId implements Serializable {
 
-    private final Long value;
+    private final String value;
 
-    private TransactionId(Long value) {
-        if (value == null) {
-            throw new IllegalArgumentException("TransactionId 不可為 null");
+    private TransactionId(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("TransactionId 不可為空");
         }
         this.value = value;
     }
 
-    public static TransactionId of(Long value) {
+    /** 建立全新 TransactionId（Domain 行為） */
+    public static TransactionId newId() {
+        return new TransactionId(UUID.randomUUID().toString());
+    }
+
+    /** 從持久化資料還原 */
+    public static TransactionId of(String value) {
         return new TransactionId(value);
     }
 
-    public Long value() {
+    public String value() {
         return value;
     }
 
@@ -41,6 +48,6 @@ public final class TransactionId implements Serializable {
 
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 }

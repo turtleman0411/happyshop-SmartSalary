@@ -311,7 +311,7 @@
       </div>
 
       <form method="post"
-            th:action="@{/transaction/add(month=${view.month})}"
+            th:action="@{/happyshop/transaction/add(month=${view.month})}"
             enctype="multipart/form-data">
 
         <div class="modal-body px-4">
@@ -325,10 +325,12 @@
           <div class="mb-3">
             <label class="form-label small text-muted">消費日期</label>
             <input type="date"
-                   class="form-control"
-                   name="date"
-                   id="addDate"
-                   required>
+              class="form-control"
+              name="date"
+              id="addDate"
+              required
+              th:attr="min=${view.month.atDay(1)}, max=${view.month.atEndOfMonth()}">
+
           </div>
 
           <div class="border rounded-4 p-3 mb-4 bg-light">
@@ -429,7 +431,7 @@
                 data-bs-dismiss="modal">取消</button>
 
         <form method="post"
-              th:action="@{/month/reset(month=${view.month})}">
+              th:action="@{/happyshop/month/reset(month=${view.month})}">
           <button class="btn btn-primary px-4">
             確認重新分配
           </button>
@@ -490,27 +492,19 @@ addModal.addEventListener('show.bs.modal', e => {
   addImage.value = '';
   document.getElementById('addImagePreviewWrap').style.display = 'none';
 
-  const ym = /*[[${view.month}]]*/ '2026-01';
-  const [y, m] = ym.split('-').map(Number);
+  // ✅ min/max 已由 HTML(th:attr) 設定，這裡只決定預設日期
+  const min = addDate.getAttribute('min');
+  const max = addDate.getAttribute('max');
 
   const today = new Date();
-  const first = new Date(y, m - 1, 1);
-  const last  = new Date(y, m, 0);
+  const todayStr =
+    `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-  let defaultDate = today;
-  if (today < first || today > last) defaultDate = first;
-
-  const fmt = d => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
-
-  addDate.min = fmt(first);
-  addDate.max = fmt(last);
-  addDate.value = fmt(defaultDate);
+  let v = todayStr;
+  if ((min && v < min) || (max && v > max)) v = min || v;
+  addDate.value = v;
 });
+
 
 addAmount.addEventListener('input', () => {
   updateAddPreview(Number(addAmount.value || 0));
@@ -553,7 +547,7 @@ addImage.addEventListener('change', e => {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/auto-close-alert.js"></script>
+
 
 </body>
 </html>

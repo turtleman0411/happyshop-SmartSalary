@@ -17,24 +17,25 @@ public class RememberMeInterceptor implements HandlerInterceptor {
         this.rememberMeService = rememberMeService;
     }
 
-    @Override
-    public boolean preHandle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler
-    ) {
+@Override
+public boolean preHandle(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler
+) {
 
-        // 🔐 嘗試自動登入（是否成功由 Service 決定）
-        rememberMeService.authenticate(request)
-                .ifPresent(userId ->
-                        attachLoginUser(request, userId)
-                );
+    rememberMeService.authenticate(request)
+            .ifPresent(userId -> attachLoginUser(request, userId));
 
-        // 一律放行，流程交給 Controller / Flow
-        return true;
-    }
+    return true;
+}
 
-    private void attachLoginUser(HttpServletRequest request, UserId userId) {
-        request.setAttribute("loginUserId", userId);
-    }
+private void attachLoginUser(HttpServletRequest request, UserId userId) {
+    // 給 Controller / Flow 用
+    request.setAttribute("loginUserId", userId);
+
+    // ⚠️ 關鍵：補 session（給 redirect / 舊流程用）
+    request.getSession().setAttribute("loginUserId", userId);
+}
+
 }

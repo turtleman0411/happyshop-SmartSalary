@@ -18,9 +18,8 @@ import jakarta.persistence.*;
 class Transaction {
 
     /* ========== Identity ========== */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private TransactionId id;
 
     /* ========== Ownership ========== */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -56,6 +55,7 @@ class Transaction {
             String note
     ) {
         Transaction tx = new Transaction();
+        tx.id = TransactionId.newId(); // 🔥 關鍵：Domain 產生
         tx.category = category;
         tx.amount = amount;
         tx.date = date;
@@ -65,12 +65,15 @@ class Transaction {
 
     // ================= Domain Behavior =================
 
-    void update(LocalDate date, int amount, String note) {
-        this.date = date;
-        this.amount = amount;
-        this.note = note;
-    }
-
+    void updateAmountNote(int amount, String note) {
+    this.amount = amount;
+    this.note = note;
+}
+    String replaceImagePath(String newImagePath) {
+    String old = this.imagePath;
+    this.imagePath = newImagePath;
+    return old;
+}
 
 
     /* ========== Aggregate binding ========== */
@@ -98,8 +101,8 @@ class Transaction {
     }
 
     public TransactionId getId() {
-    return TransactionId.of(this.id);
-}
+        return id; 
+    }
 
     public String getImagePath() {
     return imagePath;

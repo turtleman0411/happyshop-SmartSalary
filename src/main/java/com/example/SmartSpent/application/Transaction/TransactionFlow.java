@@ -4,6 +4,7 @@ import java.time.YearMonth;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.SmartSpent.domain.model.BudgetMonth;
 import com.example.SmartSpent.domain.model.CategoryType;
@@ -14,67 +15,81 @@ import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 import com.example.SmartSpent.presentation.dto.request.AddTransactionRequest;
 
 @Component
-@Transactional
+
 public class TransactionFlow {
 
     private final AddTransactionService addTransactionService;
-     private final BudgetMonthRepository budgetMonthRepository;
     private final DeleteTransactionService deleteTransactionService;
+    private final TransactionUpdateService transactionUpdateService;
+
+    // 目前 add 仍需要這兩個（你也可以之後再抽成 service）
+    private final BudgetMonthRepository budgetMonthRepository;
     private final ImageStorage imageStorage;
 
     public TransactionFlow(
             AddTransactionService addTransactionService,
-            BudgetMonthRepository budgetMonthRepository,
             DeleteTransactionService deleteTransactionService,
+            TransactionUpdateService transactionUpdateService,
+            BudgetMonthRepository budgetMonthRepository,
             ImageStorage imageStorage
     ) {
         this.addTransactionService = addTransactionService;
         this.deleteTransactionService = deleteTransactionService;
+        this.transactionUpdateService = transactionUpdateService;
         this.budgetMonthRepository = budgetMonthRepository;
         this.imageStorage = imageStorage;
     }
 
-
     /**
      * 使用者在指定月份新增交易（流程封裝）
      */
-    public void addTransaction(
-            UserId userId,
-            YearMonth month,
-            AddTransactionRequest request
-    ) {
-        // 1️⃣ 先建立交易（Domain）
-        addTransactionService.addTransaction(
-                userId,
-                month,
-                CategoryType.valueOf(request.categoryName()),
-                request.date(),
-                request.amount(),
-                request.note()
-        );
+@Transactional
+public void addTransaction(UserId userId, YearMonth month, AddTransactionRequest request) {
 
-        // 2️⃣ 沒圖片就結束
-        if (request.image() == null || request.image().isEmpty()) {
-            return;
-        }
-        BudgetMonth budgetMonth =
-            budgetMonthRepository
-                    .findByUserIdAndMonth(userId, month)
-                    .orElseThrow();
-        TransactionId txId = budgetMonth.getLastTransactionId();
+    TransactionId txId = addTransactionService.addTransaction(
+            userId,
+            month,
+            CategoryType.valueOf(request.categoryName()),
+            request.date(),
+            request.amount(),
+            request.note()
+    );
 
-        // 3️⃣ 存圖片（技術）
-        String imagePath =
-                imageStorage.save(
-                        month,
-                        txId,
-                        request.date(),
-                        request.image()
-                );
-
-        budgetMonth.attachTransactionImage(txId, imagePath);
+    if (request.image() == null || request.image().isEmpty()) {
+        return;
     }
 
+    BudgetMonth bm = budgetMonthRepository
+            .findByUserIdAndMonth(userId, month)
+            .orElseThrow();
+
+    // ✅ 新增交易用 request.date() 當檔名日期即可
+    String newPath = imageStorage.save(month, txId, request.date(), request.image());
+
+    // ✅ 新 API：替換圖片 + 取得舊路徑
+    String oldPath = bm.replaceTransactionImage(txId, newPath);
+
+    // ✅ 刪舊檔（可選）
+    imageStorage.delete(oldPath);
+}
+
+
+
+    /**
+     * ✅ 修改交易：只允許 amount / note / image
+     */
+    public TransactionId updateTransaction(
+            UserId userId,
+            YearMonth month,
+            String rawTransactionId,
+            int amount,
+            String note,
+            MultipartFile image
+    ) {
+        return transactionUpdateService.update(
+                userId, month, rawTransactionId, amount, note, image
+        );
+    }
 
     public void deleteTransaction(
             UserId userId,
@@ -87,6 +102,4 @@ public class TransactionFlow {
                 transactionId
         );
     }
-
-
 }

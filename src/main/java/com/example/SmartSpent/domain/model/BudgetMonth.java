@@ -117,75 +117,72 @@ public class BudgetMonth {
             allocations.add(allocation);
         }
     }
-
-    /* ========== Transaction ========== */  
     public void resetAllocations() {
         this.allocations.clear();
     }
-    /* ========== Transaction ========== */
+ 
+/* ========== Transaction ========== */
 
-    public void addTransaction(
+public TransactionId addTransaction(
         CategoryType category,
         int amount,
         LocalDate date,
         String note
 ) {
-    Transaction tx = Transaction.create(
-            category,
-            amount,
-            date,
-            note
-    );
+    Transaction tx = Transaction.create(category, amount, date, note);
     tx.assignTo(this);
     transactions.add(tx);
+    
+    return tx.getId();
 }
 
-public TransactionId getLastTransactionId() {
+public TransactionId lastTransactionId() {
     if (transactions.isEmpty()) {
         throw new IllegalStateException("目前尚無交易");
     }
     return transactions.get(transactions.size() - 1).getId();
 }
-
-
-
-public void attachTransactionImage(
-        TransactionId transactionId,
-        String imagePath
-) {
-    Transaction tx = transactions.stream()
-        .filter(t -> t.getId().equals(transactionId))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("交易不存在"));
-
-    tx.attachImage(imagePath);
+public void updateTransaction(TransactionId transactionId, int amount, String note) {
+    Transaction tx = findTransactionOrThrow(transactionId);
+    // ✅ 只改 amount / note（符合你的目標）
+    tx.updateAmountNote(amount, note);
 }
 
+/**
+ * 替換圖片路徑，並回傳舊的 imagePath（讓 Application Service 去刪舊檔）
+ */
+public String replaceTransactionImage(TransactionId transactionId, String newImagePath) {
+    Transaction tx = findTransactionOrThrow(transactionId);
 
+    String old = tx.getImagePath();
+    tx.attachImage(newImagePath);
+    return old;
+}
 
-    public TransactionDeletion deleteTransaction(TransactionId transactionId) {
+/**
+ * ImageStorage.save 需要交易日期來命名檔案（edit 不允許改日期）
+ */
+public LocalDate getTransactionDate(TransactionId transactionId) {
+    return findTransactionOrThrow(transactionId).getDate();
+}
 
-    Transaction tx = transactions.stream()
-        .filter(t -> t.getId().equals(transactionId))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("交易不存在"));
-    
-    String ImagePath = tx.getImagePath(); 
+public TransactionDeletion deleteTransaction(TransactionId transactionId) {
+    Transaction tx = findTransactionOrThrow(transactionId);
 
+    String imagePath = tx.getImagePath();
     transactions.remove(tx);
 
-    return new TransactionDeletion(
-            transactionId,
-            ImagePath
-    );
+    return new TransactionDeletion(transactionId, imagePath);
 }
 
+/** ✅ 交易查找唯一出口 */
+private Transaction findTransactionOrThrow(TransactionId transactionId) {
+    return transactions.stream()
+            .filter(t -> t.getId().equals(transactionId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("交易不存在"));
+}
 
-
-
-    public List<Transaction> getTransactions() {
-        return List.copyOf(transactions);
-    }
 
 
     /* ========== Read-only ========== */
