@@ -43,13 +43,12 @@ public class TransactionFlow {
     @Transactional
     public void addTransaction(UserId userId, YearMonth month, AddTransactionRequest request) {
 
-        LocalDateTime occurredAt = request.date().atStartOfDay(); 
 
         TransactionId txId = addTransactionService.addTransaction(
                 userId,
                 month,
                 CategoryType.valueOf(request.categoryName()),
-                occurredAt,
+                request.date(),
                 request.amount(),
                 request.note()
         );
@@ -62,7 +61,7 @@ public class TransactionFlow {
                 .findByUserIdAndMonth(userId, month)
                 .orElseThrow();
 
-        String newPath = imageStorage.save(month, txId, occurredAt, request.image());
+        String newPath = imageStorage.save(month, txId, request.date(), request.image());
         String oldPath = bm.replaceTransactionImage(txId, newPath);
         imageStorage.delete(oldPath);
     }

@@ -324,12 +324,13 @@
 
           <div class="mb-3">
             <label class="form-label small text-muted">消費日期</label>
-            <input type="date"
+            <input type="datetime-local"
               class="form-control"
               name="date"
               id="addDate"
               required
-              th:attr="min=${view.month.atDay(1)}, max=${view.month.atEndOfMonth()}">
+              th:attr="min=${view.month.atDay(1)} + 'T00:00',
+                max=${view.month.atEndOfMonth()} + 'T23:59'">
 
           </div>
 
@@ -452,6 +453,12 @@ function applyBar(bar, percent) {
      percent >= 80  ? 'bg-warning' : 'bg-success');
 }
 
+// ✅ helper：datetime-local 需要 YYYY-MM-DDTHH:mm
+function pad2(n){ return String(n).padStart(2,'0'); }
+function toLocalDateTimeMinute(d){
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
 const addModal  = document.getElementById('addModal');
 const addAmount = document.getElementById('addAmount');
 const addDate   = document.getElementById('addDate');
@@ -492,19 +499,24 @@ addModal.addEventListener('show.bs.modal', e => {
   addImage.value = '';
   document.getElementById('addImagePreviewWrap').style.display = 'none';
 
-  // ✅ min/max 已由 HTML(th:attr) 設定，這裡只決定預設日期
+  // ✅ min/max 已由 HTML(th:attr) 設定（YYYY-MM-DDTHH:mm）
   const min = addDate.getAttribute('min');
   const max = addDate.getAttribute('max');
 
-  const today = new Date();
-  const todayStr =
-    `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  // ✅ 預設：現在時間（到分鐘）
+  let v = toLocalDateTimeMinute(new Date());
 
-  let v = todayStr;
-  if ((min && v < min) || (max && v > max)) v = min || v;
+  // 若現在不在本月範圍，預設用本月第一天 09:00（你想改 12:00 也行）
+  if ((min && v < min) || (max && v > max)) {
+    v = min ? (min.substring(0, 11) + '09:00') : v;
+  }
+
+  // 保險 clamp
+  if (min && v < min) v = min;
+  if (max && v > max) v = max;
+
   addDate.value = v;
 });
-
 
 addAmount.addEventListener('input', () => {
   updateAddPreview(Number(addAmount.value || 0));
