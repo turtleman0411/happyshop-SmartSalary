@@ -47,9 +47,11 @@ public interface TransactionRepository
      * - selectedCategory = null / "ALL" → 查全部
      * - selectedCategory = "RENT" / "FOOD" → 查指定分類
      */
+
+
 @Query("""
     select
-        t.id as transactionId,
+        t.id.value as transactionId,
         t.date as date,
         t.category as category,
         t.amount as amount,
@@ -68,10 +70,30 @@ public interface TransactionRepository
 List<TransactionRow> findTransactions(
         String userId,
         YearMonth month,
-        CategoryType category   // ⭐ 這裡一定要是 Enum
+        CategoryType category
 );
-
-
+/**
+ * ⭐ 最近 3 筆交易（本月、不受分類影響）
+ */
+@Query("""
+    select
+        t.id.value as transactionId,
+        t.date as date,
+        t.category as category,
+        t.amount as amount,
+        t.note as note,
+        t.imagePath as imagePath
+    from BudgetMonth bm
+    join bm.transactions t
+    where bm.userId.value = :userId
+      and bm.month = :month
+    order by t.date desc, t.id.value desc
+""")
+List<TransactionRow> findRecentTransactions(
+        String userId,
+        YearMonth month,
+        org.springframework.data.domain.Pageable pageable
+);
 
 
 }

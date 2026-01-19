@@ -1,215 +1,192 @@
 /* ======================================================
-   Transaction / Select — Unified Premium System Skin
-   Scope:
-   - body.transaction
-   - Select Category Card (no Bootstrap dependency)
+   transaction.css – Clean / Dropdown Version
+   只服務「交易清單 + 下拉分類」
 ====================================================== */
 
-/* ===============================
-   Global Tokens
-=============================== */
-:root{
-  --bg: #f5f5f7;
-  --panel-bg: rgba(255,255,255,.96);
-  --panel-border: rgba(0,0,0,.08);
-  --text-main: #1d1d1f;
-  --text-muted: #6e6e73;
-
-  --blue: #0a84ff;
-  --green: #34c759;
-  --yellow: #ffd60a;
-  --red: #ff3b30;
-}
-
-/* ======================================================
-   Transaction Page Base
-====================================================== */
-body.transaction{
-  background: var(--bg);
-  color: var(--text-main);
-  font-family:
-    -apple-system, BlinkMacSystemFont,
-    "SF Pro Text","PingFang TC","Noto Sans TC",
-    system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* World Background */
-body.transaction .hs-result-bg{
+/* ===== 背景 ===== */
+.transaction-bg {
   min-height: 100vh;
+  padding: 18px 0 60px;
   background:
-    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.18), transparent 60%),
-    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), transparent 60%),
-    linear-gradient(180deg,#eaf2ff 0%,#f5f5f7 48%,#f5f5f7 100%);
-  padding: 24px 0 64px;
+    radial-gradient(900px 520px at 18% 10%, rgba(10,132,255,.16), rgba(245,245,247,0) 60%),
+    radial-gradient(900px 520px at 82% 88%, rgba(255,45,85,.10), rgba(245,245,247,0) 60%),
+    linear-gradient(180deg, #eaf2ff 0%, #f5f5f7 48%, #f5f5f7 100%);
 }
 
-/* ======================================================
-   Panels
-====================================================== */
-body.transaction .hs-panel{
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 22px;
+/* ===== 版心 ===== */
+.transaction-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Header row 對齊 */
+.transaction-container > .row {
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .transaction-container > .row {
+    row-gap: 20px;
+  }
+
+  .transaction-container {
+    padding: 0 14px;
+  }
+}
+
+/* ===== 下拉選單 ===== */
+.filter-dropdown {
+  background: rgba(245,245,247,.86);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-weight: 800;
+  min-height: 52px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+.filter-dropdown:focus {
+  border-color: rgba(10,132,255,.45);
   box-shadow:
-    0 1px 0 rgba(0,0,0,.04),
-    0 18px 40px rgba(0,0,0,.08);
+    0 0 0 4px rgba(10,132,255,.12),
+    inset 0 1px 0 rgba(255,255,255,.6);
 }
 
-body.transaction .hs-pad{ padding:18px 20px; }
-
-/* ======================================================
-   CATEGORY CARD — SYSTEM STYLE (NO BOOTSTRAP)
-====================================================== */
-.category-group{
-  background:#fff;
-  border-radius:20px;
-  padding:8px;
-  border:1px solid rgba(0,0,0,.08);
+/* ===== 最近消費 ===== */
+.recent-item {
+  background: rgba(255,255,255,.86);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.category-card{
-  position:relative;
-  width:100%;
-  display:block;
-  cursor:pointer;
+.recent-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
 }
 
-.category-card + .category-card{ margin-top:6px; }
-
-.category-card-inner{
-  position:relative;
-  background:#fff;
-  border:1px solid rgba(0,0,0,.12);
-  border-radius:14px;
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-
-  transition:
-    border-color .18s ease,
-    box-shadow .18s ease,
-    transform .08s ease;
+/* ===== 交易群組 ===== */
+.transaction-groups {
+  margin-bottom: 20px;
 }
 
-.category-card:hover .category-card-inner{
-  border-color:rgba(0,0,0,.18);
+.transaction-group {
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 26px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  backdrop-filter: blur(10px);
+  margin-bottom: 24px;
+  overflow: hidden;
 }
 
-.category-card:active .category-card-inner{
-  transform:scale(.985);
-  box-shadow:0 4px 12px rgba(0,0,0,.10);
+/* 日期 Header */
+.group-header {
+  background: rgba(10,132,255,.08);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Left Status Bar (Base) */
-.category-card.manual-set .category-card-inner::before{
-  content:'';
-  position:absolute;
-  top:10px;
-  bottom:10px;
-  left:8px;
-  width:4px;
-  border-radius:999px;
+.group-date {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  flex-grow: 1;
 }
 
-/* Safe */
-.category-card.level-safe.manual-set .category-card-inner::before{
-  background:linear-gradient(180deg,#34c759,#2fb94f);
+.group-total {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-/* Warning */
-.category-card.level-warn.manual-set .category-card-inner::before{
-  background:linear-gradient(180deg,#ffd60a,#ffcc00);
-}
-
-/* Danger */
-.category-card.level-danger.manual-set .category-card-inner::before{
-  background:linear-gradient(180deg,#ff453a,#ff3b30);
-}
-
-/* Text emphasis */
-.category-card.manual-set .fw-semibold{
-  color:#1f7a3a;
-}
-
-/* ======================================================
-   Percent Input (Neutral)
-====================================================== */
-.category-card .percent-input{
-  width:84px;
-  padding:6px 8px;
-  border-radius:10px;
-  border:1px solid rgba(0,0,0,.18);
-  font-size:.9rem;
-  text-align:right;
-  background:#fff;
-}
-
-.category-card .percent-input:disabled{
-  background:rgba(0,0,0,.04);
-  color:#9a9aa0;
-}
-
-/* ======================================================
-   Mobile Polish
-====================================================== */
-@media (max-width:576px){
-  .category-card-inner{
-    border-radius:16px;
-    padding:14px;
+/* 手機：header 垂直 */
+@media (max-width: 576px) {
+  .group-header {
+    flex-direction: column;
+    text-align: center;
   }
 
-  .category-card.manual-set .category-card-inner::before{
-    left:6px;
-    width:3px;
-  }
-
-  .category-card .percent-input{
-    width:72px;
-    font-size:.85rem;
-  }
+  .group-date { font-size: 1.4rem; }
+  .group-total { font-size: 1.6rem; }
 }
 
-/* ======================================================
-   Table / Thumbnail / Buttons (Transaction)
-====================================================== */
-body.transaction table{ font-size:.95rem; }
-
-body.transaction thead th{
-  font-size:.8rem;
-  font-weight:600;
-  color:var(--text-muted);
-  border-bottom:1px solid rgba(0,0,0,.08);
+/* ===== 單筆交易 ===== */
+.transaction-item {
+  padding: 20px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  transition: background .14s ease;
 }
 
-body.transaction tbody tr:hover{
-  background:rgba(0,0,0,.02);
+.transaction-item:hover {
+  background: rgba(245,245,247,.86);
 }
 
-body.transaction .transaction-thumb{
-  width:56px;
-  height:56px;
-  border-radius:14px;
-  object-fit:cover;
-  background:rgba(0,0,0,.04);
-  transition:transform .15s ease, box-shadow .15s ease;
+.transaction-item:last-child {
+  border-bottom: none;
 }
 
-body.transaction .transaction-thumb:hover{
-  transform:scale(1.04);
-  box-shadow:0 6px 18px rgba(0,0,0,.18);
+/* 收據 */
+.receipt-image {
+  height: 140px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.08);
 }
 
-body.transaction .btn-icon-delete{
-  border:none;
-  background:transparent;
-  color:var(--red);
-  font-size:1.05rem;
-  padding:6px;
-  border-radius:999px;
+/* ===== Empty State ===== */
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
 }
 
-body.transaction .btn-icon-delete:hover{
-  background:rgba(255,59,48,.12);
+.empty-state-card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 22px;
+  box-shadow: 0 18px 46px rgba(0,0,0,.10);
+  padding: 40px;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.empty-state-title {
+  font-weight: 900;
+  font-size: 2.2rem;
+  letter-spacing: -0.4px;
+  margin-bottom: 12px;
+}
+
+.empty-state-desc {
+  color: #6e6e73;
+  font-weight: 700;
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+
+/* ===== 返回按鈕 ===== */
+.btn-outline-primary {
+  border-color: rgba(10,132,255,.3);
+  color: rgba(10,132,255,.9);
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+.btn-outline-primary:hover {
+  background: rgba(10,132,255,.08);
+  border-color: rgba(10,132,255,.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(10,132,255,.2);
 }

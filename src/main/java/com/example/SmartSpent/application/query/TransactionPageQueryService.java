@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 
 import com.example.SmartSpent.domain.model.CategoryType;
 import com.example.SmartSpent.domain.value.UserId;
@@ -86,7 +87,7 @@ public class TransactionPageQueryService {
                 normalizeCategory(selectedCategory, availableCategories);
 
         /* =========================
-         * 6️⃣ String → Enum（只在後端做）
+         * 6️⃣ String → Enum
          * ========================= */
         CategoryType categoryType = null;
         if (safeCategory != null) {
@@ -94,17 +95,16 @@ public class TransactionPageQueryService {
         }
 
         /* =========================
-         * 7️⃣ 依安全分類重新查交易（Enum）
+         * ⭐ 6.5️⃣ 最近 3 筆交易（完全不受分類影響）
          * ========================= */
-        List<TransactionRow> txRows =
-                transactionRepository.findTransactions(
-                        userId.value(),
-                        month,
-                        categoryType
-                );
-
-        List<TransactionItemView> transactionList =
-                txRows.stream()
+        List<TransactionItemView> recentTransactions =
+                transactionRepository
+                        .findRecentTransactions(
+                                userId.value(),
+                                month,
+                                PageRequest.of(0, 3)
+                        )
+                        .stream()
                         .map(r -> new TransactionItemView(
                                 r.getTransactionId(),
                                 r.getDate(),
@@ -113,13 +113,36 @@ public class TransactionPageQueryService {
                                 r.getAmount(),
                                 r.getNote(),
                                 r.getImagePath() == null
-                                ? null
-                                : "/uploads/" + r.getImagePath()
+                                        ? null
+                                        : "/uploads/" + r.getImagePath()
                         ))
                         .toList();
 
         /* =========================
-         * 8️⃣ 組下拉選單
+         * 7️⃣ 依分類查主清單
+         * ========================= */
+        List<TransactionItemView> transactionList =
+                transactionRepository.findTransactions(
+                                userId.value(),
+                                month,
+                                categoryType
+                        )
+                        .stream()
+                        .map(r -> new TransactionItemView(
+                                r.getTransactionId(),
+                                r.getDate(),
+                                r.getCategory().name(),
+                                r.getCategory().displayName(),
+                                r.getAmount(),
+                                r.getNote(),
+                                r.getImagePath() == null
+                                        ? null
+                                        : "/uploads/" + r.getImagePath()
+                        ))
+                        .toList();
+
+        /* =========================
+         * 8️⃣ 下拉選單
          * ========================= */
         List<CategoryOptionView> categoryOptions =
                 availableCategories.stream()
@@ -130,22 +153,25 @@ public class TransactionPageQueryService {
                         ))
                         .toList();
 
-        return new TransactionPageView(
+        /* =========================
+         * 9️⃣ 組 View（關鍵）
+         * ========================= */
+        return TransactionPageView.of(
                 month,
                 transactionList,
+                recentTransactions,   // ⭐ 一定要丟
                 categoryOptions,
                 safeCategory
         );
     }
 
     /**
-     * 前端安全分類檢查（只回傳 String 給 View 用）
+     * 前端安全分類檢查
      */
     private String normalizeCategory(
             String raw,
             Set<CategoryType> availableCategories
     ) {
-
         if (raw == null || raw.isBlank() || "ALL".equals(raw)) {
             return null;
         }

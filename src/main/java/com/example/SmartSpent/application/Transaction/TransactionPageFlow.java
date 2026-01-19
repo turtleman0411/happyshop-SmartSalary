@@ -38,14 +38,17 @@ public class TransactionPageFlow {
     }
 
     public TransactionId updateTransaction(
-            UserId userId,
-            YearMonth month,
-            String transactionId,
-            int amount,
-            String note,
-            MultipartFile image
-    ) {
-        return updateService.update(userId, month, transactionId, amount, note, image);
-    }
+        UserId userId,
+        YearMonth month,
+        TransactionId transactionId,
+        int amount,
+        String note,
+        MultipartFile image
+) {
+    return updateService.update(
+            userId, month, transactionId, amount, note, image
+    );
+}
+
 }
 

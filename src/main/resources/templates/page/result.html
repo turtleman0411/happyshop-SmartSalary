@@ -67,9 +67,9 @@
             </button>
 
             <a class="btn btn-outline-primary hs-btn"
-               th:href="@{/happyshop/transactions(month=${view.month})}">
-              查看交易
-            </a>
+   th:href="@{'/happyshop/transactions?month=' + ${view.month}}">
+  查看交易
+</a>
           </div>
 
           <div class="hs-chip">

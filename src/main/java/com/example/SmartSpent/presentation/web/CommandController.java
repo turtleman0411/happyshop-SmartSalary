@@ -122,7 +122,8 @@ public class CommandController {
         if (userId == null) return "redirect:/happyshop/login";
 
         transactionFlow.updateTransaction(
-                userId, month,
+                userId,
+                month,
                 form.transactionId(),
                 form.amount(),
                 form.note(),
@@ -132,18 +133,20 @@ public class CommandController {
         return "redirect:/happyshop/transactions?month=" + month;
     }
 
+
     @PostMapping("/transaction/delete")
     public String deleteTransaction(
-            @RequestParam Long transactionId,
+            @RequestParam TransactionId transactionId,
             @RequestParam YearMonth month,
             HttpServletRequest request
     ) {
         UserId userId = resolveLoginUserId(request);
         if (userId == null) return "redirect:/happyshop/login";
 
-        transactionFlow.deleteTransaction(userId, month, TransactionId.of(transactionId));
+        transactionFlow.deleteTransaction(userId, month, transactionId);
         return "redirect:/happyshop/transactions?month=" + month;
     }
+
 
     // =========================
     // Month reset

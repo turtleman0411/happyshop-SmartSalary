@@ -6,7 +6,7 @@ import com.example.SmartSpent.domain.model.CategoryType;
 
 public interface TransactionRow {
 
-    Long getTransactionId();
+    String getTransactionId(); 
     LocalDate getDate();
     CategoryType getCategory();
     int getAmount();

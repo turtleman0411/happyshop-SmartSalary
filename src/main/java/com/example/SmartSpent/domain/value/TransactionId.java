@@ -4,13 +4,18 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Transaction 的識別 Value Object
- * 由 Domain 產生（UUID），不依賴資料庫
- */
-public final class TransactionId implements Serializable {
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
-    private final String value;
+
+@Embeddable
+public  class TransactionId  {
+
+    @Column(name = "transaction_id", nullable = false, updatable = false)
+    private  String value;
+    protected TransactionId() {
+        this.value = null; 
+    }
 
     private TransactionId(String value) {
         if (value == null || value.isBlank()) {
@@ -20,13 +25,8 @@ public final class TransactionId implements Serializable {
     }
 
     /** 建立全新 TransactionId（Domain 行為） */
-    public static TransactionId newId() {
+    public static TransactionId newId() { 
         return new TransactionId(UUID.randomUUID().toString());
-    }
-
-    /** 從持久化資料還原 */
-    public static TransactionId of(String value) {
-        return new TransactionId(value);
     }
 
     public String value() {

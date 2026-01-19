@@ -15,14 +15,12 @@ import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 import com.example.SmartSpent.presentation.dto.request.AddTransactionRequest;
 
 @Component
-
 public class TransactionFlow {
 
     private final AddTransactionService addTransactionService;
     private final DeleteTransactionService deleteTransactionService;
-    private final TransactionUpdateService transactionUpdateService;
+    private final TransactionUpdateService updateService;
 
-    // 目前 add 仍需要這兩個（你也可以之後再抽成 service）
     private final BudgetMonthRepository budgetMonthRepository;
     private final ImageStorage imageStorage;
 
@@ -35,59 +33,48 @@ public class TransactionFlow {
     ) {
         this.addTransactionService = addTransactionService;
         this.deleteTransactionService = deleteTransactionService;
-        this.transactionUpdateService = transactionUpdateService;
+        this.updateService = transactionUpdateService;
         this.budgetMonthRepository = budgetMonthRepository;
         this.imageStorage = imageStorage;
     }
 
-    /**
-     * 使用者在指定月份新增交易（流程封裝）
-     */
-@Transactional
-public void addTransaction(UserId userId, YearMonth month, AddTransactionRequest request) {
+    /** 新增交易 */
+    @Transactional
+    public void addTransaction(UserId userId, YearMonth month, AddTransactionRequest request) {
 
-    TransactionId txId = addTransactionService.addTransaction(
-            userId,
-            month,
-            CategoryType.valueOf(request.categoryName()),
-            request.date(),
-            request.amount(),
-            request.note()
-    );
+        TransactionId txId = addTransactionService.addTransaction(
+                userId,
+                month,
+                CategoryType.valueOf(request.categoryName()),
+                request.date(),
+                request.amount(),
+                request.note()
+        );
 
-    if (request.image() == null || request.image().isEmpty()) {
-        return;
+        if (request.image() == null || request.image().isEmpty()) {
+            return;
+        }
+
+        BudgetMonth bm = budgetMonthRepository
+                .findByUserIdAndMonth(userId, month)
+                .orElseThrow();
+
+        String newPath = imageStorage.save(month, txId, request.date(), request.image());
+        String oldPath = bm.replaceTransactionImage(txId, newPath);
+        imageStorage.delete(oldPath);
     }
 
-    BudgetMonth bm = budgetMonthRepository
-            .findByUserIdAndMonth(userId, month)
-            .orElseThrow();
-
-    // ✅ 新增交易用 request.date() 當檔名日期即可
-    String newPath = imageStorage.save(month, txId, request.date(), request.image());
-
-    // ✅ 新 API：替換圖片 + 取得舊路徑
-    String oldPath = bm.replaceTransactionImage(txId, newPath);
-
-    // ✅ 刪舊檔（可選）
-    imageStorage.delete(oldPath);
-}
-
-
-
-    /**
-     * ✅ 修改交易：只允許 amount / note / image
-     */
+    /** 修改交易：只允許 amount / note / image */
     public TransactionId updateTransaction(
             UserId userId,
             YearMonth month,
-            String rawTransactionId,
+            TransactionId transactionId,
             int amount,
             String note,
             MultipartFile image
     ) {
-        return transactionUpdateService.update(
-                userId, month, rawTransactionId, amount, note, image
+        return updateService.update(
+                userId, month, transactionId, amount, note, image
         );
     }
 

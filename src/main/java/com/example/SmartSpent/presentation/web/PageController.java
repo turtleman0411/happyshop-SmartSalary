@@ -131,7 +131,7 @@ public class PageController {
         YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 
         TransactionPageView result =
-                transactionPageFlow.getTransactionPage(userId, month, category);
+                transactionPageFlow.getTransactionPage(userId, targetMonth, category);
 
         String themeClass = monthThemeResolver.resolve(targetMonth);
 

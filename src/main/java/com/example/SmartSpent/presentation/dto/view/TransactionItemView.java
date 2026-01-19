@@ -3,7 +3,7 @@ package com.example.SmartSpent.presentation.dto.view;
 import java.time.LocalDate;
 
 public record TransactionItemView(
-    Long transactionId,
+    String transactionId,
     LocalDate date,
     String categoryName,
     String categoryDisplayName,

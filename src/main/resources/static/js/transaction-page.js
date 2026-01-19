@@ -1,129 +1,115 @@
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * HappyShop – Transaction Page JS（FIXED）
+ * 對齊目前 HTML 結構（dropdown + recent）
+ */
+
+(function () {
+  'use strict';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initCategoryDropdown();
+    initRecentClick();
+    initDeleteButtons();
+  });
 
   /* ======================================================
-     1) Edit Modal：塞資料
+     1️⃣ 下拉分類篩選（修正版）
   ====================================================== */
-  document.querySelectorAll(".js-edit-open").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const txId = btn.dataset.transactionId || "";
-      const dateText = btn.dataset.date || "";
-      const categoryDisplay = btn.dataset.categoryDisplay || "";
-      const amount = btn.dataset.amount || "0";
-      const note = btn.dataset.note || "";
-      const imageUrl = btn.dataset.imageUrl || "";
+  function initCategoryDropdown() {
+    const select = document.getElementById('categoryFilter');
+    if (!select) return;
 
-      // hidden id
-      const txIdEl = document.getElementById("editTransactionId");
-      if (txIdEl) txIdEl.value = txId;
+    select.addEventListener('change', () => {
+      filterByCategory(select.value);
+    });
+  }
 
-      // readonly display
-      const dateEl = document.getElementById("editDateText");
-      if (dateEl) dateEl.value = dateText;
+  function filterByCategory(category) {
+    const items = document.querySelectorAll('.transaction-item');
+    const groups = document.querySelectorAll('.transaction-group');
 
-      const catEl = document.getElementById("editCategoryDisplay");
-      if (catEl) catEl.textContent = categoryDisplay;
+    items.forEach(item => {
+      const cat = item.dataset.category || '';
+      item.style.display =
+        !category || cat === category ? '' : 'none';
+    });
 
-      // editable
-      const amountEl = document.getElementById("editAmount");
-      if (amountEl) amountEl.value = amount;
+    // 正確判斷群組是否還有可見交易
+    groups.forEach(group => {
+      const hasVisible = Array.from(
+        group.querySelectorAll('.transaction-item')
+      ).some(item => item.offsetParent !== null);
 
-      const noteEl = document.getElementById("editNote");
-      if (noteEl) noteEl.value = note;
+      group.style.display = hasVisible ? '' : 'none';
+    });
+  }
 
-      // reset file input + new preview
-      const fileEl = document.getElementById("editImage");
-      if (fileEl) fileEl.value = "";
+  /* ======================================================
+     2️⃣ 最近消費 → 切分類 + 捲動
+  ====================================================== */
+  function initRecentClick() {
+    const recentItems = document.querySelectorAll('.recent-item');
+    if (recentItems.length === 0) return;
 
-      const previewWrap = document.getElementById("editImagePreviewWrap");
-      const previewImg = document.getElementById("editImagePreview");
-      if (previewWrap && previewImg) {
-        previewImg.removeAttribute("src");
-        previewWrap.style.display = "none";
-      }
+    recentItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const category =
+          item.querySelector('.chip-icon')?.textContent || '';
 
-      // current image
-      const currentWrap = document.getElementById("editCurrentImageWrap");
-      const currentImg = document.getElementById("editCurrentImage");
-      if (currentWrap && currentImg) {
-        if (imageUrl && imageUrl.trim() !== "") {
-          currentImg.src = imageUrl;
-          currentWrap.style.display = "";
-        } else {
-          currentImg.removeAttribute("src");
-          currentWrap.style.display = "none";
+        // 從 recent item 直接讀分類（靠 data-category 最穩）
+        const txCategory = item.getAttribute('data-category');
+
+        const select = document.getElementById('categoryFilter');
+        if (select && txCategory) {
+          select.value = txCategory;
+          filterByCategory(txCategory);
         }
-      }
 
-      // optional: reset budget block (avoid stale UI)
-      setText("editSpent", "0");
-      setText("editBudget", "0");
-      setText("editRemaining", "0");
-      setText("editOver", "0");
-      setText("editUsage", "0%");
-      const overWrap = document.getElementById("editOverWrap");
-      if (overWrap) overWrap.style.display = "none";
-      const bar = document.getElementById("editBar");
-      if (bar) bar.style.width = "0%";
-    });
-  });
+        // 捲動到第一個可見群組
+        const targetGroup = document.querySelector(
+          '.transaction-group:not([style*="display: none"])'
+        );
 
-  /* ======================================================
-     2) Edit Modal：新圖片預覽
-  ====================================================== */
-  const editImageInput = document.getElementById("editImage");
-  if (editImageInput) {
-    editImageInput.addEventListener("change", () => {
-      const file = editImageInput.files && editImageInput.files[0];
-      const wrap = document.getElementById("editImagePreviewWrap");
-      const img = document.getElementById("editImagePreview");
-      if (!wrap || !img) return;
-
-      if (!file) {
-        img.removeAttribute("src");
-        wrap.style.display = "none";
-        return;
-      }
-
-      const url = URL.createObjectURL(file);
-      img.src = url;
-      wrap.style.display = "";
+        if (targetGroup) {
+          targetGroup.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
     });
   }
 
   /* ======================================================
-     3) Image Modal：縮圖點開 → 放大圖
-        （用 event delegation，桌機/手機都穩）
+     3️⃣ 刪除
   ====================================================== */
-  document.addEventListener("click", (e) => {
-    const thumb = e.target.closest(".transaction-thumb");
-    if (!thumb) return;
-
-    const url = thumb.dataset.imageUrl;
-    const modalImg = document.getElementById("modalImage");
-    if (modalImg && url) modalImg.src = url;
-  });
-
-  /* ======================================================
-     4) Image Modal：點圖片 → iOS 縮回 + 關閉
-  ====================================================== */
-  const modalImage = document.getElementById("modalImage");
-  const imageModalEl = document.getElementById("imageModal");
-
-  if (modalImage && imageModalEl) {
-    modalImage.addEventListener("click", () => {
-      modalImage.style.transform = "scale(0.96)";
-      modalImage.style.transition = "transform .12s ease";
-
-      setTimeout(() => {
-        modalImage.style.transform = "";
-        // ✅ getOrCreateInstance 比 getInstance 更穩
-        bootstrap.Modal.getOrCreateInstance(imageModalEl).hide();
-      }, 120);
+  function initDeleteButtons() {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        handleDelete(btn.dataset.id);
+      });
     });
   }
 
-  function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
+  function handleDelete(transactionId) {
+    if (!confirm('確定要刪除這筆交易嗎？')) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || '2026-01';
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/happyshop/transaction/delete';
+    form.style.display = 'none';
+    form.innerHTML = `
+      <input type="hidden" name="transactionId" value="${transactionId}">
+      <input type="hidden" name="month" value="${month}">
+      <input type="hidden" name="_method" value="DELETE">
+    `;
+
+    document.body.appendChild(form);
+    form.submit();
   }
-});
+
+})();
