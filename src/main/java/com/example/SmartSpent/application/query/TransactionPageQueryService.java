@@ -1,13 +1,12 @@
 package com.example.SmartSpent.application.query;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import com.example.SmartSpent.domain.model.CategoryType;
 import com.example.SmartSpent.domain.value.UserId;
@@ -16,6 +15,7 @@ import com.example.SmartSpent.infrastructure.repository.TransactionRepository;
 import com.example.SmartSpent.infrastructure.repository.projection.CategoryAllocationRow;
 import com.example.SmartSpent.infrastructure.repository.projection.TransactionRow;
 import com.example.SmartSpent.presentation.dto.view.CategoryOptionView;
+import com.example.SmartSpent.presentation.dto.view.TransactionDateGroupView;
 import com.example.SmartSpent.presentation.dto.view.TransactionItemView;
 import com.example.SmartSpent.presentation.dto.view.TransactionPageView;
 
@@ -33,154 +33,110 @@ public class TransactionPageQueryService {
         this.allocationRepository = allocationRepository;
     }
 
-    public TransactionPageView getTransactionPage(
-            UserId userId,
-            YearMonth month,
-            String selectedCategory // RENT / FOOD / ALL / null
-    ) {
+    /**
+     * ✅ 單一入口：永遠查「本月全部交易」
+     * - 下拉選單：前端即時過濾（不導頁、不查 DB）
+     * - 最近 3 筆：完全不受分類影響
+     * - 主清單：依日期分組（LocalDate）
+     */
+    public TransactionPageView getTransactionPage(UserId userId, YearMonth month) {
 
         /* =========================
-         * 1️⃣ 查「所有交易」（不帶分類）
+         * 1️⃣ 查「本月全部交易」
          * ========================= */
-        List<TransactionRow> allTxRows =
-                transactionRepository.findTransactions(
-                        userId.value(),
-                        month,
-                        null
-                );
+        List<TransactionRow> allTxRows = transactionRepository.findAllTransactions(
+                userId.value(),
+                month
+        );
 
         /* =========================
-         * 2️⃣ 蒐集「有交易」分類
+         * 2️⃣ 最近 3 筆（本月，不受分類影響）
          * ========================= */
-        Set<CategoryType> categoriesFromTransaction =
-                allTxRows.stream()
-                        .map(TransactionRow::getCategory)
-                        .filter(c -> c != null)
-                        .collect(Collectors.toSet());
+        List<TransactionItemView> recentTransactions = transactionRepository
+                .findRecentTransactions(userId.value(), month, PageRequest.of(0, 3))
+                .stream()
+                .map(this::toItemView)
+                .toList();
 
         /* =========================
-         * 3️⃣ 蒐集「有分配」分類
+         * 3️⃣ 下拉選單可用分類（交易 ∪ 分配）
          * ========================= */
-        List<CategoryAllocationRow> allocationRows =
-                allocationRepository.findCategoryAllocations(
-                        userId.value(),
-                        month
-                );
+        Set<CategoryType> categoriesFromTx = allTxRows.stream()
+                .map(TransactionRow::getCategory)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        Set<CategoryType> categoriesFromAllocation =
-                allocationRows.stream()
-                        .map(CategoryAllocationRow::getCategory)
-                        .filter(c -> c != null)
-                        .collect(Collectors.toSet());
+        List<CategoryAllocationRow> allocationRows = allocationRepository.findCategoryAllocations(
+                userId.value(),
+                month
+        );
 
-        /* =========================
-         * 4️⃣ 合併可用分類（交易 ∪ 分配）
-         * ========================= */
+        Set<CategoryType> categoriesFromAllocation = allocationRows.stream()
+                .map(CategoryAllocationRow::getCategory)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
         Set<CategoryType> availableCategories = new HashSet<>();
-        availableCategories.addAll(categoriesFromTransaction);
+        availableCategories.addAll(categoriesFromTx);
         availableCategories.addAll(categoriesFromAllocation);
 
-        /* =========================
-         * 5️⃣ 防呆 selectedCategory（前端用 String）
-         * ========================= */
-        String safeCategory =
-                normalizeCategory(selectedCategory, availableCategories);
+        List<CategoryOptionView> categoryOptions = availableCategories.stream()
+                .sorted(Enum::compareTo)
+                .map(c -> new CategoryOptionView(c.name(), c.displayName()))
+                .toList();
 
         /* =========================
-         * 6️⃣ String → Enum
+         * 4️⃣ 主清單：依日期分組（LocalDate）
+         * - 因為你現在是 LocalDateTime，所以分組要用 toLocalDate()
          * ========================= */
-        CategoryType categoryType = null;
-        if (safeCategory != null) {
-            categoryType = CategoryType.valueOf(safeCategory);
-        }
+        List<TransactionItemView> allItems = allTxRows.stream()
+                .map(this::toItemView)
+                .toList();
+
+        Map<LocalDate, List<TransactionItemView>> grouped = allItems.stream()
+                .collect(Collectors.groupingBy(
+                        it -> it.date().toLocalDate(),
+                        TreeMap::new, // 舊→新
+                        Collectors.toList()
+                ));
+
+        NavigableMap<LocalDate, List<TransactionItemView>> desc =
+                new TreeMap<>(Comparator.reverseOrder());
+        desc.putAll(grouped);
+
+        List<TransactionDateGroupView> groupedTransactions = desc.entrySet().stream()
+                .map(e -> {
+                    LocalDate date = e.getKey();
+                    List<TransactionItemView> list = e.getValue();
+
+                    int dayTotal = list.stream()
+                            .mapToInt(TransactionItemView::amount)
+                            .sum();
+
+                    return TransactionDateGroupView.of(date, dayTotal, list);
+                })
+                .toList();
 
         /* =========================
-         * ⭐ 6.5️⃣ 最近 3 筆交易（完全不受分類影響）
-         * ========================= */
-        List<TransactionItemView> recentTransactions =
-                transactionRepository
-                        .findRecentTransactions(
-                                userId.value(),
-                                month,
-                                PageRequest.of(0, 3)
-                        )
-                        .stream()
-                        .map(r -> new TransactionItemView(
-                                r.getTransactionId(),
-                                r.getDate(),
-                                r.getCategory().name(),
-                                r.getCategory().displayName(),
-                                r.getAmount(),
-                                r.getNote(),
-                                r.getImagePath() == null
-                                        ? null
-                                        : "/uploads/" + r.getImagePath()
-                        ))
-                        .toList();
-
-        /* =========================
-         * 7️⃣ 依分類查主清單
-         * ========================= */
-        List<TransactionItemView> transactionList =
-                transactionRepository.findTransactions(
-                                userId.value(),
-                                month,
-                                categoryType
-                        )
-                        .stream()
-                        .map(r -> new TransactionItemView(
-                                r.getTransactionId(),
-                                r.getDate(),
-                                r.getCategory().name(),
-                                r.getCategory().displayName(),
-                                r.getAmount(),
-                                r.getNote(),
-                                r.getImagePath() == null
-                                        ? null
-                                        : "/uploads/" + r.getImagePath()
-                        ))
-                        .toList();
-
-        /* =========================
-         * 8️⃣ 下拉選單
-         * ========================= */
-        List<CategoryOptionView> categoryOptions =
-                availableCategories.stream()
-                        .sorted(Enum::compareTo)
-                        .map(c -> new CategoryOptionView(
-                                c.name(),
-                                c.displayName()
-                        ))
-                        .toList();
-
-        /* =========================
-         * 9️⃣ 組 View（關鍵）
+         * 5️⃣ 組 View（不再有 selectedCategory）
          * ========================= */
         return TransactionPageView.of(
                 month,
-                transactionList,
-                recentTransactions,   // ⭐ 一定要丟
-                categoryOptions,
-                safeCategory
+                groupedTransactions,
+                recentTransactions,
+                categoryOptions
         );
     }
 
-    /**
-     * 前端安全分類檢查
-     */
-    private String normalizeCategory(
-            String raw,
-            Set<CategoryType> availableCategories
-    ) {
-        if (raw == null || raw.isBlank() || "ALL".equals(raw)) {
-            return null;
-        }
-
-        try {
-            CategoryType type = CategoryType.valueOf(raw);
-            return availableCategories.contains(type) ? raw : null;
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    private TransactionItemView toItemView(TransactionRow r) {
+        return new TransactionItemView(
+                r.getTransactionId(),
+                r.getDate(),
+                r.getCategory().name(),
+                r.getCategory().displayName(),
+                r.getAmount(),
+                r.getNote(),
+                r.getImagePath() == null ? null : "/uploads/" + r.getImagePath()
+        );
     }
 }

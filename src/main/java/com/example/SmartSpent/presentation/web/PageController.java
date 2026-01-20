@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.SmartSpent.application.Transaction.TransactionPageFlow;
+import com.example.SmartSpent.application.Transaction.TransactionFlow;
 import com.example.SmartSpent.application.common.MonthThemeResolver;
 import com.example.SmartSpent.application.query.SelectPageQueryService;
 import com.example.SmartSpent.application.result.ResultPageFlow;
@@ -27,23 +27,23 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PageController {
 
     private final SelectPageQueryService selectPageQueryService;
-    private final TransactionPageFlow transactionPageFlow;
     private final ResultPageFlow resultPageFlow;
     private final MonthThemeResolver monthThemeResolver;
     private final RememberMeService rememberMeService; // ✅ 新增
+    private final TransactionFlow transactionFlow;
 
     public PageController(
             SelectPageQueryService selectPageQueryService,
             ResultPageFlow resultPageFlow,
-            TransactionPageFlow transactionPageFlow,
             MonthThemeResolver monthThemeResolver,
+            TransactionFlow transactionFlow,
             RememberMeService rememberMeService // ✅ 新增
     ) {
         this.selectPageQueryService = selectPageQueryService;
         this.resultPageFlow = resultPageFlow;
-        this.transactionPageFlow = transactionPageFlow;
         this.monthThemeResolver = monthThemeResolver;
         this.rememberMeService = rememberMeService;
+        this.transactionFlow = transactionFlow;
     }
 
     /** ✅ Page 端統一入口：先吃 Interceptor，沒有就 fallback 再驗一次 cookie */
@@ -118,11 +118,10 @@ public class PageController {
         return "page/result";
     }
 
-    @GetMapping("/transactions")
+   @GetMapping("/transactions")
     public String transactionPage(
             HttpServletRequest request,
-            @RequestParam YearMonth month,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) YearMonth month,
             Model model
     ) {
         UserId userId = resolveLoginUserId(request);
@@ -131,7 +130,7 @@ public class PageController {
         YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 
         TransactionPageView result =
-                transactionPageFlow.getTransactionPage(userId, targetMonth, category);
+                transactionFlow.getTransactionPage(userId, targetMonth);
 
         String themeClass = monthThemeResolver.resolve(targetMonth);
 
@@ -139,4 +138,5 @@ public class PageController {
         model.addAttribute("view", result);
         return "page/transaction-list";
     }
+
 }

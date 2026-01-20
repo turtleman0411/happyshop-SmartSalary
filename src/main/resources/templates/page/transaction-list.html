@@ -1,177 +1,196 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>交易清單 | SmartSpent</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 只用 transaction.css，不用 result.css -->
-    <link th:href="@{/css/transaction.css}" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>交易清單 | SmartSpent</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <link th:href="@{/css/transaction.css}" rel="stylesheet">
 </head>
-<body th:class="${themeClass}">
 
-
-<!-- 背景容器（用 transaction.css 自定義） -->
-<div class="transaction-bg">
+<body th:class="${themeClass}" th:attr="data-month=${view.month}">
+  <div class="transaction-bg">
     <div class="transaction-container">
-        
-<!-- Header + Filter（下拉 + 最近3筆） -->
-<div class="row g-4">
-    <!-- 左：返回 + 標題 -->
-    <div class="col-md-7 col-lg-8">
-        <div class="d-flex align-items-center gap-3">
-            <a th:href="@{/happyshop/result(month=${view.month})}" 
+
+      <!-- Header + Filter -->
+      <div class="row g-4 align-items-center">
+        <div class="col-md-7 col-lg-8">
+          <div class="d-flex align-items-center gap-3">
+            <a th:href="@{/happyshop/result(month=${view.month})}"
                class="btn btn-outline-primary btn-sm px-3 py-2 fw-bold rounded-pill shadow-sm">
-                <i class="bi bi-arrow-left me-1"></i>返回
+              <i class="bi bi-arrow-left me-1"></i>返回
             </a>
             <div>
-                <h2 class="mb-1 fw-bold fs-2 lh-1" th:text="${view.month}">2026-01</h2>
-                <small class="text-muted fw-semibold">交易清單</small>
+              <h2 class="mb-1 fw-bold fs-2 lh-1" th:text="${view.month}">2026-01</h2>
+              <small class="text-muted fw-semibold">交易清單</small>
             </div>
+          </div>
         </div>
-    </div>
 
-    <!-- 右：下拉選單 -->
-    <div class="col-md-5 col-lg-4">
-        <div class="d-flex align-items-center justify-content-md-end gap-3">
-            <!-- 下拉選單 -->
+        <div class="col-md-5 col-lg-4">
+          <div class="d-flex align-items-center justify-content-md-end gap-3">
             <div class="dropdown w-100 w-md-auto">
-                <select id="categoryFilter" class="form-select form-select-lg filter-dropdown">
-                    <option value="">全部分類</option>
-                    <option th:each="opt : ${view.categoryOptions}"
-                            th:value="${opt.categoryName}"
-                            th:text="${opt.categoryDisplayName}"
-                            th:selected="${opt.categoryName == view.selectedCategory}">
-                    </option>
-                </select>
+              <select id="categoryFilter" class="form-select form-select-lg filter-dropdown">
+                <option value="">全部分類</option>
+                <option th:each="opt : ${view.categoryOptions}"
+                        th:value="${opt.categoryName}"
+                        th:text="${opt.categoryDisplayName}">
+                </option>
+              </select>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-<!-- 最近 3 筆消費 -->
-<div class="row mt-3 mb-4">
-    <div class="col-12">
-        <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+      <!-- 最近 3 筆 -->
+      <div class="row mt-3 mb-4">
+        <div class="col-12">
+          <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
             <i class="bi bi-clock-history"></i> 最近消費
-        </h5>
+          </h5>
 
-        <div class="recent-transactions"
-             th:if="${view.recentTransactions != null and !#lists.isEmpty(view.recentTransactions)}">
+          <div class="recent-transactions"
+               th:if="${view.recentTransactions != null and !#lists.isEmpty(view.recentTransactions)}">
 
             <div th:each="tx : ${view.recentTransactions}"
                  class="recent-item d-flex justify-content-between align-items-center p-3 border rounded-3 mb-2 clickable"
-                 th:data-tx-id="${tx.transactionId}"
-                 th:attr="data-date=${#temporals.format(tx.date, 'yyyy-MM-dd''T''HH:mm')}">
+                 th:attr="data-tx-id=${tx.transactionId},
+                          data-category=${tx.categoryName},
+                          data-date=${#temporals.format(tx.date, 'yyyy-MM-dd''T''HH:mm')}">
 
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                    <div class="recent-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <span th:switch="${tx.categoryName}">
-                            <span th:case="'RENT'">🏠</span>
-                            <span th:case="'FOOD'">🍚</span>
-                            <span th:case="'TRANS'">🚗</span>
-                            <span th:case="*">💳</span>
-                        </span>
-                    </div>
-
-                    <div class="flex-grow-1 min-w-0">
-                        <div class="fw-bold small lh-sm"
-                             th:text="${tx.categoryDisplayName}">房租</div>
-                        <div class="text-muted xsmall"
-                             th:text="${tx.note}">備註</div>
-                    </div>
+              <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <div class="recent-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <span th:switch="${tx.categoryName}">
+                    <span th:case="'RENT'">🏠</span>
+                    <span th:case="'FOOD'">🍚</span>
+                    <span th:case="'TRANS'">🚗</span>
+                    <span th:case="*">💳</span>
+                  </span>
                 </div>
 
-                <div class="text-end ms-3">
-                    <div class="fw-bold h6 mb-1"
-                         th:text="'$' + ${tx.amount}">$800</div>
-
-                    <!-- ✅ 顯示用：拿掉 T -->
-                    <div class="text-muted xsmall fw-semibold"
-                         th:text="${#temporals.format(tx.date, 'M/d HH:mm')}">1/19 16:58</div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-bold small lh-sm recent-title"
+                       th:text="${tx.categoryDisplayName}">房租</div>
+                  <div class="text-muted xsmall"
+                       th:text="${tx.note}">備註</div>
                 </div>
+              </div>
+
+              <div class="text-end ms-3">
+                <div class="fw-bold h6 mb-1" th:text="'$' + ${tx.amount}">$800</div>
+                <div class="text-muted xsmall fw-semibold"
+                     th:text="${#temporals.format(tx.date, 'M/d HH:mm')}">1/19 16:58</div>
+              </div>
             </div>
-        </div>
 
-        <div th:if="${view.recentTransactions == null or #lists.isEmpty(view.recentTransactions)}"
-             class="text-center py-4 text-muted">
+            <!-- ✅ 注記條（JS 會顯示/隱藏） -->
+            <div id="txNote" class="tx-note hidden">
+              <span class="dot"></span>
+              <span id="txNoteText">已切換分類</span>
+            </div>
+          </div>
+
+          <div th:if="${view.recentTransactions == null or #lists.isEmpty(view.recentTransactions)}"
+               class="text-center py-4 text-muted">
             <small class="opacity-75">暫無最近消費</small>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-        <!-- 交易清單 -->
-        <div th:if="${view.groupedTransactions != null and not #lists.isEmpty(view.groupedTransactions)}"
-             class="transaction-groups">
+      <!-- 交易清單（日期群組） -->
+      <div th:if="${view.groupedTransactions != null and !#lists.isEmpty(view.groupedTransactions)}"
+           class="transaction-groups">
 
-            <div th:each="group : ${view.groupedTransactions}"
-                 class="transaction-group"
-                 data-group>
+        <div th:each="group : ${view.groupedTransactions}"
+             class="transaction-group"
+             data-group>
 
-                <!-- 日期標題 -->
-                <div class="group-header d-flex justify-content-between align-items-center gap-3 px-4 py-3">
-                    <span class="group-date fw-bold flex-grow-1 fs-4 lh-1"
-                          th:text="${group.date}">2026-01-19</span>
-                    <span class="group-total fw-bold fs-3 text-nowrap lh-1 ms-auto"
-                          th:text="'總花費：' + ${group.dayTotalAmount}">¥1250</span>
+          <div class="group-header d-flex justify-content-between align-items-center gap-3 px-4 py-3">
+            <!-- ✅ group.date 建議後端給 LocalDate or yyyy-MM-dd 字串 -->
+            <span class="group-date fw-bold flex-grow-1 fs-4 lh-1"
+                  th:text="${group.date}">2026-01-19</span>
+            <span class="group-total fw-bold fs-3 text-nowrap lh-1 ms-auto"
+                  th:text="'總花費：' + ${group.dayTotalAmount}">總花費：1250</span>
+          </div>
+
+          <div th:each="tx : ${group.transactions}"
+               class="transaction-item"
+               th:attr="data-category=${tx.categoryName},
+                        data-tx-id=${tx.transactionId}">
+
+            <div class="d-flex justify-content-between align-items-start gap-3">
+              <div class="flex-grow-1">
+                <div class="fw-bold mb-1" th:text="${tx.categoryDisplayName}">房租</div>
+                <div class="small" th:text="${tx.note}">水電費</div>
+
+                <!-- 可選：把時間也顯示出來（避免 LocalDateTime 改完資訊被吃掉） -->
+                <div class="text-muted xsmall fw-semibold mt-1"
+                     th:if="${tx.date != null}"
+                     th:text="${#temporals.format(tx.date, 'M/d HH:mm')}">1/19 16:58</div>
+              </div>
+
+              <div class="text-end">
+                <div class="fw-bold h4 mb-2" th:text="'$' + ${tx.amount}">$800</div>
+                <div class="d-flex gap-2 justify-content-end">
+                  <a th:href="@{/transaction/edit/{id}(id=${tx.transactionId}, month=${view.month})}"
+                     class="btn btn-sm btn-outline-primary">編輯</a>
+                  <button type="button"
+                          class="btn btn-sm btn-outline-danger delete-btn"
+                          th:attr="data-id=${tx.transactionId}">
+                    刪除
+                  </button>
                 </div>
-
-                <!-- 該日交易 -->
-                <div th:each="tx : ${group.transactions}"
-                     class="transaction-item"
-                     th:data-category="${tx.categoryName}">
-
-                    <div class="d-flex justify-content-between align-items-start gap-3">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold mb-1"
-                                 th:text="${tx.categoryDisplayName}">房租</div>
-                            <div class="small"
-                                 th:text="${tx.note}">水電費</div>
-                        </div>
-
-                        <div class="text-end">
-                            <div class="fw-bold h4 mb-2"
-                                 th:text="'$' + ${tx.amount}">¥800</div>
-                            <div class="d-flex gap-2 justify-content-end">
-                                <a th:href="@{/transaction/edit/{id}(id=${tx.transactionId}, month=${view.month})}"
-                                   class="btn btn-sm btn-outline-primary">編輯</a>
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-danger delete-btn"
-                                        th:data-id="${tx.transactionId}">
-                                    刪除
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 收據圖片 -->
-                    <img th:if="${tx.imageUrl != null}"
-                         th:src="${tx.imageUrl}"
-                         class="receipt-image mt-3 w-100"
-                         alt="收據">
-                </div>
+              </div>
             </div>
-        </div>
 
-        <!-- Empty State -->
-        <div th:if="${view.groupedTransactions == null or #lists.isEmpty(view.groupedTransactions)}"
-             class="empty-state">
-            <div class="empty-state-card">
-                <div class="empty-state-icon">💳</div>
-                <h1 class="empty-state-title">本月暫無交易</h1>
-                <p class="empty-state-desc">新增第一筆交易，開始追蹤你的花費習慣吧！</p>
-                <div class="empty-state-actions">
-                    <a th:href="@{/transaction/new(month=${view.month})}"
-                       class="btn btn-primary px-4 py-2 fw-bold">新增交易</a>
-                </div>
-            </div>
+            <!-- 收據圖片（點擊放大） -->
+            <img th:if="${tx.imageUrl != null}"
+                 th:src="${tx.imageUrl}"
+                 class="receipt-image mt-3 w-100 receipt-click"
+                 th:attr="data-image-url=${tx.imageUrl}"
+                 alt="收據">
+          </div>
         </div>
+      </div>
+
+      <!-- Empty State -->
+      <div th:if="${view.groupedTransactions == null or #lists.isEmpty(view.groupedTransactions)}"
+           class="empty-state">
+        <div class="empty-state-card">
+          <div class="empty-state-icon">💳</div>
+          <h2 class="empty-state-title">本月暫無交易</h2>
+          <p class="empty-state-desc">新增第一筆交易，開始追蹤你的花費習慣吧！</p>
+          <div class="empty-state-actions">
+            <a th:href="@{/happyshop/result(month=${view.month})}"
+               class="btn btn-outline-primary btn-sm px-3 py-2 fw-bold rounded-pill shadow-sm">
+              <i class="bi bi-arrow-left me-1"></i>新增消費
+            </a>
+          </div>
+        </div>
+      </div>
 
     </div>
-</div>
+  </div>
 
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/transaction-page.js}"></script>
+  <!-- Receipt Modal -->
+  <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content receipt-modal">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold">收據預覽</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-0">
+          <img id="receiptModalImg" class="w-100 receipt-modal-img" alt="receipt preview">
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/transaction-page.js}" defer></script>
 </body>
 </html>

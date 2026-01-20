@@ -1,10 +1,8 @@
 /* ======================================================
-   transaction.css – Clean / Dropdown Version
-   只服務「交易清單 + 下拉分類」
+   transaction.css — Transaction World (Stable v3)
 ====================================================== */
 
-/* ===== 背景 ===== */
-.transaction-bg {
+.transaction-bg{
   min-height: 100vh;
   padding: 18px 0 60px;
   background:
@@ -13,63 +11,73 @@
     linear-gradient(180deg, #eaf2ff 0%, #f5f5f7 48%, #f5f5f7 100%);
 }
 
-/* ===== 版心 ===== */
-.transaction-container {
+.transaction-container{
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 16px;
 }
 
-/* Header row 對齊 */
-.transaction-container > .row {
-  align-items: center;
+@media (max-width: 768px){
+  .transaction-container{ padding: 0 14px; }
 }
 
-@media (max-width: 768px) {
-  .transaction-container > .row {
-    row-gap: 20px;
-  }
-
-  .transaction-container {
-    padding: 0 14px;
-  }
-}
-
-/* ===== 下拉選單 ===== */
-.filter-dropdown {
+/* ===== Dropdown ===== */
+.filter-dropdown{
   background: rgba(245,245,247,.86);
   border: 1px solid rgba(0,0,0,.08);
   border-radius: 999px;
   padding: 14px 20px;
-  font-weight: 800;
+  font-weight: 900;
   min-height: 52px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
 }
 
-.filter-dropdown:focus {
+.filter-dropdown:focus{
   border-color: rgba(10,132,255,.45);
   box-shadow:
     0 0 0 4px rgba(10,132,255,.12),
     inset 0 1px 0 rgba(255,255,255,.6);
 }
 
-/* ===== 最近消費 ===== */
-.recent-item {
+/* ===== Buttons ===== */
+.btn-outline-primary{
+  border-color: rgba(10,132,255,.3);
+  color: rgba(10,132,255,.9);
+  font-size: .9rem;
+  backdrop-filter: blur(10px);
+}
+
+.btn-outline-primary:hover{
+  background: rgba(10,132,255,.08);
+  border-color: rgba(10,132,255,.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(10,132,255,.2);
+}
+
+/* ===== Recent ===== */
+.recent-item{
   background: rgba(255,255,255,.86);
   transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.recent-item:hover {
+.recent-item:hover{
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0,0,0,.08);
 }
 
-/* ===== 交易群組 ===== */
-.transaction-groups {
-  margin-bottom: 20px;
+.recent-icon{
+  width: 42px;
+  height: 42px;
+  background: rgba(10,132,255,.10);
+  border: 1px solid rgba(0,0,0,.06);
 }
 
-.transaction-group {
+.xsmall{ font-size: .82rem; }
+
+/* ===== Groups ===== */
+.transaction-groups{ margin-bottom: 20px; }
+
+.transaction-group{
   background: rgba(255,255,255,.92);
   border: 1px solid rgba(0,0,0,.08);
   border-radius: 26px;
@@ -79,74 +87,77 @@
   overflow: hidden;
 }
 
-/* 日期 Header */
-.group-header {
+.group-header{
   background: rgba(10,132,255,.08);
   border-bottom: 1px solid rgba(0,0,0,.08);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
-.group-date {
+.group-date{
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.3px;
-  line-height: 1.2;
-  flex-grow: 1;
 }
 
-.group-total {
+.group-total{
   font-size: 1.8rem;
   font-weight: 900;
   letter-spacing: -0.4px;
-  line-height: 1.2;
-  white-space: nowrap;
 }
 
-/* 手機：header 垂直 */
-@media (max-width: 576px) {
-  .group-header {
+@media (max-width: 576px){
+  .group-header{
     flex-direction: column;
     text-align: center;
   }
-
-  .group-date { font-size: 1.4rem; }
-  .group-total { font-size: 1.6rem; }
+  .group-date{ font-size: 1.35rem; }
+  .group-total{ font-size: 1.5rem; }
 }
 
-/* ===== 單筆交易 ===== */
-.transaction-item {
+/* ===== Item ===== */
+.transaction-item{
   padding: 20px;
   border-bottom: 1px solid rgba(0,0,0,.08);
   transition: background .14s ease;
+  background: rgba(255,255,255,.94);
 }
 
-.transaction-item:hover {
+.transaction-item:hover{
   background: rgba(245,245,247,.86);
 }
 
-.transaction-item:last-child {
+.transaction-item:last-child{
   border-bottom: none;
 }
 
-/* 收據 */
-.receipt-image {
+/* ===== Receipt ===== */
+.receipt-image{
   height: 140px;
   width: 100%;
   object-fit: cover;
   border-radius: 18px;
   box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  cursor: zoom-in;
 }
 
-/* ===== Empty State ===== */
-.empty-state {
+.receipt-modal{
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.receipt-modal-img{
+  border-radius: 18px;
+  object-fit: contain;
+  max-height: 70vh;
+  background: rgba(245,245,247,.7);
+}
+
+/* ===== Empty ===== */
+.empty-state{
   padding: 40px 0;
   text-align: center;
 }
 
-.empty-state-card {
+.empty-state-card{
   max-width: 760px;
   margin: 0 auto;
   background: rgba(255,255,255,.94);
@@ -156,19 +167,19 @@
   padding: 40px;
 }
 
-.empty-state-icon {
+.empty-state-icon{
   font-size: 64px;
   margin-bottom: 20px;
 }
 
-.empty-state-title {
+.empty-state-title{
   font-weight: 900;
   font-size: 2.2rem;
   letter-spacing: -0.4px;
   margin-bottom: 12px;
 }
 
-.empty-state-desc {
+.empty-state-desc{
   color: #6e6e73;
   font-weight: 700;
   font-size: 1.1rem;
@@ -176,17 +187,89 @@
   margin: 0 auto 24px;
 }
 
-/* ===== 返回按鈕 ===== */
-.btn-outline-primary {
-  border-color: rgba(10,132,255,.3);
-  color: rgba(10,132,255,.9);
-  font-size: 0.9rem;
-  backdrop-filter: blur(10px);
+/* ======================================================
+   Select-like picked effect (recent + item)
+====================================================== */
+.recent-item,
+.transaction-item{
+  position: relative;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
 }
 
-.btn-outline-primary:hover {
-  background: rgba(10,132,255,.08);
-  border-color: rgba(10,132,255,.5);
+.is-picked{
+  border-color: rgba(52,199,89,.55) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.10), 0 0 0 4px rgba(52,199,89,.10);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(10,132,255,.2);
+}
+
+.is-picked::before{
+  content:"";
+  position:absolute;
+  left: 12px;
+  top: 14px;
+  bottom: 14px;
+  width: 4px;
+  border-radius: 99px;
+  background: #34c759;
+}
+
+.is-picked::after{
+  content:"✓";
+  position:absolute;
+  left: 28px;
+  top: 16px;
+  font-weight: 900;
+  font-size: 14px;
+  color: #34c759;
+  opacity: .95;
+}
+
+/* ===== Note bar ===== */
+.tx-note{
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(52,199,89,.35);
+  background: rgba(52,199,89,.08);
+  color: rgba(0,0,0,.72);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tx-note .dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #34c759;
+  flex-shrink: 0;
+}
+
+.tx-note.hidden{ display:none; }
+
+.recent-item.is-picked{
+  padding-left: 64px !important;  /* 可微調 56~72 */
+}
+
+.transaction-item.is-picked{
+  padding-left: 70px !important;  /* 可微調 62~78 */
+}
+
+.recent-item.is-picked::before,
+.transaction-item.is-picked::before{
+  left: 18px !important;
+  top: 14px;
+  bottom: 14px;
+  width: 4px;
+}
+
+.recent-item.is-picked::after,
+.transaction-item.is-picked::after{
+  left: 34px !important;
+  top: 18px !important; /* 往下避開第一行文字 */
+  font-weight: 900;
+  font-size: 14px;
 }

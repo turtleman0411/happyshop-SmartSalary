@@ -3,6 +3,7 @@ package com.example.SmartSpent.infrastructure.repository;
 import java.time.YearMonth;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,9 +16,9 @@ import com.example.SmartSpent.infrastructure.repository.projection.TransactionRo
 public interface TransactionRepository
         extends JpaRepository<BudgetMonth, BudgetMonthId> {
 
-    /**
-     * ⭐ 全月總消費（唯一事實來源）
-     */
+    /* =========================
+     * 1️⃣ 本月總消費
+     * ========================= */
     @Query("""
         select coalesce(sum(t.amount), 0)
         from BudgetMonth bm
@@ -27,9 +28,9 @@ public interface TransactionRepository
     """)
     int sumMonthlySpent(String userId, YearMonth month);
 
-    /**
-     * ⭐ 分類消費彙總（歷史事實）
-     */
+    /* =========================
+     * 2️⃣ 分類消費彙總
+     * ========================= */
     @Query("""
         select
             t.category as category,
@@ -41,59 +42,62 @@ public interface TransactionRepository
         group by t.category
     """)
     List<CategorySpentRow> sumCategorySpent(String userId, YearMonth month);
-    
-    /**
-     * ⭐ 交易查詢（唯一來源）
-     * - selectedCategory = null / "ALL" → 查全部
-     * - selectedCategory = "RENT" / "FOOD" → 查指定分類
-     */
 
+    /* =========================
+     * 3️⃣ 交易清單：查全部（✅ 不用 null）
+     * ========================= */
+    @Query("""
+        select
+            t.id.value as transactionId,
+            t.date as date,
+            t.category as category,
+            t.amount as amount,
+            t.note as note,
+            t.imagePath as imagePath
+        from BudgetMonth bm
+        join bm.transactions t
+        where bm.userId.value = :userId
+          and bm.month = :month
+        order by t.date desc, t.id.value desc
+    """)
+    List<TransactionRow> findAllTransactions(String userId, YearMonth month);
 
-@Query("""
-    select
-        t.id.value as transactionId,
-        t.date as date,
-        t.category as category,
-        t.amount as amount,
-        t.note as note,
-        t.imagePath as imagePath
-    from BudgetMonth bm
-    join bm.transactions t
-    where bm.userId.value = :userId
-      and bm.month = :month
-      and (
-            :category is null
-            or t.category = :category
-      )
-    order by t.date desc
-""")
-List<TransactionRow> findTransactions(
-        String userId,
-        YearMonth month,
-        CategoryType category
-);
-/**
- * ⭐ 最近 3 筆交易（本月、不受分類影響）
- */
-@Query("""
-    select
-        t.id.value as transactionId,
-        t.date as date,
-        t.category as category,
-        t.amount as amount,
-        t.note as note,
-        t.imagePath as imagePath
-    from BudgetMonth bm
-    join bm.transactions t
-    where bm.userId.value = :userId
-      and bm.month = :month
-    order by t.date desc, t.id.value desc
-""")
-List<TransactionRow> findRecentTransactions(
-        String userId,
-        YearMonth month,
-        org.springframework.data.domain.Pageable pageable
-);
+    /* =========================
+     * 4️⃣ 交易清單：查分類（可留著，未來若要後端導頁才用）
+     * ========================= */
+    @Query("""
+        select
+            t.id.value as transactionId,
+            t.date as date,
+            t.category as category,
+            t.amount as amount,
+            t.note as note,
+            t.imagePath as imagePath
+        from BudgetMonth bm
+        join bm.transactions t
+        where bm.userId.value = :userId
+          and bm.month = :month
+          and t.category = :category
+        order by t.date desc, t.id.value desc
+    """)
+    List<TransactionRow> findTransactionsByCategory(String userId, YearMonth month, CategoryType category);
 
-
+    /* =========================
+     * 5️⃣ 最近 3 筆（本月，不受分類影響）
+     * ========================= */
+    @Query("""
+        select
+            t.id.value as transactionId,
+            t.date as date,
+            t.category as category,
+            t.amount as amount,
+            t.note as note,
+            t.imagePath as imagePath
+        from BudgetMonth bm
+        join bm.transactions t
+        where bm.userId.value = :userId
+          and bm.month = :month
+        order by t.date desc, t.id.value desc
+    """)
+    List<TransactionRow> findRecentTransactions(String userId, YearMonth month, Pageable pageable);
 }
