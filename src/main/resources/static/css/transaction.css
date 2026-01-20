@@ -273,3 +273,10 @@
   font-weight: 900;
   font-size: 14px;
 }
+.recent-item,
+.transaction-item,
+.receipt-click,
+.delete-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}

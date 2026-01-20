@@ -1,10 +1,5 @@
 /**
- * Transaction Page JS — Stable v3
- * - 下拉：前端即時過濾
- * - 最近3筆：精準定位到同一筆 tx（靠 data-tx-id UUID）
- * - Select-like 特效：綠框 + 左綠條 + 勾勾 + 注記
- * - 收據：點圖放大 / 關閉清空
- * - 刪除：維持 form submit
+ * Transaction Page JS — Stable v3 (Mobile-safe)
  */
 (function () {
   'use strict';
@@ -15,7 +10,6 @@
     initReceiptPreview();
     initDeleteButtons();
 
-    // 首次載入：若後端已預選分類，套用 filter
     const select = document.getElementById('categoryFilter');
     if (select && select.value) filterByCategory(select.value);
   });
@@ -56,36 +50,28 @@
      Recent -> Exact highlight
   ========================= */
   function initRecentClickExact() {
-    const recents = document.querySelectorAll('.recent-item');
-    if (recents.length === 0) return;
+    document.querySelectorAll('.recent-item').forEach(item => {
+      item.addEventListener('pointerdown', e => {
+        e.preventDefault();
 
-    recents.forEach(item => {
-      item.addEventListener('click', () => {
         const txId = item.dataset.txId || '';
         const category = item.dataset.category || '';
-
-        // recent 顯示名
         const displayName =
           item.querySelector('.recent-title')?.textContent?.trim() || '此分類';
 
-        // 1) recent 編框
         clearPicked('.recent-item');
         item.classList.add('is-picked');
 
-        // 2) 下拉切到該分類 + 過濾
         const select = document.getElementById('categoryFilter');
         if (select) {
           select.value = category;
           filterByCategory(category);
         } else {
-          // 沒下拉也照樣過濾（保險）
           filterByCategory(category);
         }
 
-        // 3) 注記條
         showNote(`已切換到「${displayName}」`);
 
-        // 4) 主清單：精準找到同一筆交易（靠 data-tx-id）
         clearPicked('.transaction-item');
 
         const target = txId
@@ -98,17 +84,12 @@
           return;
         }
 
-        // fallback：找第一筆可見交易（避免完全沒反應）
         const fallback = Array.from(document.querySelectorAll('.transaction-item'))
           .find(it => it.style.display !== 'none');
 
         if (fallback) {
           fallback.classList.add('is-picked');
           fallback.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          const g = Array.from(document.querySelectorAll('.transaction-group'))
-            .find(x => x.style.display !== 'none');
-          if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     });
@@ -125,7 +106,8 @@
     const modal = new bootstrap.Modal(modalEl);
 
     document.querySelectorAll('.receipt-click').forEach(img => {
-      img.addEventListener('click', () => {
+      img.addEventListener('pointerdown', e => {
+        e.preventDefault();
         const url = img.dataset.imageUrl || img.getAttribute('src');
         if (!url) return;
         imgEl.src = url;
@@ -143,7 +125,7 @@
   ========================= */
   function initDeleteButtons() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
+      btn.addEventListener('pointerdown', e => {
         e.preventDefault();
         handleDelete(btn.dataset.id);
       });
@@ -153,7 +135,10 @@
   function handleDelete(transactionId) {
     if (!confirm('確定要刪除這筆交易嗎？')) return;
 
-    const month = document.body.dataset.month || new URLSearchParams(location.search).get('month') || '';
+    const month =
+      document.body.dataset.month ||
+      new URLSearchParams(location.search).get('month') ||
+      '';
 
     const form = document.createElement('form');
     form.method = 'POST';
@@ -185,11 +170,9 @@
 
   function hideNote() {
     const note = document.getElementById('txNote');
-    if (!note) return;
-    note.classList.add('hidden');
+    if (note) note.classList.add('hidden');
   }
 
-  // dataset 用 selector 安全處理（避免引號爆掉）
   function cssEscape(s) {
     return String(s).replace(/"/g, '\\"');
   }
