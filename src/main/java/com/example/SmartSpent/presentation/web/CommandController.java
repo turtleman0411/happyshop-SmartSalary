@@ -58,6 +58,26 @@ public class CommandController {
     return null;
 }
 
+    // =========================
+    // Income
+    // =========================
+    @PostMapping("/income/update")
+    public String updateIncome(
+            @RequestParam YearMonth month,
+            @RequestParam int income,
+            HttpServletRequest request
+    ) {
+        UserId userId = resolveLoginUserId(request);
+        if (userId == null) return "redirect:/happyshop/login";
+
+        userFlow.updateIncome(userId, month, income);
+
+        System.out.println("🔥 HIT CommandController.updateIncome month=" + month + " income=" + income);
+
+        return "redirect:/happyshop/result?month=" + month;
+    }
+
+
 
     // =========================
     // Auth

@@ -96,28 +96,27 @@
           </div>
 
           <!-- 薪水更新 -->
-          <form th:action="@{/income/update}"
+          <form th:action="@{/happyshop/income/update}"
                 method="post"
                 class="mt-3">
 
-            <!-- ✅ month 只留在 body -->
             <input type="hidden" name="month" th:value="${view.month}" />
 
             <div class="input-group">
               <span class="input-group-text rounded-start-4">薪水</span>
+
               <input type="number"
                     name="income"
                     class="form-control"
                     min="0"
                     th:value="${view.salary}" />
+
               <button type="submit"
-        class="btn btn-outline-primary rounded-end-4 px-3">
-  更新
-</button>
+                      class="btn btn-outline-primary rounded-end-4 px-3">
+                更新
+              </button>
             </div>
           </form>
-
-
           <!-- KPI -->
           <div class="row g-2 mt-3">
             <div class="col-6">
