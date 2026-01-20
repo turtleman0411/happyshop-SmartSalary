@@ -11,7 +11,7 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public  class TransactionId  {
 
-    @Column(name = "transaction_id", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private  String value;
     protected TransactionId() {
         this.value = null; 
