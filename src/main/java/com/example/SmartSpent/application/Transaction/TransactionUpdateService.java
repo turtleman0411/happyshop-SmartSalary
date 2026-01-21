@@ -11,6 +11,8 @@ import com.example.SmartSpent.domain.value.UserId;
 import com.example.SmartSpent.infrastructure.repository.BudgetMonthRepository;
 import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TransactionUpdateService {
 
@@ -25,7 +27,7 @@ public class TransactionUpdateService {
         this.imageStorage = imageStorage;
     }
 
-
+@Transactional
 public TransactionId update(
         UserId userId,
         YearMonth month,

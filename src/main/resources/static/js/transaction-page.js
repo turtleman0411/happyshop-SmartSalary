@@ -1,5 +1,5 @@
 /**
- * Transaction Page JS — Stable v3 (Mobile-safe)
+ * Transaction Page JS — Stable v3 (Mobile-safe) + Edit Modal
  */
 (function () {
   'use strict';
@@ -9,6 +9,7 @@
     initRecentClickExact();
     initReceiptPreview();
     initDeleteButtons();
+    initEditTxModal(); // ✅ NEW
 
     const select = document.getElementById('categoryFilter');
     if (select && select.value) filterByCategory(select.value);
@@ -117,6 +118,42 @@
 
     modalEl.addEventListener('hidden.bs.modal', () => {
       imgEl.src = '';
+    });
+  }
+
+  /* =========================
+     Edit modal (fill form)
+  ========================= */
+  function initEditTxModal() {
+    const modalEl = document.getElementById('editTxModal');
+    if (!modalEl) return;
+
+    const txIdEl = document.getElementById('editTxId');
+    const monthEl = document.getElementById('editMonth');
+    const amountEl = document.getElementById('editAmount');
+    const noteEl = document.getElementById('editNote');
+    const imgEl = document.getElementById('editImage');
+
+    // 沒有 modal 表單欄位就直接略過
+    if (!txIdEl || !monthEl || !amountEl || !noteEl) return;
+
+    // month：優先用 body data-month（你有在 <body data-month=...>）
+    const fallbackMonth =
+      document.body.dataset.month ||
+      new URLSearchParams(location.search).get('month') ||
+      '';
+
+    document.querySelectorAll('.js-edit-tx').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 你的 HTML 是 data-tx-id / data-amount / data-note / data-month
+        txIdEl.value = btn.dataset.txId || '';
+        monthEl.value = btn.dataset.month || fallbackMonth || '';
+        amountEl.value = btn.dataset.amount || '';
+        noteEl.value = btn.dataset.note || '';
+
+        // 清空檔案欄位避免殘留
+        if (imgEl) imgEl.value = '';
+      });
     });
   }
 

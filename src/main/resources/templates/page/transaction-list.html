@@ -135,8 +135,20 @@
               <div class="text-end">
                 <div class="fw-bold h4 mb-2" th:text="'$' + ${tx.amount}">$800</div>
                 <div class="d-flex gap-2 justify-content-end">
-                  <a th:href="@{/transaction/edit/{id}(id=${tx.transactionId}, month=${view.month})}"
-                     class="btn btn-sm btn-outline-primary">編輯</a>
+ 
+                  <button type="button"
+                          class="btn btn-sm btn-outline-primary js-edit-tx"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editTxModal"
+                          th:attr="data-tx-id=${tx.transactionId},
+                                  data-amount=${tx.amount},
+                                  data-note=${tx.note},
+                                  data-month=${view.month}">
+                    編輯
+                  </button>
+
+
+
                   <button type="button"
                           class="btn btn-sm btn-outline-danger delete-btn"
                           th:attr="data-id=${tx.transactionId}">
@@ -189,6 +201,53 @@
       </div>
     </div>
   </div>
+
+
+  <div class="modal fade" id="editTxModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">編輯交易</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form id="editTxForm"
+            th:action="@{/happyshop/transaction/update}"
+            method="post"
+            enctype="multipart/form-data">
+
+        <div class="modal-body pt-0">
+          <!-- ✅ 你後端需要的兩個值 -->
+          <input type="hidden" name="month" id="editMonth">
+          <input type="hidden" name="transactionId" id="editTxId">
+
+          <div class="mb-3">
+            <label class="form-label">金額</label>
+            <input type="number" class="form-control" name="amount" id="editAmount" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">備註</label>
+            <input type="text" class="form-control" name="note" id="editNote">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">收據圖片（可選）</label>
+            <input type="file" class="form-control" name="image" id="editImage" accept="image/*">
+            <div class="form-text">不選檔案＝不更換圖片</div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script th:src="@{/js/transaction-page.js}" defer></script>

@@ -69,7 +69,7 @@ public class TransactionFlow {
         String oldPath = bm.replaceTransactionImage(txId, newPath);
         imageStorage.delete(oldPath);
     }
-
+    @Transactional
     /** 修改交易：只允許 amount / note / image */
     public TransactionId updateTransaction(
             UserId userId,

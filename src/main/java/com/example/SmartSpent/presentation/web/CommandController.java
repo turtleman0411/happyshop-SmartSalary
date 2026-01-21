@@ -2,6 +2,7 @@ package com.example.SmartSpent.presentation.web;
 
 import java.time.YearMonth;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -134,13 +135,13 @@ public class CommandController {
 
     @PostMapping("/transaction/update")
     public String updateTransaction(
-            @RequestParam YearMonth month,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth month,
             @ModelAttribute UpdateTransactionRequest form,
             HttpServletRequest request
     ) {
         UserId userId = resolveLoginUserId(request);
         if (userId == null) return "redirect:/happyshop/login";
-
+        
         transactionFlow.updateTransaction(
                 userId,
                 month,
