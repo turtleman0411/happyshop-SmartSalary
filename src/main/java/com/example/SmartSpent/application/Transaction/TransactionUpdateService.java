@@ -14,7 +14,7 @@ import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 import jakarta.transaction.Transactional;
 
 @Service
-public class TransactionUpdateService {
+ class TransactionUpdateService {
 
     private final BudgetMonthRepository budgetMonthRepository;
     private final ImageStorage imageStorage;

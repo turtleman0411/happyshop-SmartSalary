@@ -1,14 +1,7 @@
 package com.example.SmartSpent.application.User;
 
-import java.time.YearMonth;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
-
 import com.example.SmartSpent.application.security.RememberMeTokenService;
-import com.example.SmartSpent.domain.model.CategoryType;
-import com.example.SmartSpent.domain.value.BudgetMonthId;
-import com.example.SmartSpent.domain.value.IncomeAmount;
 import com.example.SmartSpent.domain.value.UserId;
 
 @Service
@@ -16,18 +9,18 @@ public class UserFlow {
 
     private final UserRegisterService registerService;
     private final LoginService loginService;
-    private final MonthService monthService;
+    
     private final RememberMeTokenService rememberMeTokenService;
 
     public UserFlow(
             UserRegisterService registerService,
             LoginService loginService,
-            MonthService monthService,
+           
             RememberMeTokenService rememberMeTokenService
     ) {
         this.registerService = registerService;
         this.loginService = loginService;
-        this.monthService = monthService;
+        
         this.rememberMeTokenService = rememberMeTokenService;
     }
 
@@ -71,32 +64,7 @@ public class UserFlow {
      * 其他業務流程
      * ========================= */
 
-    public BudgetMonthId configureMonthlyBudget(
-            UserId userId,
-            YearMonth month,
-            Map<CategoryType, Integer> percents
-    ) {
-        return monthService.configureMonthlyBudget(
-                userId,
-                month,
-                percents
-        );
-    }
 
-    public void updateIncome(
-        UserId userId,
-        YearMonth month,
-        int income
-    ) {
-    YearMonth targetMonth = (month != null)
-            ? month
-            : YearMonth.now(); // 或之後換成從 Session / Context 拿
-
-    monthService.updateIncome(
-            userId,
-            targetMonth,
-            IncomeAmount.of(income)
-    );
-    }
+   
 
 }

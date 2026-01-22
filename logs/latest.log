@@ -1,3 +1,140 @@
-2026-01-21 18:57:13 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-01-21 18:57:13 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-01-21 18:57:13 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-01-22 15:06:03 [http-nio-8080-exec-2] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:822fa300] >>> POST /happyshop/income/update;jsessionid=15EBCEC4DB2E873ADECF89CAB1E035BF
+  time=2026-01-22T07:06:03.647758Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:03 [http-nio-8080-exec-2] INFO  c.e.S.a.security.RequestDebugFilter - [RID:822fa300] <<< POST /happyshop/income/update;jsessionid=15EBCEC4DB2E873ADECF89CAB1E035BF status=302 24ms
+
+2026-01-22 15:06:03 [http-nio-8080-exec-4] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:a0719eb1] >>> GET /happyshop/result?month=2026-01
+  time=2026-01-22T07:06:03.673577Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:03 [http-nio-8080-exec-4] INFO  c.e.S.a.security.RequestDebugFilter - [RID:a0719eb1] <<< GET /happyshop/result status=200 14ms
+
+2026-01-22 15:06:03 [http-nio-8080-exec-3] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:267b44e2] >>> GET /css/result.css
+  time=2026-01-22T07:06:03.984456Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:03 [http-nio-8080-exec-3] INFO  c.e.S.a.security.RequestDebugFilter - [RID:267b44e2] <<< GET /css/result.css status=304 4ms
+
+2026-01-22 15:06:03 [http-nio-8080-exec-9] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:7712ef9a] >>> GET /apple-touch-icon-precomposed.png
+  time=2026-01-22T07:06:03.999028Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-22 15:06:03 [http-nio-8080-exec-10] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:0140ab8b] >>> GET /apple-touch-icon.png
+  time=2026-01-22T07:06:03.999343Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-22 15:06:03 [http-nio-8080-exec-8] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:dfe592dd] >>> GET /favicon.ico
+  time=2026-01-22T07:06:03.999508Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-22 15:06:04 [http-nio-8080-exec-9] INFO  c.e.S.a.security.RequestDebugFilter - [RID:7712ef9a] <<< GET /apple-touch-icon-precomposed.png status=404 2ms
+
+2026-01-22 15:06:04 [http-nio-8080-exec-10] INFO  c.e.S.a.security.RequestDebugFilter - [RID:0140ab8b] <<< GET /apple-touch-icon.png status=404 2ms
+
+2026-01-22 15:06:04 [http-nio-8080-exec-8] INFO  c.e.S.a.security.RequestDebugFilter - [RID:dfe592dd] <<< GET /favicon.ico status=404 1ms
+
+2026-01-22 15:06:14 [http-nio-8080-exec-1] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:ad69f18c] >>> GET /happyshop/transactions?month=2026-01
+  time=2026-01-22T07:06:14.120808Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:14 [http-nio-8080-exec-1] INFO  c.e.S.a.security.RequestDebugFilter - [RID:ad69f18c] <<< GET /happyshop/transactions status=200 35ms
+
+2026-01-22 15:06:14 [http-nio-8080-exec-5] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:65f10807] >>> GET /js/transaction-page.js
+  time=2026-01-22T07:06:14.473139Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:14 [http-nio-8080-exec-7] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:67dd8e76] >>> GET /css/transaction.css
+  time=2026-01-22T07:06:14.473139Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:14 [http-nio-8080-exec-7] INFO  c.e.S.a.security.RequestDebugFilter - [RID:67dd8e76] <<< GET /css/transaction.css status=304 3ms
+
+2026-01-22 15:06:14 [http-nio-8080-exec-5] INFO  c.e.S.a.security.RequestDebugFilter - [RID:65f10807] <<< GET /js/transaction-page.js status=304 3ms
+
+2026-01-22 15:06:18 [http-nio-8080-exec-6] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:9c65144e] >>> POST /happyshop/transaction/update
+  time=2026-01-22T07:06:18.844381Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:18 [http-nio-8080-exec-6] INFO  c.e.S.a.security.RequestDebugFilter - [RID:9c65144e] <<< POST /happyshop/transaction/update status=302 29ms
+
+2026-01-22 15:06:18 [http-nio-8080-exec-2] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:f0e2f726] >>> GET /happyshop/transactions?month=2026-01
+  time=2026-01-22T07:06:18.874812Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:18 [http-nio-8080-exec-2] INFO  c.e.S.a.security.RequestDebugFilter - [RID:f0e2f726] <<< GET /happyshop/transactions status=200 10ms
+
+2026-01-22 15:06:23 [http-nio-8080-exec-3] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:1c5d7720] >>> POST /happyshop/transaction/delete
+  time=2026-01-22T07:06:23.033971Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:23 [http-nio-8080-exec-3] INFO  c.e.S.a.security.RequestDebugFilter - [RID:1c5d7720] <<< POST /happyshop/transaction/delete status=302 13ms
+
+2026-01-22 15:06:23 [http-nio-8080-exec-9] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:02b349db] >>> GET /happyshop/transactions?month=2026-01
+  time=2026-01-22T07:06:23.053261Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:23 [http-nio-8080-exec-9] INFO  c.e.S.a.security.RequestDebugFilter - [RID:02b349db] <<< GET /happyshop/transactions status=200 10ms
+
+2026-01-22 15:06:25 [http-nio-8080-exec-10] INFO  c.e.S.a.security.RequestDebugFilter - 
+[RID:a0483905] >>> GET /happyshop/result?month=2026-01
+  time=2026-01-22T07:06:25.472853Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-22 15:06:25 [http-nio-8080-exec-10] INFO  c.e.S.a.security.RequestDebugFilter - [RID:a0483905] <<< GET /happyshop/result status=200 23ms
+

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.SmartSpent.application.BudgetMonth.BudgetMonthResetFlow;
 import com.example.SmartSpent.application.Transaction.TransactionFlow;
 import com.example.SmartSpent.application.User.UserFlow;
+import com.example.SmartSpent.application.result.ResultPageFlow;
 import com.example.SmartSpent.application.security.RememberMeService;
 import com.example.SmartSpent.domain.value.TransactionId;
 import com.example.SmartSpent.domain.value.UserId;
@@ -30,6 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CommandController {
 
     private final UserFlow userFlow;
+    private final ResultPageFlow resultPageFlow;
     private final TransactionFlow transactionFlow;
     private final BudgetMonthResetFlow budgetMonthResetFlow;
     private final RememberMeService rememberMeService;
@@ -38,12 +40,14 @@ public class CommandController {
             UserFlow userFlow,
             TransactionFlow transactionFlow,
             BudgetMonthResetFlow budgetMonthResetFlow,
-            RememberMeService rememberMeService
+            RememberMeService rememberMeService,
+            ResultPageFlow resultPageFlow
     ) {
         this.userFlow = userFlow;
         this.transactionFlow = transactionFlow;
         this.budgetMonthResetFlow = budgetMonthResetFlow;
         this.rememberMeService = rememberMeService;
+        this.resultPageFlow = resultPageFlow;
     }
 
     private UserId resolveLoginUserId(HttpServletRequest request) {
@@ -71,7 +75,7 @@ public class CommandController {
         UserId userId = resolveLoginUserId(request);
         if (userId == null) return "redirect:/happyshop/login";
 
-        userFlow.updateIncome(userId, month, income);
+        resultPageFlow.updateIncome(userId, month, income);
 
         System.out.println("🔥 HIT CommandController.updateIncome month=" + month + " income=" + income);
 
@@ -194,7 +198,7 @@ public String submitSelect(
     UserId userId = resolveLoginUserId(request);
     if (userId == null) return "redirect:/happyshop/login";
 
-    userFlow.configureMonthlyBudget(
+    resultPageFlow.configureMonthlyBudget(
             userId,
             form.month(),
             form.toCategoryPercentMap()

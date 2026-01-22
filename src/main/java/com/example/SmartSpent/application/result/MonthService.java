@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.User;
+package com.example.SmartSpent.application.result;
 
 import java.time.YearMonth;
 import java.util.Map;

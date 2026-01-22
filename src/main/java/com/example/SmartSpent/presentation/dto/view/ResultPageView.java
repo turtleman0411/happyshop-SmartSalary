@@ -136,9 +136,6 @@ public class ResultPageView {
         // =========================
         // UI Helper（只看 state）
         // =========================
-        public int getDisplayBudgetAmount() {
-            return effectiveCategoryBudgetAmount;
-        }
 
         public String getStateNoteText() {
             return switch (state) {
