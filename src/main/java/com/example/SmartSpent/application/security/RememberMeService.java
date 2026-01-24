@@ -10,7 +10,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.SmartSpent.domain.model.RememberMeToken;
 import com.example.SmartSpent.domain.value.UserId;
+import com.example.SmartSpent.infrastructure.repository.RememberMeTokenRepository;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

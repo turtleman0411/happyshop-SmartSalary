@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.security;
+package com.example.SmartSpent.domain.model;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "remember_me_token")
-class RememberMeToken {
+public class RememberMeToken {
 
     @Id
     @Column(name = "token_hash", length = 64, nullable = false)

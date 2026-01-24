@@ -23,7 +23,7 @@ public class Password {
     // ⭐ 方法名不變
     public static Password fromRaw(String raw, PasswordHasher hasher) {
         if (raw == null || raw.length() < 7) {
-            throw new PasswordInvalidException("密碼長度不足 需大於五位數");
+            throw new PasswordInvalidException("密碼長度不足 需大於7位數");
         }
         return new Password(hasher.hash(raw));
     }

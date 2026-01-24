@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.security;
+package com.example.SmartSpent.infrastructure.security;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.SmartSpent.application.security.RememberMeService;
 import com.example.SmartSpent.domain.value.UserId;
 
 import jakarta.servlet.FilterChain;

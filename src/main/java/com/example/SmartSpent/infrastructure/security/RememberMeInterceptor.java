@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.security;
+package com.example.SmartSpent.infrastructure.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.example.SmartSpent.application.security.RememberMeService;
 import com.example.SmartSpent.domain.value.UserId;
 
 @Component

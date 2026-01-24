@@ -1,4 +1,4 @@
-package com.example.SmartSpent.config;
+package com.example.SmartSpent.infrastructure.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
