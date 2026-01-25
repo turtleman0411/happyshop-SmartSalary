@@ -59,17 +59,24 @@ import com.example.SmartSpent.infrastructure.repository.BudgetMonthRepository;
         UserId userId,
         YearMonth month,
         IncomeAmount income
-) {
-    BudgetMonth budgetMonth =
-        repository.findByUserIdAndMonth(userId, month)
-            .orElseThrow(() -> new IllegalStateException("BudgetMonth 不存在"));
+        ) {
+        BudgetMonth budgetMonth =
+                repository.findByUserIdAndMonth(userId, month)
+                .orElseThrow(() -> new IllegalStateException("BudgetMonth 不存在"));
 
-    budgetMonth.updateIncome(income);
+        budgetMonth.updateIncome(income);
 
-    repository.save(budgetMonth);
+        repository.save(budgetMonth);
 
-    return budgetMonth.getId();
-}
+        return budgetMonth.getId();
+        }
 
+        void reset(UserId userId, YearMonth month) {
+        BudgetMonth budgetMonth = repository
+            .findByUserIdAndMonth(userId, month)
+            .orElseThrow(() -> new IllegalStateException("月份不存在"));
+
+        budgetMonth.resetAllocations();
+    }
 
 }

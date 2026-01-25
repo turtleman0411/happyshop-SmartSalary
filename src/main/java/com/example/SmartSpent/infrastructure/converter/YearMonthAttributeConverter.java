@@ -1,4 +1,4 @@
-package com.example.SmartSpent.domain.converter;
+package com.example.SmartSpent.infrastructure.converter;
 
 import java.time.YearMonth;
 

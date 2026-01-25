@@ -1,4 +1,4 @@
-package com.example.SmartSpent.domain.converter;
+package com.example.SmartSpent.infrastructure.component;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

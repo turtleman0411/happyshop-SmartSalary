@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.SmartSpent.application.BudgetMonth.BudgetMonthResetFlow;
 import com.example.SmartSpent.application.Transaction.TransactionFlow;
 import com.example.SmartSpent.application.User.UserFlow;
 import com.example.SmartSpent.application.result.ResultPageFlow;
@@ -33,19 +32,16 @@ public class CommandController {
     private final UserFlow userFlow;
     private final ResultPageFlow resultPageFlow;
     private final TransactionFlow transactionFlow;
-    private final BudgetMonthResetFlow budgetMonthResetFlow;
     private final RememberMeService rememberMeService;
 
     public CommandController(
             UserFlow userFlow,
             TransactionFlow transactionFlow,
-            BudgetMonthResetFlow budgetMonthResetFlow,
             RememberMeService rememberMeService,
             ResultPageFlow resultPageFlow
     ) {
         this.userFlow = userFlow;
         this.transactionFlow = transactionFlow;
-        this.budgetMonthResetFlow = budgetMonthResetFlow;
         this.rememberMeService = rememberMeService;
         this.resultPageFlow = resultPageFlow;
     }
@@ -185,7 +181,7 @@ public class CommandController {
         UserId userId = resolveLoginUserId(request);
         if (userId == null) return "redirect:/happyshop/login";
 
-        budgetMonthResetFlow.reset(userId, month);
+        resultPageFlow.reset(userId, month);
         return "redirect:/happyshop/select?month=" + month;
     }
 

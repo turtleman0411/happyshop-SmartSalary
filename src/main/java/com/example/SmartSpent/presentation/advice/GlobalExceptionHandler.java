@@ -98,23 +98,6 @@ public class GlobalExceptionHandler {
 }
 
 
-    /* ===== 未預期錯誤（保底） ===== */
-//     @ExceptionHandler(Exception.class)
-//     public ResponseEntity<ErrorResponse> handleUnexpected(
-//             Exception ex
-//     ) {
-//         ErrorResponse error = new ErrorResponse(
-//                 "INTERNAL_ERROR",
-//                 "系統發生錯誤，請稍後再試",
-//                 HttpStatus.INTERNAL_SERVER_ERROR.value()
-//         );
-
-//         return ResponseEntity
-//                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                 .body(error);
-//     }
-
-
     @ExceptionHandler(AuthenticationFailedException.class)
     public String handleAuthFailed(
             AuthenticationFailedException ex,

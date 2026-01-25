@@ -58,4 +58,9 @@ public class ResultPageFlow {
             IncomeAmount.of(income)
     );
     }
+
+    public void reset(UserId userId, String month) {
+        YearMonth ym = YearMonth.parse(month);
+        monthService.reset(userId, ym);
+    }
 }
