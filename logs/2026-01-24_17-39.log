@@ -1,0 +1,90 @@
+2026-01-24 17:39:35 [http-nio-8080-exec-8] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:d031f1a9] >>> GET /apple-touch-icon-precomposed.png
+  time=2026-01-24T09:39:35.779757Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:35 [http-nio-8080-exec-9] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:75e4d750] >>> GET /apple-touch-icon.png
+  time=2026-01-24T09:39:35.783771Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:35 [http-nio-8080-exec-10] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:43ec5d88] >>> GET /favicon.ico
+  time=2026-01-24T09:39:35.786152Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:35 [http-nio-8080-exec-9] INFO  c.e.S.i.security.RequestDebugFilter - [RID:75e4d750] <<< GET /apple-touch-icon.png status=404 7ms
+
+2026-01-24 17:39:35 [http-nio-8080-exec-10] INFO  c.e.S.i.security.RequestDebugFilter - [RID:43ec5d88] <<< GET /favicon.ico status=404 5ms
+
+2026-01-24 17:39:35 [http-nio-8080-exec-8] INFO  c.e.S.i.security.RequestDebugFilter - [RID:d031f1a9] <<< GET /apple-touch-icon-precomposed.png status=404 12ms
+
+2026-01-24 17:39:35 [http-nio-8080-exec-2] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:dc31adc2] >>> GET /happyshop/result?month=2026-01
+  time=2026-01-24T09:39:35.791050Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:35 [http-nio-8080-exec-2] INFO  c.e.S.i.security.RequestDebugFilter - [RID:dc31adc2] <<< GET /happyshop/result status=302 3ms
+
+2026-01-24 17:39:35 [http-nio-8080-exec-1] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:9d97ad66] >>> GET /happyshop/home
+  time=2026-01-24T09:39:35.798450Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:35 [http-nio-8080-exec-1] INFO  c.e.S.i.security.RequestDebugFilter - [RID:9d97ad66] <<< GET /happyshop/home status=200 5ms
+
+2026-01-24 17:39:36 [http-nio-8080-exec-7] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:7be89a89] >>> GET /apple-touch-icon-precomposed.png
+  time=2026-01-24T09:39:36.169094Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:36 [http-nio-8080-exec-2] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:53e4e7f5] >>> GET /favicon.ico
+  time=2026-01-24T09:39:36.170180Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:36 [http-nio-8080-exec-7] INFO  c.e.S.i.security.RequestDebugFilter - [RID:7be89a89] <<< GET /apple-touch-icon-precomposed.png status=404 3ms
+
+2026-01-24 17:39:36 [http-nio-8080-exec-2] INFO  c.e.S.i.security.RequestDebugFilter - [RID:53e4e7f5] <<< GET /favicon.ico status=404 2ms
+
+2026-01-24 17:39:36 [http-nio-8080-exec-1] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:5cf6f171] >>> GET /apple-touch-icon.png
+  time=2026-01-24T09:39:36.171995Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:36 [http-nio-8080-exec-1] INFO  c.e.S.i.security.RequestDebugFilter - [RID:5cf6f171] <<< GET /apple-touch-icon.png status=404 5ms
+
+2026-01-24 17:39:36 [http-nio-8080-exec-10] INFO  c.e.S.i.security.RequestDebugFilter - 
+[RID:cf2e9d56] >>> GET /happyshop/home
+  time=2026-01-24T09:39:36.255777Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=false len=null
+  authByCookie=null
+
+2026-01-24 17:39:36 [http-nio-8080-exec-10] INFO  c.e.S.i.security.RequestDebugFilter - [RID:cf2e9d56] <<< GET /happyshop/home status=200 4ms
+
