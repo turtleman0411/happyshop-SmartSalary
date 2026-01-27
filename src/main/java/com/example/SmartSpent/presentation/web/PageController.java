@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.SmartSpent.application.Transaction.TransactionFlow;
-import com.example.SmartSpent.application.common.MonthThemeResolver;
-import com.example.SmartSpent.application.query.SelectPageQueryService;
 import com.example.SmartSpent.application.result.ResultPageFlow;
-import com.example.SmartSpent.application.security.RememberMeService;
+import com.example.SmartSpent.application.select.SelectFlow;
 import com.example.SmartSpent.domain.value.UserId;
+import com.example.SmartSpent.infrastructure.component.MonthThemeResolver;
 import com.example.SmartSpent.presentation.dto.request.LoginForm;
 import com.example.SmartSpent.presentation.dto.request.RegisterForm;
 import com.example.SmartSpent.presentation.dto.view.ResultPageView;
@@ -25,40 +24,31 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/happyshop")
 public class PageController {
-
-    private final SelectPageQueryService selectPageQueryService;
+    private final SelectFlow selectFlow;
     private final ResultPageFlow resultPageFlow;
     private final MonthThemeResolver monthThemeResolver;
-    private final RememberMeService rememberMeService; // ✅ 新增
     private final TransactionFlow transactionFlow;
 
     public PageController(
-            SelectPageQueryService selectPageQueryService,
             ResultPageFlow resultPageFlow,
             MonthThemeResolver monthThemeResolver,
             TransactionFlow transactionFlow,
-            RememberMeService rememberMeService // ✅ 新增
-    ) {
-        this.selectPageQueryService = selectPageQueryService;
+            SelectFlow selectFlow
+    ) { 
         this.resultPageFlow = resultPageFlow;
         this.monthThemeResolver = monthThemeResolver;
-        this.rememberMeService = rememberMeService;
         this.transactionFlow = transactionFlow;
+        this.selectFlow = selectFlow;
     }
 
-    /** ✅ Page 端統一入口：先吃 Interceptor，沒有就 fallback 再驗一次 cookie */
-    private UserId resolveLoginUserId(HttpServletRequest request) {
-        UserId userId = (UserId) request.getAttribute("loginUserId");
-        if (userId != null) return userId;
-        return rememberMeService.authenticate(request).orElse(null);
-    }
+
 
     @GetMapping("/home")
     public String home(
             @RequestParam(required = false) YearMonth month,
             HttpServletRequest request
     ) {
-        UserId userId = resolveLoginUserId(request);
+        UserId userId = (UserId)request.getAttribute("loginUserId");
 
         if (userId != null) {
             YearMonth targetMonth = (month != null) ? month : YearMonth.now();
@@ -85,12 +75,11 @@ public class PageController {
             HttpServletRequest request,
             Model model
     ) {
-        UserId userId = resolveLoginUserId(request);
-        if (userId == null) return "redirect:/happyshop/home";
+        UserId userId = (UserId)request.getAttribute("loginUserId");
 
         YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 
-        SelectPageView view = selectPageQueryService.getSelectPage(userId, targetMonth);
+        SelectPageView view = selectFlow.getPageView(userId, targetMonth);
         String themeClass = monthThemeResolver.resolve(targetMonth);
 
         model.addAttribute("themeClass", themeClass);
@@ -104,9 +93,7 @@ public class PageController {
             HttpServletRequest request,
             Model model
     ) {
-        UserId userId = resolveLoginUserId(request);
-        if (userId == null) return "redirect:/happyshop/home";
-
+        UserId userId = (UserId)request.getAttribute("loginUserId");
         YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 
         ResultPageView result = resultPageFlow.getResultPage(userId, targetMonth);
@@ -124,8 +111,7 @@ public class PageController {
             @RequestParam(required = false) YearMonth month,
             Model model
     ) {
-        UserId userId = resolveLoginUserId(request);
-        if (userId == null) return "redirect:/happyshop/home?month=" + month;
+        UserId userId = (UserId)request.getAttribute("loginUserId");
 
         YearMonth targetMonth = (month != null) ? month : YearMonth.now();
 

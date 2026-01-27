@@ -1,4 +1,4 @@
-package com.example.SmartSpent.infrastructure.storage;
+package com.example.SmartSpent.infrastructure.component;
 
 import java.io.IOException;
 import java.nio.file.Files;

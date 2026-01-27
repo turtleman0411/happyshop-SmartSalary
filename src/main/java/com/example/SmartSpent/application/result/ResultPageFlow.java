@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.example.SmartSpent.application.query.ResultPageQueryService;
 import com.example.SmartSpent.domain.model.CategoryType;
 import com.example.SmartSpent.domain.value.BudgetMonthId;
 import com.example.SmartSpent.domain.value.IncomeAmount;

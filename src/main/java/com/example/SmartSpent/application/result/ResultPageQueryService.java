@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.query;
+package com.example.SmartSpent.application.result;
 
 import java.time.YearMonth;
 import java.util.EnumMap;
@@ -20,7 +20,7 @@ import com.example.SmartSpent.presentation.dto.view.CategoryUsageState;
 import com.example.SmartSpent.presentation.dto.view.ResultPageView;
 
 @Service
-public class ResultPageQueryService {
+class ResultPageQueryService {
 
     private final CategoryAllocationRepository allocationRepository;
     private final TransactionRepository transactionRepository;

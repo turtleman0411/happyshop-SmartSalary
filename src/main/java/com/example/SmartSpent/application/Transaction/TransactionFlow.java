@@ -7,13 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.SmartSpent.application.query.TransactionPageQueryService;
 import com.example.SmartSpent.domain.model.BudgetMonth;
 import com.example.SmartSpent.domain.model.CategoryType;
 import com.example.SmartSpent.domain.value.TransactionId;
 import com.example.SmartSpent.domain.value.UserId;
+import com.example.SmartSpent.infrastructure.component.ImageStorage;
 import com.example.SmartSpent.infrastructure.repository.BudgetMonthRepository;
-import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 import com.example.SmartSpent.presentation.dto.request.AddTransactionRequest;
 import com.example.SmartSpent.presentation.dto.view.TransactionPageView;
 

@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.query;
+package com.example.SmartSpent.application.select;
 
 import java.time.YearMonth;
 import java.util.LinkedHashMap;
@@ -12,19 +12,10 @@ import com.example.SmartSpent.presentation.dto.view.CategoryCardView;
 import com.example.SmartSpent.presentation.dto.view.SelectPageView;
 
 @Service
-public class SelectPageQueryService {
+class SelectPageQueryService {
 
-    /**
-     * Select Page（分類預算設定）
-     *
-     * 職責：
-     * - 提供月份
-     * - 提供「分類卡片」初始資料
-     * - 不讀 DB（純畫面初始化）
-     * - 不建立、不修改任何 Domain 狀態
-     */
-    public SelectPageView getSelectPage(
-            /* UserId 保留參數位置，未來可擴充 user 狀態 */
+
+      SelectPageView getPageView(
             Object userId,
             YearMonth month
     ) {
@@ -39,11 +30,7 @@ public class SelectPageQueryService {
         );
     }
 
-    /**
-     * ⭐ 分類分組（畫面用）
-     * - key：群組標題
-     * - value：該群組的分類卡
-     */
+
     private Map<String, List<CategoryCardView>> buildGroupedCategories() {
 
               Map<String, List<CategoryCardView>> groupedCategories = new LinkedHashMap<>();

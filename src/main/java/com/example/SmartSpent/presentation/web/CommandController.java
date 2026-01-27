@@ -101,10 +101,10 @@ public class CommandController {
             HttpServletResponse response,
             RedirectAttributes redirect
     ) {
-        UserId userId = userFlow.login(form.getUsername(), form.getPassword());
+        UserId userId = userFlow.login(form.username(), form.password());
 
         // ✅ 勾選才持久化，不勾就是 Session Cookie（關瀏覽器失效）
-        rememberMeService.issue(userId, request, response, form.isRememberMe());
+        rememberMeService.issue(userId, request, response, form.rememberMe());
 
         return "redirect:/happyshop/result";
     }

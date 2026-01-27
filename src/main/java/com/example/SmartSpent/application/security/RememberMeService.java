@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.SmartSpent.domain.model.RememberMeToken;
 import com.example.SmartSpent.domain.value.UserId;
 import com.example.SmartSpent.infrastructure.repository.RememberMeTokenRepository;
 
@@ -36,7 +35,7 @@ public class RememberMeService {
        對外唯一入口（給 Interceptor / Controller fallback）
        =============================== */
     @Transactional(readOnly = true)
-    public Optional<UserId> authenticate(HttpServletRequest request) {
+    Optional<UserId> authenticate(HttpServletRequest request) {
         String rawToken = readCookie(request, COOKIE_NAME);
         if (rawToken == null || rawToken.isBlank()) return Optional.empty();
 
@@ -69,7 +68,7 @@ public class RememberMeService {
         int days = rememberMe ? REMEMBER_DAYS : SESSION_DAYS;
         LocalDateTime expireAt = now.plusDays(days);
         System.out.println("userId.value()=" + userId.value());
-System.out.println("len=" + userId.value().length());
+        System.out.println("len=" + userId.value().length());
         repo.save(new RememberMeToken(tokenHash, userIdValue, expireAt, now));
 
         boolean isHttps = isHttps(request);
@@ -102,19 +101,19 @@ System.out.println("len=" + userId.value().length());
     // -------- helpers --------
 
     /** ✅ Railway/反代下，request.isSecure() 可能永遠 false，所以讀 X-Forwarded-Proto */
-    private boolean isHttps(HttpServletRequest request) {
+    boolean isHttps(HttpServletRequest request) {
         String xfProto = request.getHeader("X-Forwarded-Proto");
         if (xfProto != null) return "https".equalsIgnoreCase(xfProto);
         return request.isSecure();
     }
 
-    private String generateRawToken() {
+    String generateRawToken() {
         byte[] bytes = new byte[32];
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private String readCookie(HttpServletRequest request, String name) {
+    String readCookie(HttpServletRequest request, String name) {
         if (request.getCookies() == null) return null;
         for (Cookie c : request.getCookies()) {
             if (name.equals(c.getName())) return c.getValue();
@@ -122,7 +121,7 @@ System.out.println("len=" + userId.value().length());
         return null;
     }
 
-    private String sha256Hex(String input) {
+    String sha256Hex(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] dig = md.digest(input.getBytes(StandardCharsets.UTF_8));

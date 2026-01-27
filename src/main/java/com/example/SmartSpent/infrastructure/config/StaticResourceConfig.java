@@ -1,4 +1,4 @@
-package com.example.SmartSpent.config;
+package com.example.SmartSpent.infrastructure.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

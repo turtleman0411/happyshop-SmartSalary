@@ -1,0 +1,120 @@
+2026-01-27 17:12:43 [http-nio-8080-exec-8] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:0f972028] >>> GET /happyshop/home
+  time=2026-01-27T09:12:43.870551Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-8] INFO  c.e.S.i.component.RequestDebugFilter - [RID:0f972028] <<< GET /happyshop/home status=200 11ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-6] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:2c298dc0] >>> GET /css/month-bar.css
+  time=2026-01-27T09:12:43.882232Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-10] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:b055e4b5] >>> GET /css/base.css
+  time=2026-01-27T09:12:43.883592Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-2] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:cb586f46] >>> GET /css/month-picker.css
+  time=2026-01-27T09:12:43.883640Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-5] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:6f201032] >>> GET /js/month-picker.js
+  time=2026-01-27T09:12:43.883602Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-4] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:8ceb4c45] >>> GET /css/home.css
+  time=2026-01-27T09:12:43.883829Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-7] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:bf0ceeda] >>> GET /css/navbar.css
+  time=2026-01-27T09:12:43.884058Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:43 [http-nio-8080-exec-6] INFO  c.e.S.i.component.RequestDebugFilter - [RID:2c298dc0] <<< GET /css/month-bar.css status=200 5ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-4] INFO  c.e.S.i.component.RequestDebugFilter - [RID:8ceb4c45] <<< GET /css/home.css status=200 5ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-2] INFO  c.e.S.i.component.RequestDebugFilter - [RID:cb586f46] <<< GET /css/month-picker.css status=200 5ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-10] INFO  c.e.S.i.component.RequestDebugFilter - [RID:b055e4b5] <<< GET /css/base.css status=200 4ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-5] INFO  c.e.S.i.component.RequestDebugFilter - [RID:6f201032] <<< GET /js/month-picker.js status=200 3ms
+
+2026-01-27 17:12:43 [http-nio-8080-exec-7] INFO  c.e.S.i.component.RequestDebugFilter - [RID:bf0ceeda] <<< GET /css/navbar.css status=200 6ms
+
+2026-01-27 17:12:46 [http-nio-8080-exec-3] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:ea07ffe8] >>> GET /happyshop/login
+  time=2026-01-27T09:12:46.827295Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:46 [http-nio-8080-exec-3] INFO  c.e.S.i.component.RequestDebugFilter - [RID:ea07ffe8] <<< GET /happyshop/login status=200 6ms
+
+2026-01-27 17:12:46 [http-nio-8080-exec-9] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:5dab5eea] >>> GET /css/auth.css
+  time=2026-01-27T09:12:46.836177Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:46 [http-nio-8080-exec-9] INFO  c.e.S.i.component.RequestDebugFilter - [RID:5dab5eea] <<< GET /css/auth.css status=200 3ms
+
+2026-01-27 17:12:54 [http-nio-8080-exec-1] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:58b11a7e] >>> POST /happyshop/login
+  time=2026-01-27T09:12:54.529990Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=null
+
+2026-01-27 17:12:54 [http-nio-8080-exec-1] INFO  c.e.S.i.component.RequestDebugFilter - [RID:58b11a7e] <<< POST /happyshop/login status=302 90ms
+
+2026-01-27 17:12:54 [http-nio-8080-exec-8] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:4a864bce] >>> GET /happyshop/result
+  time=2026-01-27T09:12:54.619456Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=null
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-27 17:12:54 [http-nio-8080-exec-8] INFO  c.e.S.i.component.RequestDebugFilter - [RID:4a864bce] <<< GET /happyshop/result status=200 18ms
+
+2026-01-27 17:12:54 [http-nio-8080-exec-6] INFO  c.e.S.i.component.RequestDebugFilter - 
+[RID:d87df631] >>> GET /css/result.css
+  time=2026-01-27T09:12:54.638528Z secure=false xfProto=null xfFor=null
+  attr.loginUserId=null
+  session.loginUserId=816266e2-eba6-4dab-8a47-0a3475a02572
+  cookie.remember.present=true len=43
+  authByCookie=816266e2-eba6-4dab-8a47-0a3475a02572
+
+2026-01-27 17:12:54 [http-nio-8080-exec-6] INFO  c.e.S.i.component.RequestDebugFilter - [RID:d87df631] <<< GET /css/result.css status=200 2ms
+

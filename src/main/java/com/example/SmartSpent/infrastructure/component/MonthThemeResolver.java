@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.common;
+package com.example.SmartSpent.infrastructure.component;
 
 import java.time.YearMonth;
 

@@ -1,24 +1,22 @@
-package com.example.SmartSpent.config;
+package com.example.SmartSpent.application.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.SmartSpent.infrastructure.security.RememberMeInterceptor;
-
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final RememberMeInterceptor rememberMeInterceptor;
+    private final AuthenticateInterceptor authenticateterceptor;
 
-    public WebConfig(RememberMeInterceptor rememberMeInterceptor) {
-        this.rememberMeInterceptor = rememberMeInterceptor;
+    public WebConfig(AuthenticateInterceptor authenticateterceptor) {
+        this.authenticateterceptor = authenticateterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(rememberMeInterceptor)
+        registry.addInterceptor(authenticateterceptor)
                 // ✅ 全站攔截：Page + Command API 都會進 interceptor
                 .addPathPatterns("/**")
 

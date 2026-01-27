@@ -1,4 +1,4 @@
-package com.example.SmartSpent.application.query;
+package com.example.SmartSpent.application.Transaction;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -20,7 +20,7 @@ import com.example.SmartSpent.presentation.dto.view.TransactionItemView;
 import com.example.SmartSpent.presentation.dto.view.TransactionPageView;
 
 @Service
-public class TransactionPageQueryService {
+class TransactionPageQueryService {
 
     private final TransactionRepository transactionRepository;
     private final CategoryAllocationRepository allocationRepository;

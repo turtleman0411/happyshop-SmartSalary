@@ -1,4 +1,4 @@
-package com.example.SmartSpent.domain.model;
+package com.example.SmartSpent.application.security;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.example.SmartSpent.infrastructure.security;
+package com.example.SmartSpent.application.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,15 +6,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.example.SmartSpent.application.security.RememberMeService;
 import com.example.SmartSpent.domain.value.UserId;
 
 @Component
-public class RememberMeInterceptor implements HandlerInterceptor {
+class AuthenticateInterceptor implements HandlerInterceptor {
 
     private final RememberMeService rememberMeService;
 
-    public RememberMeInterceptor(RememberMeService rememberMeService) {
+    public AuthenticateInterceptor(RememberMeService rememberMeService) {
         this.rememberMeService = rememberMeService;
     }
 

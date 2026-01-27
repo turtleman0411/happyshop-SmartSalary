@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.example.SmartSpent.domain.converter.YearMonthAttributeConverter;
 import com.example.SmartSpent.domain.value.BudgetMonthId;
 import com.example.SmartSpent.domain.value.IncomeAmount;
 import com.example.SmartSpent.domain.value.TransactionDeletion;
 import com.example.SmartSpent.domain.value.TransactionId;
 import com.example.SmartSpent.domain.value.UserId;
+import com.example.SmartSpent.infrastructure.converter.YearMonthAttributeConverter;
 
 import jakarta.persistence.*;
 

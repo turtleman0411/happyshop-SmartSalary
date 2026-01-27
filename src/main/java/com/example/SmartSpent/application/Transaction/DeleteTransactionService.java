@@ -9,8 +9,8 @@ import com.example.SmartSpent.domain.model.BudgetMonth;
 import com.example.SmartSpent.domain.value.TransactionDeletion;
 import com.example.SmartSpent.domain.value.TransactionId;
 import com.example.SmartSpent.domain.value.UserId;
+import com.example.SmartSpent.infrastructure.component.ImageStorage;
 import com.example.SmartSpent.infrastructure.repository.BudgetMonthRepository;
-import com.example.SmartSpent.infrastructure.storage.ImageStorage;
 
 @Service
 @Transactional

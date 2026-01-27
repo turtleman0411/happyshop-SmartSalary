@@ -1,4 +1,4 @@
-package com.example.SmartSpent.config;
+package com.example.SmartSpent.infrastructure.config;
 
 import java.nio.charset.StandardCharsets;
 
